@@ -44,7 +44,6 @@ func GetConnectionDetails(req *modules.DataInfo, input *app.M4DApplication) erro
 	}
 
 	details := response.GetDetails()
-
 	protocol, err := utils.GetProtocol(details)
 	if err != nil {
 		return err
@@ -69,6 +68,7 @@ func GetConnectionDetails(req *modules.DataInfo, input *app.M4DApplication) erro
 		Connection: *connection,
 		Metadata:   details.Metadata,
 	}
+
 	req.VaultSecretPath = details.CredentialsInfo.VaultSecretPath
 
 	return nil

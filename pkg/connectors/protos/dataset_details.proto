@@ -85,6 +85,6 @@ message DatasetDetails {
     string data_format = 4;
     string geo = 5;             //geography location where data resides (if this information available)
     //LocationType locationType = 10;  //publicCloud/privateCloud etc. Should be filled later when we understand better if we have a closed set of values and how they are used.
-    CredentialsInfo credentials_info = 6;   // information about how to retrive dataset credentials from the catalog.
     DatasetMetadata  metadata = 7;
+    CredentialsInfo credentials_info = 11;   // information about how to retrive dataset credentials from the catalog.
 }

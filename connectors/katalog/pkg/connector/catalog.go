@@ -8,7 +8,9 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/ibm/the-mesh-for-data/connectors/katalog/pkg/connector/utils"
+	"log"
+
+	utils "github.com/ibm/the-mesh-for-data/connectors/katalog/pkg/connector/utils"
 	connectors "github.com/ibm/the-mesh-for-data/pkg/connectors/protobuf"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -32,6 +34,7 @@ func (s *DataCatalogService) GetDatasetInfo(ctx context.Context, req *connectors
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("In GetDatasetInfo: asset namespace is " + namespace + " asset name is " + name)
 	asset, err := getAsset(ctx, s.client, namespace, name)
 	if err != nil {
 		return nil, err
@@ -42,6 +45,7 @@ func (s *DataCatalogService) GetDatasetInfo(ctx context.Context, req *connectors
 		return nil, err
 	}
 
+	log.Printf("In GetDatasetInfo: VaultSecretPath is " + utils.VaultSecretPath(namespace, asset.Spec.SecretRef.Name))
 	return &connectors.CatalogDatasetInfo{
 		DatasetId: req.DatasetId,
 		Details: &connectors.DatasetDetails{
@@ -51,7 +55,7 @@ func (s *DataCatalogService) GetDatasetInfo(ctx context.Context, req *connectors
 			Geo:        utils.EmptyIfNil(asset.Spec.AssetMetadata.Geography),
 			DataStore:  datastore,
 			CredentialsInfo: &connectors.CredentialsInfo{
-				VaultSecretPath: utils.VaultSecretPath(asset.Spec.SecretRef.Name, namespace),
+				VaultSecretPath: utils.VaultSecretPath(namespace, asset.Spec.SecretRef.Name),
 			},
 			Metadata: buildDatasetMetadata(asset),
 		},

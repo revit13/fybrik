@@ -52,10 +52,24 @@ func (s *DataCredentialsService) GetCredentialsInfo(ctx context.Context, req *co
 		return nil, err
 	}
 
+	var translationMap = map[string]string{
+		"accessKeyID":        "access_key",
+		"accessKey":          "access_key",
+		"secretAccessKey":    "secret_key",
+		"SecretKey":          "secret_key",
+		"apiKey":             "api_key",
+		"resourceInstanceId": "resource_instance_id",
+	}
+
 	// Get the data fields as strings
+	// convert secret into a map matching credentials structure
 	data := map[string]string{}
 	for key, value := range secret.Data {
-		data[key] = string(value)
+		if translated, found := translationMap[key]; found {
+			data[translated] = string(value)
+		} else {
+			data[key] = string(value)
+		}
 	}
 
 	// Decode into Authentication structure

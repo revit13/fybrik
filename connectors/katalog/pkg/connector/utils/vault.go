@@ -4,19 +4,23 @@ package utils
 
 import (
 	"fmt"
-	"net/url"
 )
 
-// The Vault plugin to use to retrive the dataset credential
-const vaultPluginPath = "kubernetes-secrets-reader"
+// The path of the Vault plugin to use to retrieve the dataset credential.
+// vault-plugin-secrets-kubernetes-reader plugin is used for this purpose and is enabled
+// in kubernetes-secrets path.
+const vaultPluginPath = "kubernetes-secrets"
 
 // VaultSecretPath returns the path to Vault secret that holds the dataset credential.
-// The path contains the kubernetes-secrets-reader plugin name and the secret name and namespace as parameters,
+// The path contains the following parts:
+// - pluginPath is the Vault path where vault-plugin-secrets-kubernetes-reader plugin is enabled.
+// - secret name
+// - secret namespace
 // for example, for secret name my-secret and namespace default it will be of the form:
-// "/v1/kubernetes-secrets-reader/my-secret?namespace=default"
-func VaultSecretPath(secretName string, secretNamespace string) string {
+// "/v1/kubernetes-secrets/my-secret?namespace=default"
+func VaultSecretPath(secretNamespace string, secretName string) string {
 	pluginPath := "/v1/" + vaultPluginPath + "/"
 	// Construct the path to the secret in Vault that holds the dataset credentials
-	secretParam := fmt.Sprintf("%s?namespace=%s", secretName, secretNamespace)
-	return fmt.Sprintf("%s%s", pluginPath, url.PathEscape(secretParam))
+	secretPath := fmt.Sprintf("%s%s?namespace=%s", pluginPath, secretName, secretNamespace)
+	return secretPath
 }

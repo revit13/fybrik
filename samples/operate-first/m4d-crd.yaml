@@ -62,9 +62,6 @@ spec:
                                   connection:
                                     description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                     type: object
-                                  credentialLocation:
-                                    description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                    type: string
                                   format:
                                     description: Format represents data format (e.g. parquet) as received from catalog connectors
                                     type: string
@@ -99,9 +96,6 @@ spec:
                                   connection:
                                     description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                     type: object
-                                  credentialLocation:
-                                    description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                    type: string
                                   format:
                                     description: Format represents data format (e.g. parquet) as received from catalog connectors
                                     type: string
@@ -153,9 +147,6 @@ spec:
                                     connection:
                                       description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                       type: object
-                                    credentialLocation:
-                                      description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                      type: string
                                     format:
                                       description: Format represents data format (e.g. parquet) as received from catalog connectors
                                       type: string
@@ -205,9 +196,6 @@ spec:
                                     connection:
                                       description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                       type: object
-                                    credentialLocation:
-                                      description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                      type: string
                                     format:
                                       description: Format represents data format (e.g. parquet) as received from catalog connectors
                                       type: string
@@ -930,9 +918,6 @@ spec:
                                         connection:
                                           description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                           type: object
-                                        credentialLocation:
-                                          description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                          type: string
                                         format:
                                           description: Format represents data format (e.g. parquet) as received from catalog connectors
                                           type: string
@@ -967,9 +952,6 @@ spec:
                                         connection:
                                           description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                           type: object
-                                        credentialLocation:
-                                          description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                          type: string
                                         format:
                                           description: Format represents data format (e.g. parquet) as received from catalog connectors
                                           type: string
@@ -1021,9 +1003,6 @@ spec:
                                           connection:
                                             description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                             type: object
-                                          credentialLocation:
-                                            description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                            type: string
                                           format:
                                             description: Format represents data format (e.g. parquet) as received from catalog connectors
                                             type: string
@@ -1073,9 +1052,6 @@ spec:
                                           connection:
                                             description: Connection has the relevant details for accesing the data (url, table, ssl, etc.)
                                             type: object
-                                          credentialLocation:
-                                            description: 'CredentialLocation is used to obtain the credentials from the credential management system - ex: vault'
-                                            type: string
                                           format:
                                             description: Format represents data format (e.g. parquet) as received from catalog connectors
                                             type: string

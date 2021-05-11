@@ -27,8 +27,7 @@ vault:
 	helm repo add hashicorp https://helm.releases.hashicorp.com
 	helm install vault hashicorp/vault --version 0.9.1 \
                 --set "global.openshift=$(WITH_OPENSHIFT)" \
-                --set "server.dev.enabled=true" \
-		--values ../third_party/vault/plugin-secrets-kubernetes-reader/values.yaml \
+		--values ../third_party/vault/tls_deployment/values_plugin.yaml \
 		--namespace m4d-system \
 		--wait --timeout 120s
 	# Create a secret to hold Vault Token. This token is used when configuaring Vault.

@@ -1,0 +1,64 @@
+ui:
+  # True if you want to create a Service entry for the Vault UI.
+  #
+  # serviceType can be used to control the type of service created. For
+  # example, setting this to "LoadBalancer" will create an external load
+  # balancer (for supported K8S installations) to access the UI.
+  enabled: true
+global:
+  enabled: true
+  tlsDisable: true
+server:
+  # Ingress allows ingress services to be created to allow external access
+  # from Kubernetes to access Vault pods.
+  # If deployment is on OpenShift, the following block is ignored.
+  # In order to expose the service, use the route section below
+  ingress:
+    enabled: true
+    labels: 
+      traffic: external
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/use-regex: "true"
+  #    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      cert-manager.io/cluster-issuer: selfsigned-issuer 
+    hosts:
+      - host: chart-example.local
+        paths:
+          - /v1/*
+    tls: 
+      - secretName: vault-ingress
+        hosts:
+          - chart-example.local
+  # OpenShift only - create a route to expose the service
+  # The created route will be of type passthrough
+  route:
+    enabled: false
+    labels: {}
+    annotations: {}
+    host: chart-example.local
+
+    extraInitContainers:
+    - name: install-kubectl
+      image: allanlei/kubectl
+      volumeMounts:
+      - name: kubectl
+        mountPath: /data
+        command: [/bin/sh, -ec]
+        args:
+        - |
+          cp /usr/local/bin/kubectl /data/kubectl
+  extraEnvironmentVars:
+    VAULT_API_ADDR: http://127.0.0.1:8200
+    VAULT_ADDR: http://127.0.0.1:8200
+  # Used to define commands to run after the pod is ready.
+  # This can be used to automate processes such as initialization
+  # or boostrapping auth methods.
+  postStart:
+    - "sh"
+    - "-c"
+    # Sleep command is needed to avoid synchronization issues with the container pod. Please see
+    # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/#discussion
+    # FIXME: Use a proper way to configure Vault after Vault start-up
+    - | 
+      sleep 5

@@ -1,0 +1,52 @@
+ui:
+  # True if you want to create a Service entry for the Vault UI.
+  #
+  # serviceType can be used to control the type of service created. For
+  # example, setting this to "LoadBalancer" will create an external load
+  # balancer (for supported K8S installations) to access the UI.
+  enabled: true
+global:
+  enabled: true
+  tlsDisable: false
+server:
+  readinessProbe:
+    enabled: true
+    # If you need to use a http path instead of the default exec
+    # path: /v1/sys/health?standbyok=true
+
+    # When a probe fails, Kubernetes will try failureThreshold times before giving up
+    failureThreshold: 2
+    # Number of seconds after the container has started before probe initiates
+    initialDelaySeconds: 20
+  extraVolumes:
+    - type: secret
+      name: vault-server-tls # Matches the ${SECRET_NAME} from above
+  standalone:
+    enabled: true
+    config: |
+      listener "tcp" {
+        address = "[::]:8200"
+        cluster_address = "[::]:8201"
+        tls_cert_file = "/vault/userconfig/vault-server-tls/vault.crt"
+        tls_key_file  = "/vault/userconfig/vault-server-tls/vault.key"
+        tls_client_ca_file = "/vault/userconfig/vault-server-tls/vault.ca"
+      }
+
+      storage "file" {
+        path = "/vault/data"
+      }
+  extraEnvironmentVars:
+    VAULT_CACERT: /vault/userconfig/vault-server-tls/vault.ca
+    VAULT_API_ADDR: https://127.0.0.1:8200
+    VAULT_ADDR: https://127.0.0.1:8200
+  # Used to define commands to run after the pod is ready.
+  # This can be used to automate processes such as initialization
+  # or boostrapping auth methods.
+  postStart:
+    - "sh"
+    - "-c"
+    # Sleep command is needed to avoid synchronization issues with the container pod. Please see
+    # https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/#discussion
+    # FIXME: Use a proper way to configure Vault after Vault start-up
+    - | 
+      sleep 5

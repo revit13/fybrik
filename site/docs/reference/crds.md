@@ -1084,7 +1084,7 @@ Interface indicates the protocol and format expected by the data user
     <tbody><tr>
         <td><b>dataformat</b></td>
         <td>enum</td>
-        <td>DataFormatType defines data format type [parquet table csv json avro binary arrow]</td>
+        <td>DataFormatType defines data format type [parquet table csv json avro orc binary arrow]</td>
         <td>false</td>
       </tr><tr>
         <td><b>protocol</b></td>
@@ -1538,7 +1538,7 @@ API indicates to the application how to access/write the data
     <tbody><tr>
         <td><b>dataformat</b></td>
         <td>enum</td>
-        <td>DataFormatType defines data format type [parquet table csv json avro binary arrow]</td>
+        <td>DataFormatType defines data format type [parquet table csv json avro orc binary arrow]</td>
         <td>false</td>
       </tr><tr>
         <td><b><a href="#m4dmodulespeccapabilitiesapiendpoint">endpoint</a></b></td>
@@ -1643,7 +1643,7 @@ Sink specifies the output data protocol and format
     <tbody><tr>
         <td><b>dataformat</b></td>
         <td>enum</td>
-        <td>DataFormatType defines data format type [parquet table csv json avro binary arrow]</td>
+        <td>DataFormatType defines data format type [parquet table csv json avro orc binary arrow]</td>
         <td>false</td>
       </tr><tr>
         <td><b>protocol</b></td>
@@ -1673,7 +1673,7 @@ Source specifies the input data protocol and format
     <tbody><tr>
         <td><b>dataformat</b></td>
         <td>enum</td>
-        <td>DataFormatType defines data format type [parquet table csv json avro binary arrow]</td>
+        <td>DataFormatType defines data format type [parquet table csv json avro orc binary arrow]</td>
         <td>false</td>
       </tr><tr>
         <td><b>protocol</b></td>

@@ -4,7 +4,7 @@ site_name: Mesh for Data
 site_description: A cloud-native platform to control data usage
 copyright: Made with ❤️ by Mesh for Data contributors.
 repo_name: ibm/the-mesh-for-data
-repo_url: https://github.com/ibm/the-mesh-for-data
+repo_url: https://github.com/mesh-for-data/the-mesh-for-data
 edit_uri: edit/master/site/docs/
 
 nav:
@@ -45,7 +45,7 @@ extra:
     provider: mike
   social:
     - icon: fontawesome/brands/github-alt
-      link: https://github.com/ibm/the-mesh-for-data
+      link: https://github.com/mesh-for-data/the-mesh-for-data
 
 theme:
   name: material

@@ -59,7 +59,7 @@ The table below lists the currently available modules:
 
 Name | Description | M4DModule 
 ---  | ---         | ---      
-[arrow-flight-module](https://github.com/ibm/the-mesh-for-data-flight-module) | reading datasets while performing data transformations | https://raw.githubusercontent.com/IBM/the-mesh-for-data-flight-module/master/module.yaml
+[arrow-flight-module](https://github.com/mesh-for-data/the-mesh-for-data-flight-module) | reading datasets while performing data transformations | https://raw.githubusercontent.com/IBM/the-mesh-for-data-flight-module/master/module.yaml
 
 <!-- implicit-copy-module is not listed because it's still only available as part of the project tests -->
 

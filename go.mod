@@ -1,11 +1,11 @@
-module github.com/ibm/the-mesh-for-data
+module github.com/mesh-for-data/the-mesh-for-data
 
 go 1.13
 
 require (
 	cloud.google.com/go v0.72.0 // indirect
 	emperror.dev/errors v0.7.0
-	github.com/IBM/satcon-client-go v0.1.2-0.20210329192404-b8fa1c732712
+	github.com/mesh-for-data/satcon-client-go v0.1.2-0.20210329192404-b8fa1c732712
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Microsoft/go-winio v0.4.15 // indirect
 	github.com/buger/jsonparser v1.1.1

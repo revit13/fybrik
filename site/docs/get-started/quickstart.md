@@ -67,7 +67,7 @@ Run the following to install vault and the plugin in development mode:
     To install the `dev` version install the charts from the source code.
     For example:
     ```bash
-    git clone https://github.com/IBM/the-mesh-for-data.git
+    git clone https://github.com/mesh-for-data/the-mesh-for-data.git
     cd the-mesh-for-data
     helm install m4d-crd charts/m4d-crd -n m4d-system --wait
     helm install m4d charts/m4d -n m4d-system --wait
@@ -88,7 +88,7 @@ helm install m4d m4d-charts/m4d -n m4d-system --wait
 
 [Modules](../concepts/modules.md) are plugins that the control plane deploys whenever required. 
 
-Install the [arrow flight module](https://github.com/ibm/the-mesh-for-data-flight-module):
+Install the [arrow flight module](https://github.com/mesh-for-data/the-mesh-for-data-flight-module):
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/IBM/the-mesh-for-data-flight-module/master/module.yaml -n m4d-system

@@ -187,13 +187,13 @@ func main() {
 }
 
 // init vault client
-// TODO: the vault client should be used to add roles for the modules.
+// The Vault client is needed for the manager to add Vault polices and
+// roles for the modules to retrieve dataset credentials.
 func initVaultConnection() (vault.Interface, error) {
-	vaultConn, err := vault.InitConnection(utils.GetVaultAddress(), utils.GetVaultToken())
-	if err != nil {
-		return vaultConn, err
-	}
-	return vaultConn, nil
+	// TODO: This function returns nil because
+	// currently the manager does not use the vault connection as mentioned above.
+	// It is a place holder for future implementation.
+	return nil, nil
 }
 
 // NewClusterManager decides based on the environment variables that are set which

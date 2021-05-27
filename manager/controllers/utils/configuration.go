@@ -15,9 +15,16 @@ import (
 const (
 	CatalogConnectorServiceAddressKey string = "CATALOG_CONNECTOR_URL"
 	VaultAddressKey                   string = "VAULT_ADDRESS"
-	VaultSecretKey                    string = "VAULT_TOKEN"
-	VaultTTLKey                       string = "VAULT_TTL"
-	VaultModulesRole                  string = "VAULT_MODULES_ROLE"
+	// Current communication between the manager and Vault assumes a Vault token
+	// which is passed as an env var.
+	// This should be changed to the following:
+	// 1. get a Vault token form Vault using the manager role
+	// 2. continue communication with Vault using this Vault token
+	// The manager role should be passed as env var after it was configured
+	// with the appropriate permissions for the manager.
+	VaultSecretKey   string = "VAULT_TOKEN"
+	VaultTTLKey      string = "VAULT_TTL"
+	VaultModulesRole string = "VAULT_MODULES_ROLE"
 )
 
 // GetSystemNamespace returns the namespace of control plane

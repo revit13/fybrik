@@ -64,7 +64,7 @@ cluster-prepare:
 .PHONY: cluster-prepare-wait
 cluster-prepare-wait:
 	$(MAKE) -C third_party/datashim deploy-wait
-	kubectl edit pod vault-0
+	kubectl get pod vault-0 -n fybrik-system -o yaml
 	$(MAKE) -C third_party/vault deploy-wait
 
 # Build only the docker images needed for integration testing

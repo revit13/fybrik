@@ -9,9 +9,6 @@ metadata:
     app.fybrik.io/appNamespace: default
     app.fybrik.io/appName: notebook
 spec:
-  selector:
-    matchLabels:
-      app: notebook
   entrypoint: notebook
   flow:
     name: notebook
@@ -38,6 +35,5 @@ spec:
   templates:
   - name: read-module
     kind: FybrikModule
-    flow: read
     chart:
-      name: ghcr.io/fybrik/fybrik-template:0.1.0
+      name: ghcr.io/mesh-for-data/m4d-template:0.1.0

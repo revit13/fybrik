@@ -44,7 +44,7 @@ jobs:
           ls
           git add site/fybrik site/openapi2crd site/crdoc
           git commit -m "Commit for vanity go imports"
-          git push
+          git push origin HEAD:site13
         
       - name: Build and Deploy (tag)
         if: steps.version.outputs.version != 'master'

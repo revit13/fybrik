@@ -37,8 +37,8 @@ jobs:
         if: steps.version.outputs.version == 'test-add-vanity-imports'
         working-directory: ./site
         run: |
-          mike deploy --push --remote origin --branch site dev
-          git checkout origin/site
+          mike deploy --push --remote origin --branch site13 dev
+          git checkout origin/site13
           mv dev/go-imports/* .
           git add fybrik openapi2crd crdoc
           git commit -m "Commit for vanity go imports"

@@ -40,7 +40,7 @@ jobs:
           mike deploy --push --remote origin --branch site13 dev
           git checkout origin/site13
           ls site/
-          mv site/dev/go-imports/* site
+          mv site/go-imports/* site/
           git add fybrik openapi2crd crdoc
           git commit -m "Commit for vanity go imports"
           git push

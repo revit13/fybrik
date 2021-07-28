@@ -41,7 +41,8 @@ jobs:
           git checkout origin/site13
           ls site/
           mv site/go-imports/* site/
-          git add fybrik openapi2crd crdoc
+          ls
+          git add site/fybrik site/openapi2crd site/crdoc
           git commit -m "Commit for vanity go imports"
           git push
         

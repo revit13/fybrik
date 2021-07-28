@@ -4,7 +4,7 @@ on:
     tags:
       - 'v*'
     branches:
-      - master
+      - test-add-vanity-imports 
     paths:
       - site/**
       - .github/workflows/website-*
@@ -34,9 +34,16 @@ jobs:
         name: Infer version
         run: echo ::set-output name=version::$(cut -d '.' -f 1,2 <<< "${GITHUB_REF#refs/*/}")
       - name: Build and Deploy (dev)
-        if: steps.version.outputs.version == 'master'
+        if: steps.version.outputs.version == 'test-add-vanity-imports'
         working-directory: ./site
-        run: mike deploy --push --remote origin --branch site dev
+        run: |
+          mike deploy --push --remote origin --branch site dev
+          git checkout origin/site
+          mv dev/go-imports/* .
+          git add fybrik openapi2crd crdoc
+          git commit -m "Commit for vanity go imports"
+          git push
+        
       - name: Build and Deploy (tag)
         if: steps.version.outputs.version != 'master'
         working-directory: ./site

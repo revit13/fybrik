@@ -2,12 +2,17 @@ name: Generate Golang Vanity Import
 
 
 on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - test-add-vanity-imports
+    paths:
+      - site/**
+      - .github/workflows/website-*
+      - pkg/connectors/protos/**
+      - charts/m4d-crd/templates/**
   workflow_dispatch:
-    inputs:
-      dockerTag:
-        description: 'Docker Tag'
-        required: true
-        default: 'latest'
 
 
 jobs:

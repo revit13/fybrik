@@ -25,7 +25,7 @@ jobs:
           rm -rf fybrik
           rm -rf openapi2crd
           rm -rf crdoc
-          mv site/docs/go-imports/* .
+          #mv site/docs/go-imports/* .
           echo "ls!!!"
           ls
           git add fybrik openapi2crd crdoc

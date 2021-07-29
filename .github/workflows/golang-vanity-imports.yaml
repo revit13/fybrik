@@ -1,0 +1,30 @@
+name: Generate Golang Vanity Import
+
+on: [workflow_dispatch]
+
+jobs:
+  generate-golang-vanity-imports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: setup git config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "noreply@github.com"
+      - id: version
+        name: Infer version
+        run: echo ::set-output name=version::$(cut -d '.' -f 1,2 <<< "${GITHUB_REF#refs/*/}")
+      - name: "push vanity imports tags to site"
+        run: |
+          git checkout origin/site13
+          rm -rf fybrik
+          rm -rf openapi2crd
+          rm -rf crdoc
+          mv site/docs/go-imports/* .
+          echo "ls!!!"
+          ls
+          git add fybrik openapi2crd crdoc
+          git commit -m "Vanity go imports"
+          git push origin HEAD:site13

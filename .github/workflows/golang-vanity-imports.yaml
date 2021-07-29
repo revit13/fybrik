@@ -4,10 +4,10 @@ name: Generate Golang Vanity Import
 on:
   workflow_dispatch:
     inputs:
-      vanityImports:
-        description: 'vanityImports'
-        required: false
-        default: 'generate'
+      dockerTag:
+        description: 'Docker Tag'
+        required: true
+        default: 'latest'
 
 
 jobs:

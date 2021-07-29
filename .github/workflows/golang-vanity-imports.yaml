@@ -28,6 +28,8 @@ jobs:
         name: Infer version
         run: echo ::set-output name=version::$(cut -d '.' -f 1,2 <<< "${GITHUB_REF#refs/*/}")
       - name: "push vanity imports tags to site"
+        if: steps.version.outputs.version == 'test-add-vanity-imports'
+        working-directory: ./site
         run: |
           git checkout origin/site13
           rm -rf fybrik

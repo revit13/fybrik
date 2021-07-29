@@ -1,14 +1,17 @@
 name: Generate Golang Vanity Import
 
-on: 
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - test-add-vanity-imports
+    paths:
+      - site/**
+      - .github/workflows/website-*
+      - pkg/connectors/protos/**
+      - charts/m4d-crd/templates/**
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Test scenario tags'  
 
 jobs:
   vanity-imports:

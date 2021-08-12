@@ -27,6 +27,11 @@ spec:
         bucket: destbucket
         object: data.csv
     dataformat: csv
+  - assetId: "temp-paysim-processed"
+    connection:
+      flight-module:
+        endpoint: app1-ns1-write:80
+        assetId: "paysim-processed"
   flows:
   - name: flow-paysim
     flowType: write
@@ -48,7 +53,7 @@ spec:
           template: qualityTemplate
           parameters:
             source:
-              assetID: paysim-processed
+              assetID: temp-paysim-processed
   templates:
   - name: writeTemplate
     modules:

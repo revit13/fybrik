@@ -14,7 +14,7 @@ spec:
     values: {}
   capabilities:
     - capability: read
-      scope: cluster
+      scope: workload
       supportedInterfaces:
       - source:
           protocol: s3

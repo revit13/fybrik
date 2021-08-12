@@ -68,6 +68,30 @@ spec:
       arrow-flight:
         endpoint:  app1-ns1-arrow-read.m4d-blueprints
         assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+  - assetId: "m4d-notebook-sample/users-step2" # the sink of step 2, consumed by step 1
+    cluster: thegreendragon
+    connection:
+      arrow-flight:
+        endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+        assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+  - assetId: "m4d-notebook-sample/users-step1" # used by workload to read the data
+    cluster: thegreendragon
+    connection:
+      arrow-flight:
+        endpoint:  app1-ns1-arrow-read.m4d-blueprints
+        assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+  - assetId: "m4d-notebook-sample/inventory-step2" # the sink of step 2, consumed by step 1
+    cluster: thegreendragon
+    connection:
+      arrow-flight:
+        endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+        assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+  - assetId: "m4d-notebook-sample/inventory-step1" # used by workload to read the data
+    cluster: thegreendragon
+    connection:
+      arrow-flight:
+        endpoint:  app1-ns1-arrow-read.m4d-blueprints
+        assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
 
 
   flows:
@@ -86,7 +110,7 @@ spec:
           parameters:
             source: #sink of step2 
               assetID: "m4d-notebook-sample/paysim-step2"
-            sink:
+            api:
                assetID: "m4d-notebook-sample/paysim-step1" # used by workload to read the data
             actions:
             - action: redact
@@ -97,7 +121,7 @@ spec:
           parameters:
             source: 
               assetId: "m4d-notebook-sample/paysim"
-            sink:
+            api:
               assetId: "m4d-notebook-sample/paysim-step2" # Can't use same api endpoint for both the read and transform steps
   - name: flow-users
     flowType: read
@@ -112,19 +136,10 @@ spec:
           cluster: thegreendragon
           template: transform-template
           parameters:
-            source:
-              api:
-                service:
-                  assetID: m4d-notebook-sample/users-steps
-                  interfaceDetails:
-                    protocol: arrow-flight
-                    dataformat: arrow            
+            source:  #sink of step2
+              assetID: "m4d-notebook-sample/users-steps2"
             api:
-              service:
-                assetID: m4d-notebook-sample/users
-                interfaceDetails:
-                  protocol: arrow-flight
-                  dataformat: arrow
+              assetID: "m4d-notebook-sample/users-step1"
             actions:
             - action: redact
               column: blood_group
@@ -135,11 +150,7 @@ spec:
             source:
               assetId: "m4d-notebook-sample/users"
             api:
-              service:
-                assetID: m4d-notebook-sample/users-step2  # Can't use same api endpoint for both the read and transform steps
-                interfaceDetails:
-                  protocol: arrow-flight
-                  dataformat: arrow
+              assetID: "m4d-notebook-sample/users-step2"
             actions:
             - action: redact
               column: blood_group
@@ -156,18 +167,9 @@ spec:
           template: transform-template
           parameters:
             source:
-              api:
-                service:
-                  assetID: m4d-notebook-sample/inventory-step2
-                  interfaceDetails:
-                    protocol: arrow-flight
-                    dataformat: arrow
+              assetID: m4d-notebook-sample/inventory-step2
             api:
-              service:
-                assetID: m4d-notebook-sample/inventory
-                interfaceDetails:
-                  protocol: arrow-flight
-                  dataformat: arrow
+                assetID: m4d-notebook-sample/inventory-step1
             actions:
             - action: redact
               column: field2
@@ -178,11 +180,7 @@ spec:
             source:
               assetId: "m4d-notebook-sample/inventory"
             api:
-              service:
                 assetID: m4d-notebook-sample/inventory-step2
-                interfaceDetails:
-                  protocol: arrow-flight
-                  dataformat: arrow
             actions:
             - action: redact
               column: field2

@@ -56,6 +56,8 @@ spec:
         bucket: srcbucket
         object: inventory.parq
     dataformat: parquet
+  - assetId: "m4d-notebook-sample/paysim-step2" // the sink of step 1
+    cluster: 
   flows:
   - name: flow-paysim
     flowType: read
@@ -92,7 +94,7 @@ spec:
           parameters:
             source: 
               assetId: "m4d-notebook-sample/paysim"
-            api:
+            sink:
               service:
                 assetID: m4d-notebook-sample/paysim-step2  # Can't use same api endpoint for both the read and transform steps
                 interfaceDetails:

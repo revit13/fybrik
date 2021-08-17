@@ -72,6 +72,9 @@ spec:
           parameters:
             source:
               assetId: "m4d-notebook-sample/paysim"
+            api:
+              service:
+                assetID: m4d-notebook-sample/paysim
             actions:
             - action: redact
               column: field1
@@ -90,6 +93,9 @@ spec:
           parameters:
             source:
               assetId: "m4d-notebook-sample/users"
+            api:
+              service:
+                assetID: m4d-notebook-sample/users
             actions:
             - action: redact
               column: blood_group
@@ -108,6 +114,9 @@ spec:
           parameters:
             source:
               assetId: "m4d-notebook-sample/inventory"
+            api:
+              service:
+                assetID: m4d-notebook-sample/inventory
             actions:
             - action: redact
               column: field2

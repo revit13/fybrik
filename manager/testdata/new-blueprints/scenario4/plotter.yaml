@@ -53,38 +53,6 @@ spec:
         bucket: srcbucket
         object: inventory.parq
     dataformat: parquet
-  - assetId: "m4d-notebook-sample/paysim-step2" # the sink of step 2, consumed by step 1
-    connection: 
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-transform.m4d-blueprints
-        assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-  - assetId: "m4d-notebook-sample/paysim-step1" # used by workload to read the data
-    connection:
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-read.m4d-blueprints
-        assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-  - assetId: "m4d-notebook-sample/users-step2" # the sink of step 2, consumed by step 1
-    connection:
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-transform.m4d-blueprints
-        assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-  - assetId: "m4d-notebook-sample/users-step1" # used by workload to read the data
-    connection:
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-read.m4d-blueprints
-        assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-  - assetId: "m4d-notebook-sample/inventory-step2" # the sink of step 2, consumed by step 1
-    connection:
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-transform.m4d-blueprints
-        assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-  - assetId: "m4d-notebook-sample/inventory-step1" # used by workload to read the data
-    connection:
-      arrow-flight:
-        endpoint:  app1-ns1-arrow-read.m4d-blueprints
-        assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
-
-
   flows:
   - name: flow-paysim
     flowType: read
@@ -100,9 +68,19 @@ spec:
           template: transform-template
           parameters:
             source: #sink of step2 
-              assetID: "m4d-notebook-sample/paysim-step2"
+              api:
+               service:
+                 connection:
+                   arrow-flight:
+                     endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                     assetId: "m4d-notebook-sample/paysim-step2"
+
             api:
-               assetID: "m4d-notebook-sample/paysim-step1" # used by workload to read the data
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+                    assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             actions:
             - action: redact
               column: field1
@@ -113,7 +91,11 @@ spec:
             source: 
               assetId: "m4d-notebook-sample/paysim"
             api:
-              assetId: "m4d-notebook-sample/paysim-step2" # Can't use same api endpoint for both the read and transform steps
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                    assetId: "m4d-notebook-sample/paysim-step2"
   - name: flow-users
     flowType: read
     assetId: "m4d-notebook-sample/users"
@@ -128,9 +110,18 @@ spec:
           template: transform-template
           parameters:
             source:  #sink of step2
-              assetID: "m4d-notebook-sample/users-steps2"
+              api:
+                service:
+                  connection:
+                    arrow-flight:
+                      endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                      assetId: "m4d-notebook-sample/users-step2"
             api:
-              assetID: "m4d-notebook-sample/users-step1"
+              service:
+                connection: # used by workload to read the data
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+                    assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             actions:
             - action: redact
               column: blood_group
@@ -139,9 +130,13 @@ spec:
           template: read-template
           parameters:
             source:
-              assetId: "m4d-notebook-sample/users"
+              assetId: "m4d-notebook-sample/users" # coming from the workload
             api:
-              assetID: "m4d-notebook-sample/users-step2"
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                    assetId: "m4d-notebook-sample/users-step2"
             actions:
             - action: redact
               column: blood_group
@@ -157,10 +152,18 @@ spec:
           cluster: thegreendragon
           template: transform-template
           parameters:
-            source:
-              assetID: m4d-notebook-sample/inventory-step2
+            source:   # the sink of step 2, consumed by step 1
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                    assetId: "m4d-notebook-sample/inventory-step2" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             api:
-                assetID: m4d-notebook-sample/inventory-step1
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+                    assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             actions:
             - action: redact
               column: field2
@@ -171,7 +174,11 @@ spec:
             source:
               assetId: "m4d-notebook-sample/inventory"
             api:
-                assetID: m4d-notebook-sample/inventory-step2
+              service:
+                connection:
+                  arrow-flight:
+                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                    assetId: "m4d-notebook-sample/inventory-step2" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             actions:
             - action: redact
               column: field2

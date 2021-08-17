@@ -28,6 +28,9 @@ spec:
               bucket: srcbucket
               object: paysim.parq
           dataformat: parquet
+          actions:
+          - action: redact
+            column: field1
         - assetId: "m4d-notebook-sample/users"
           vault:
             address: http://vault.m4d-system:8200
@@ -39,6 +42,9 @@ spec:
               endpoint: localhost:8001
               bucket: srcbucket
               object: users.parq
+          actions:
+          - action: redact
+            column: blood_group
           dataformat: parquet
         - assetId: "m4d-notebook-sample/inventory"
           vault:
@@ -51,40 +57,14 @@ spec:
               endpoint: localhost:8001
               bucket: srcbucket
               object: inventory.parq
-          dataformat: parquet
-  - name: transform-step-paysim
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-read # name of service to be configured
-    arguments:
-      read:
-        - assetId: "m4d-notebook-sample/paysim"
-          actions:
-          - action: redact
-            column: field1
-          dataformat: arrow
-  - name: transform-step-users
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-read # name of service to be configured
-    arguments:
-      read:
-        - assetId: "m4d-notebook-sample/users"
-          actions:
-          - action: redact
-            column: blood_group
-          dataformat: arrow
-  - name: transform-step-inventory
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-read # name of service to be configured
-    arguments:
-      read:      
-        - assetId: "m4d-notebook-sample/inventory"
           actions:
           - action: redact
             column: field2
-          dataformat: arrow
+          dataformat: parquet
+  - name: transform-step
+    chart:
+      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
+    serviceModule: app1-ns1-read # name of service to be configured
 status:
   observedState: Not Ready
   observedGeneration: 1

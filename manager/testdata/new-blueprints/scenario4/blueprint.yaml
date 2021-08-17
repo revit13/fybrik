@@ -64,49 +64,29 @@ spec:
             arrow-flight:
               assetId: paysim-step2
               endpoint: "app1-ns1-transform-read"
+          actions:
+          - action: redact
+            column: field1
         - assetID: m4d-notebook-sample/users-step2
           connection:
             arrow-flight:
               assetId: users-step2
               endpoint: "app1-ns1-transform-read"
+          actions:
+          - action: redact
+            column: blood_group
         - assetID: m4d-notebook-sample/inventory-step2
           connection:
             arrow-flight:
               assetId: inventory-step2
               endpoint: "app1-ns1-transform-read"
-  - name: transform-step-paysim
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-transform-read # name of service to be configured
-    arguments:
-      read:
-        - assetId: "m4d-notebook-sample/paysim"
-          actions:
-          - action: redact
-            column: field1
-          dataformat: arrow
-  - name: transform-step-users
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-transform-read # name of service to be configured
-    arguments:
-      read:
-        - assetId: "m4d-notebook-sample/users"
-          actions:
-          - action: redact
-            column: blood_group
-          dataformat: arrow
-  - name: transform-step-inventory
-    chart:
-      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
-    serviceModule: app1-ns1-transform-read # name of service to be configured
-    arguments:
-      read:
-        - assetId: "m4d-notebook-sample/inventory"
           actions:
           - action: redact
             column: field2
-          dataformat: arrow
+  - name: transform-step
+    chart:
+      name: ghcr.io/mesh-for-data/m4d-arrow-flight-transform-conf:0.1.0
+    serviceModule: app1-ns1-transform # name of service to be configured
 status:
   observedState: Not Ready
   observedGeneration: 1

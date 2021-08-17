@@ -59,3 +59,6 @@ status:
   observedState: Not Ready
   observedGeneration: 1
   releases:
+  assets:
+  - assetId: "m4d-notebook-sample/paysim-processed"
+    state: Ready

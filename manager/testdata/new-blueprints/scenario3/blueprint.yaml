@@ -90,3 +90,10 @@ status:
   observedState: Not Ready
   observedGeneration: 1
   releases:
+  assets:
+  - assetId: "m4d-notebook-sample/paysim"
+    state: Ready
+  - assetId: "m4d-notebook-sample/users"
+    state: Ready
+  - assetId: "m4d-notebook-sample/inventory"
+    state: Ready

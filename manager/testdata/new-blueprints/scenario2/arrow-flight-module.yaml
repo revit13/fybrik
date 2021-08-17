@@ -17,6 +17,11 @@ spec:
     successCondition: status == SUCCEEDED # TBD with correct values
     failureCondition: status == FAILED # TBD with correct values
     errorMessage: status.error # TBD with correct values
+  api:
+    endpoint:
+      port: 80 # Mandatory for each service
+    protocol: m4d-arrow-flight
+    dataformat: arrow
   capabilities:
     - capability: read
       scope: workload
@@ -30,8 +35,3 @@ spec:
       plugins:
         - pluginType: fybrik-wasm
           dataformat: arrow
-      api:
-        endpoint:
-          port: 80 # Mandatory for each service
-        protocol: m4d-arrow-flight
-        dataformat: arrow

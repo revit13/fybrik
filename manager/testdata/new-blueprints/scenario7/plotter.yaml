@@ -12,7 +12,6 @@ spec:
         app: demoapp
   assets:
   - assetId: "m4d-notebook-sample/paysim"  # dataset requested by user
-    cluster: cluster1  # the cluster with which the data store is associated
     credentials:
       read:
         vault:
@@ -28,7 +27,6 @@ spec:
     dataformat: csv
   - assetId: "m4d-notebook-sample/paysim-temp"  # allocated by fybrik control plane
     advertisedAssetId: "m4d-notebook-sample/paysim" # Id that is used by user facing services
-    cluster: cluster2  # the cluster with which the data store is associated
     credentials:
       read:
         vault:

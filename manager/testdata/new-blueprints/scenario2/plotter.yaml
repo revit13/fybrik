@@ -12,7 +12,6 @@ spec:
         app: demoapp
   assets:
   - assetId: "m4d-notebook-sample/paysim"
-    cluster: thegreendragon
     credentials:
       read:
         vault:
@@ -27,7 +26,6 @@ spec:
         object: data.parq
     dataformat: parquet
   - assetId: "m4d-notebook-sample/users"
-    cluster: thegreendragon
     credentials:
       read:
         vault:
@@ -42,7 +40,6 @@ spec:
         object: users.parq
     dataformat: parquet
   - assetId: "m4d-notebook-sample/inventory"
-    cluster: thegreendragon
     credentials:
       read:
         vault:

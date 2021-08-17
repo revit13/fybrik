@@ -12,7 +12,6 @@ spec:
         app: demoapp
   assets:
   - assetId: "m4d-notebook-sample/paysim"
-    cluster: thegreendragon
     credentials:
       read:
         vault:
@@ -27,7 +26,6 @@ spec:
         object: data.parq
     dataformat: parquet
   - assetId: "m4d-notebook-sample/users"
-    cluster: thegreendragon
     credentials:
       read:
         vault:
@@ -42,7 +40,6 @@ spec:
         object: users.parq
     dataformat: parquet
   - assetId: "m4d-notebook-sample/inventory"
-    cluster: thegreendragon
     credentials:
       read:
         vault:
@@ -57,37 +54,31 @@ spec:
         object: inventory.parq
     dataformat: parquet
   - assetId: "m4d-notebook-sample/paysim-step2" # the sink of step 2, consumed by step 1
-    cluster: thegreendragon
     connection: 
       arrow-flight:
         endpoint:  app1-ns1-arrow-transform.m4d-blueprints
         assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
   - assetId: "m4d-notebook-sample/paysim-step1" # used by workload to read the data
-    cluster: thegreendragon
     connection:
       arrow-flight:
         endpoint:  app1-ns1-arrow-read.m4d-blueprints
         assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
   - assetId: "m4d-notebook-sample/users-step2" # the sink of step 2, consumed by step 1
-    cluster: thegreendragon
     connection:
       arrow-flight:
         endpoint:  app1-ns1-arrow-transform.m4d-blueprints
         assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
   - assetId: "m4d-notebook-sample/users-step1" # used by workload to read the data
-    cluster: thegreendragon
     connection:
       arrow-flight:
         endpoint:  app1-ns1-arrow-read.m4d-blueprints
         assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
   - assetId: "m4d-notebook-sample/inventory-step2" # the sink of step 2, consumed by step 1
-    cluster: thegreendragon
     connection:
       arrow-flight:
         endpoint:  app1-ns1-arrow-transform.m4d-blueprints
         assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
   - assetId: "m4d-notebook-sample/inventory-step1" # used by workload to read the data
-    cluster: thegreendragon
     connection:
       arrow-flight:
         endpoint:  app1-ns1-arrow-read.m4d-blueprints

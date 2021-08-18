@@ -71,16 +71,19 @@ spec:
               api:
                service:
                  connection:
-                   arrow-flight:
-                     endpoint:  app1-ns1-arrow-read.m4d-blueprints
-                     assetId: "m4d-notebook-sample/paysim-step2"
-
+                   assetId: "m4d-notebook-sample/paysim"
+                   endpoint:
+                     hostname:  app1-ns1-arrow-read.m4d-blueprints
+                     port: 80
+                     scheme: "arrow"
             api:
               service:
                 connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
-                    assetId: "m4d-notebook-sample/paysim" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+
+                  endpoint:  
+                    hostname: app1-ns1-arrow-transform.m4d-blueprints
+                    port: 80
+                    scheme: "arrow"
             actions:
             - action: redact
               column: field1
@@ -91,11 +94,12 @@ spec:
             source: 
               assetId: "m4d-notebook-sample/paysim"
             api:
-              service:
-                connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
-                    assetId: "m4d-notebook-sample/paysim-step2"
+             service:
+                 connection:
+                   endpoint:
+                     hostname:  app1-ns1-arrow-read.m4d-blueprints
+                     port: 80
+                     scheme: "arrow"
   - name: flow-users
     flowType: read
     assetId: "m4d-notebook-sample/users"
@@ -113,14 +117,18 @@ spec:
               api:
                 service:
                   connection:
-                    arrow-flight:
-                      endpoint:  app1-ns1-arrow-read.m4d-blueprints
+                      endpoint:  
+                         hostname: app1-ns1-arrow-read.m4d-blueprints
+                         port: 80
+                         scheme: arrow
                       assetId: "m4d-notebook-sample/users-step2"
             api:
               service:
                 connection: # used by workload to read the data
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
+                    endpoint:  
+                        hostname: app1-ns1-arrow-transform.m4d-blueprints
+                        port: 80
+                        scheme: arrow
                     assetId: "m4d-notebook-sample/users" # always the same as the assetId known to the user (assetId or advertisedAssetId)
             actions:
             - action: redact
@@ -134,9 +142,10 @@ spec:
             api:
               service:
                 connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
-                    assetId: "m4d-notebook-sample/users-step2"
+                     endpoint:
+                        hostname: app1-ns1-arrow-read.m4d-blueprints
+                        port: 80
+                        scheme: arrow
             actions:
             - action: redact
               column: blood_group
@@ -155,15 +164,17 @@ spec:
             source:   # the sink of step 2, consumed by step 1
               service:
                 connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
-                    assetId: "m4d-notebook-sample/inventory-step2" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+                    endpoint:  
+                      hostname: app1-ns1-arrow-read.m4d-blueprints
+                      port: 80
+                      scheme: arrow
             api:
               service:
                 connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-transform.m4d-blueprints
-                    assetId: "m4d-notebook-sample/inventory" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+                  endpoint:  
+                    hostname: app1-ns1-arrow-transform.m4d-blueprints
+                    port: 80
+                    scheme: arrow
             actions:
             - action: redact
               column: field2
@@ -176,9 +187,10 @@ spec:
             api:
               service:
                 connection:
-                  arrow-flight:
-                    endpoint:  app1-ns1-arrow-read.m4d-blueprints
-                    assetId: "m4d-notebook-sample/inventory-step2" # always the same as the assetId known to the user (assetId or advertisedAssetId)
+                    endpoint:  
+                      hostname: app1-ns1-arrow-read.m4d-blueprints
+                      port: 80
+                      scheme: arrow
             actions:
             - action: redact
               column: field2

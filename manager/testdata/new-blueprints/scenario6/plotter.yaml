@@ -75,6 +75,13 @@ spec:
           parameters:
             source:
               assetId: "m4d-notebook-sample/paysim-temp"
+            api:
+              service:
+                connection:
+                  endpoint:  
+                    hostname: app1-ns1-arrow-read.m4d-blueprints
+                    port: 80
+                    scheme: "arrow"
   templates:
   - name: readTemplate
     modules:

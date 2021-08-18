@@ -59,27 +59,30 @@ spec:
       name: ghcr.io/mesh-for-data/arrow-flight-config-module:0.1.0
     arguments: 
       read:
-        - assetID: m4d-notebook-sample/paysim-step2  
+        - assetID: m4d-notebook-sample/paysim 
           connection:
-            arrow-flight:
-              assetId: paysim-step2
-              endpoint: "app1-ns1-transform-read"
+            endpoint:
+              hostname: "app1-ns1-read"
+              port: 80
+              scheme: "arrow"
           actions:
           - action: redact
             column: field1
-        - assetID: m4d-notebook-sample/users-step2
+        - assetID: m4d-notebook-sample/users
           connection:
-            arrow-flight:
-              assetId: users-step2
-              endpoint: "app1-ns1-transform-read"
+            endpoint:
+              hostname: "app1-ns1-read"
+              port: 80
+              scheme: "arrow"
           actions:
           - action: redact
             column: blood_group
-        - assetID: m4d-notebook-sample/inventory-step2
+        - assetID: m4d-notebook-sample/inventory
           connection:
-            arrow-flight:
-              assetId: inventory-step2
-              endpoint: "app1-ns1-transform-read"
+            endpoint:
+              hotsname: "app1-ns1-read"
+              port: 80
+              scheme: "arrow"
           actions:
           - action: redact
             column: field2

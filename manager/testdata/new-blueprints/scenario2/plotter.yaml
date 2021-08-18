@@ -71,7 +71,10 @@ spec:
               assetId: "m4d-notebook-sample/paysim"
             api:
               service:
-                assetID: m4d-notebook-sample/paysim
+                endpoint:
+                  hostname: app1-ns1.m4d-blueprints
+                  port: 80
+                  scheme: arrow
             actions:
             - action: redact
               column: field1
@@ -92,7 +95,10 @@ spec:
               assetId: "m4d-notebook-sample/users"
             api:
               service:
-                assetID: m4d-notebook-sample/users
+                endpoint:
+                  hostname: app1-ns1.m4d-blueprints
+                  port: 80
+                  scheme: arrow
             actions:
             - action: redact
               column: blood_group
@@ -113,7 +119,10 @@ spec:
               assetId: "m4d-notebook-sample/inventory"
             api:
               service:
-                assetID: m4d-notebook-sample/inventory
+                endpoint:
+                  hostname: app1-ns1.m4d-blueprints
+                  port: 80
+                  scheme: arrow
             actions:
             - action: redact
               column: field2

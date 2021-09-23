@@ -5,6 +5,7 @@ go 1.16
 require (
 	emperror.dev/errors v0.7.0
 	fybrik.io/openapi2crd v0.4.0
+	github.com/IBM/go-sdk-core/v4 v4.8.0 // indirect
 	github.com/IBM/satcon-client-go v0.1.2-0.20210329192404-b8fa1c732712
 	github.com/apache/arrow/go/arrow v0.0.0-20210907151234-f40856a768f2
 	github.com/aws/aws-sdk-go v1.40.37
@@ -18,10 +19,10 @@ require (
 	github.com/go-chi/render v1.0.1
 	github.com/go-logr/logr v0.4.0
 	github.com/go-openapi/spec v0.19.6 // indirect
-	github.com/go-openapi/swag v0.19.7 // indirect
 	github.com/go-test/deep v1.0.7 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
+	github.com/gosuri/uitable v0.0.4 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/hashicorp/go-retryablehttp v0.6.7
 	github.com/hashicorp/hcl v1.0.1-vault // indirect
@@ -29,14 +30,13 @@ require (
 	github.com/hashicorp/vault/sdk v0.1.14-0.20201214222404-d8fffe05d2f4 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/mailru/easyjson v0.7.1-0.20191009090205-6c0755d89d1e // indirect
+	github.com/markbates/pkger v0.17.1 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826
 	github.com/mpvl/unique v0.0.0-20150818121801-cbe035fff7de
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.14.0
-	github.com/opencontainers/runc v1.0.0-rc9 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/robfig/cron v1.2.0
 	github.com/rogpeppe/go-internal v1.6.0 // indirect
@@ -54,12 +54,12 @@ require (
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
-	helm.sh/helm/v3 v3.6.2
-	k8s.io/api v0.21.3
-	k8s.io/apiextensions-apiserver v0.21.3
-	k8s.io/apimachinery v0.21.3
-	k8s.io/cli-runtime v0.21.0
-	k8s.io/client-go v0.21.3
+	helm.sh/helm/v3 v3.7.0
+	k8s.io/api v0.22.1
+	k8s.io/apiextensions-apiserver v0.22.1
+	k8s.io/apimachinery v0.22.1
+	k8s.io/cli-runtime v0.22.1
+	k8s.io/client-go v0.22.1
 	rsc.io/letsencrypt v0.0.3 // indirect
 	sigs.k8s.io/cli-utils v0.19.2
 	sigs.k8s.io/controller-runtime v0.9.5

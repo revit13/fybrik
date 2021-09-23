@@ -1,4 +1,7 @@
 vault:
+  global:
+    imagePullSecrets:
+      - name: docker
   server:
     extraArgs: '-dev-plugin-dir=/usr/local/libexec/vault'
     volumes:

@@ -210,7 +210,7 @@ func (r *Impl) RegistryLogin(hostname string, username string, password string, 
 	if err != nil {
 		return err
 	}
-	login := action.NewRegistryLogin(cfg)
+	login := action.reg(cfg)
 	var buf bytes.Buffer
 	return login.Run(&buf, hostname, username, password, insecure)
 }
@@ -224,38 +224,6 @@ func (r *Impl) RegistryLogout(hostname string) error {
 	logout := action.NewRegistryLogout(cfg)
 	var buf bytes.Buffer
 	return logout.Run(&buf, hostname)
-}
-
-// ChartRemove helm chart from cache
-func (r *Impl) ChartRemove(ref string) error {
-	cfg, err := getConfig("")
-	if err != nil {
-		return err
-	}
-	remove := action.NewChartRemove(cfg)
-	var buf bytes.Buffer
-	return remove.Run(&buf, ref)
-}
-
-// ChartSave helm chart from cache
-func (r *Impl) ChartSave(chart *chart.Chart, ref string) error {
-	cfg, err := getConfig("")
-	if err != nil {
-		return err
-	}
-	save := action.NewChartSave(cfg)
-	var buf bytes.Buffer
-	return save.Run(&buf, chart, ref)
-}
-
-// ChartLoad helm chart from cache
-func (r *Impl) ChartLoad(ref string) (*chart.Chart, error) {
-	cfg, err := getConfig("")
-	if err != nil {
-		return nil, err
-	}
-	load := action.NewChartLoad(cfg)
-	return load.Run(ref)
 }
 
 // ChartPush helm chart to repo

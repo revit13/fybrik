@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 
+	experimental "helm.sh/helm/v3/internal/experimental/action"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/kube"
@@ -59,11 +60,8 @@ type Interface interface {
 	Status(kubeNamespace string, releaseName string) (*release.Release, error)
 	RegistryLogin(hostname string, username string, password string, insecure bool) error
 	RegistryLogout(hostname string) error
-	ChartRemove(ref string) error
-	ChartSave(chart *chart.Chart, ref string) error
-	ChartLoad(ref string) (*chart.Chart, error)
-	ChartPush(chart *chart.Chart, ref string) error
-	ChartPull(ref string) error
+	Push(chart *chart.Chart, ref string) error
+	Pull(ref string) error
 	GetResources(kubeNamespace string, releaseName string) ([]*unstructured.Unstructured, error)
 }
 
@@ -113,28 +111,13 @@ func (r *Fake) RegistryLogout(hostname string) error {
 	return nil
 }
 
-// ChartRemove helm chart from cache
-func (r *Fake) ChartRemove(ref string) error {
-	return nil
-}
-
-// ChartSave helm chart from cache
-func (r *Fake) ChartSave(chart *chart.Chart, ref string) error {
-	return nil
-}
-
-// ChartLoad helm chart from cache
-func (r *Fake) ChartLoad(ref string) (*chart.Chart, error) {
-	return nil, nil
-}
-
 // ChartPush helm chart to repo
-func (r *Fake) ChartPush(chart *chart.Chart, ref string) error {
+func (r *Fake) Push(chart *chart.Chart, ref string) error {
 	return nil
 }
 
 // ChartPull helm chart from repo
-func (r *Fake) ChartPull(ref string) error {
+func (r *Fake) Pull(ref string) error {
 	return nil
 }
 
@@ -210,9 +193,7 @@ func (r *Impl) RegistryLogin(hostname string, username string, password string, 
 	if err != nil {
 		return err
 	}
-	login := action.reg(cfg)
-	var buf bytes.Buffer
-	return login.Run(&buf, hostname, username, password, insecure)
+	return experimental.NewRegistryLogout(cfg).Run(nil, hostname, "", "", true)
 }
 
 // RegistryLogout to docker registry v2
@@ -221,31 +202,43 @@ func (r *Impl) RegistryLogout(hostname string) error {
 	if err != nil {
 		return err
 	}
-	logout := action.NewRegistryLogout(cfg)
-	var buf bytes.Buffer
-	return logout.Run(&buf, hostname)
+	return experimental.NewRegistryLogin(cfg).Run(nil, hostname, "", "", true)
 }
 
-// ChartPush helm chart to repo
-func (r *Impl) ChartPush(chart *chart.Chart, ref string) error {
+// Package helm chart from repo
+func (r *Impl) Package(ref string) error {
 	cfg, err := getConfig("")
 	if err != nil {
 		return err
 	}
-	push := action.NewChartPush(cfg)
-	var buf bytes.Buffer
-	return push.Run(&buf, ref)
+	client := action.NewPackage()
+	client.RepositoryConfig = action.WithConfig(cfg)
+	_, err = client.Run(ref, nil)
+	return err
 }
 
-// ChartPull helm chart from repo
-func (r *Impl) ChartPull(ref string) error {
+// Push helm chart to repo
+func (r *Impl) Push(chart *chart.Chart, ref string) error {
 	cfg, err := getConfig("")
 	if err != nil {
 		return err
 	}
-	push := action.NewChartPull(cfg)
+	return experimental.
+		NewRegistryLogin
+	push := action.n
 	var buf bytes.Buffer
 	return push.Run(&buf, ref)
+}
+
+// Pull helm chart from repo
+func (r *Impl) Pull(ref string) error {
+	cfg, err := getConfig("")
+	if err != nil {
+		return err
+	}
+	client := action.NewPullWithOpts(action.WithConfig(cfg))
+	_, err = client.Run(ref)
+	return err
 }
 
 // GetResources returns allocated resources for the specified release (their current state)

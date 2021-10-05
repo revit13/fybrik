@@ -28,6 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
+
 	"fybrik.io/fybrik/manager/controllers/utils"
 	"fybrik.io/fybrik/pkg/helm"
 	corev1 "k8s.io/api/core/v1"
@@ -148,18 +149,15 @@ func (r *BlueprintReconciler) applyChartResource(log logr.Logger, chartSpec app.
 	nbytes, _ := yaml.Marshal(args)
 	log.Info(fmt.Sprintf("--- Values.yaml ---\n\n%s\n\n", nbytes))
 
-	err := r.Helmer.ChartPull(chartSpec.Name)
+	err := r.Helmer.Pull(chartSpec.Name)
 	if err != nil {
 		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart pull")
 	}
-	chart, err := r.Helmer.ChartLoad(chartSpec.Name)
-	if err != nil {
-		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart load")
-	}
+	err := r.
 
 	rel, err := r.Helmer.Status(kubeNamespace, releaseName)
 	if err == nil && rel != nil {
-		rel, err = r.Helmer.Upgrade(chart, kubeNamespace, releaseName, args)
+		rel, err = r.Helmer.Upgrade(kubeNamespace, releaseName, args)
 		if err != nil {
 			return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed upgrade")
 		}

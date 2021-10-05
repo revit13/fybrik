@@ -10,11 +10,13 @@ import (
 	"log"
 	"os"
 
-	experimental "helm.sh/helm/v3/internal/experimental/action"
+	helmMain "helm.sh/helm/v3/cmd/helm"
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/kube"
 	"helm.sh/helm/v3/pkg/release"
+
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 )
@@ -48,11 +50,13 @@ func debug(format string, v ...interface{}) {
 	}
 }
 
+const protocolPrefix = "oci"
+
 func ChartRef(hostname string, namespace string, name string, tagname string) string {
-	return fmt.Sprintf("%s/%s/%s:%s", hostname, namespace, name, tagname)
+	return fmt.Sprintf("%s://%s/%s/%s:%s", protocolPrefix, hostname, namespace, name)
 }
 
-// Interface of a helm chart
+// Interface of a helm operations
 type Interface interface {
 	Uninstall(kubeNamespace string, releaseName string) (*release.UninstallReleaseResponse, error)
 	Install(chart *chart.Chart, kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error)
@@ -62,6 +66,8 @@ type Interface interface {
 	RegistryLogout(hostname string) error
 	Push(chart *chart.Chart, ref string) error
 	Pull(ref string) error
+	Load(ref string) error
+	Package(chartPath string, destinationPath string, version string)
 	GetResources(kubeNamespace string, releaseName string) ([]*unstructured.Unstructured, error)
 }
 
@@ -88,7 +94,7 @@ func (r *Fake) Install(chart *chart.Chart, kubeNamespace string, releaseName str
 }
 
 // Upgrade helm release
-func (r *Fake) Upgrade(chart *chart.Chart, kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error) {
+func (r *Fake) Upgrade(kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error) {
 	r.release = &release.Release{
 		Name: releaseName,
 		Info: &release.Info{Status: release.StatusDeployed},
@@ -117,8 +123,13 @@ func (r *Fake) Push(chart *chart.Chart, ref string) error {
 }
 
 // ChartPull helm chart from repo
-func (r *Fake) Pull(ref string) error {
+func (r *Fake) Pull(ref string, untar bool, untarDir string) error {
 	return nil
+}
+
+// Load helm chart
+func (r *Fake) Load(ref string) (*chart.Chart, error) {
+	return nil, nil
 }
 
 // GetResources returns allocated resources for the specified release (their current state)
@@ -152,6 +163,15 @@ func (r *Impl) Uninstall(kubeNamespace string, releaseName string) (*release.Uni
 	}
 	uninstall := action.NewUninstall(cfg)
 	return uninstall.Run(releaseName)
+}
+
+// Load helm chart
+func (r *Impl) Load(path string) (*chart.Chart, error) {
+	chart, err := loader.Load(path)
+	if err == nil {
+		return chart, err
+	}
+	return chart, err
 }
 
 // Install helm release
@@ -193,7 +213,7 @@ func (r *Impl) RegistryLogin(hostname string, username string, password string, 
 	if err != nil {
 		return err
 	}
-	return experimental.NewRegistryLogout(cfg).Run(nil, hostname, "", "", true)
+	return helmMain.ExperimentalRegistryLogin(cfg, nil, hostname, username, password, insecure)
 }
 
 // RegistryLogout to docker registry v2
@@ -202,42 +222,49 @@ func (r *Impl) RegistryLogout(hostname string) error {
 	if err != nil {
 		return err
 	}
-	return experimental.NewRegistryLogin(cfg).Run(nil, hostname, "", "", true)
+	return helmMain.ExperimentalRegistryLogout(cfg, nil, hostname)
 }
 
 // Package helm chart from repo
-func (r *Impl) Package(ref string) error {
-	cfg, err := getConfig("")
-	if err != nil {
-		return err
-	}
+func (r *Impl) Package(chartPath string, destinationPath string, version string) error {
 	client := action.NewPackage()
-	client.RepositoryConfig = action.WithConfig(cfg)
-	_, err = client.Run(ref, nil)
+	if version != "" {
+		client.Version = version
+	}
+	client.Destination = destinationPath
+
+	_, err := client.Run(chartPath, nil)
 	return err
 }
 
 // Push helm chart to repo
-func (r *Impl) Push(chart *chart.Chart, ref string) error {
+func (r *Impl) Push(chart string, remote string) error {
 	cfg, err := getConfig("")
 	if err != nil {
 		return err
 	}
-	return experimental.
-		NewRegistryLogin
-	push := action.n
-	var buf bytes.Buffer
-	return push.Run(&buf, ref)
+
+	client := experimental.NewPushWithOpts(experimental.WithPushConfig(cfg))
+	_, err = client.Run(chart, remote)
+
+	return err
 }
 
 // Pull helm chart from repo
-func (r *Impl) Pull(ref string) error {
+func (r *Impl) Pull(ref string, untar bool, untarDir string) error {
+	chartRef, err := ParseReference(ref)
+	if err != nil {
+		return err
+	}
 	cfg, err := getConfig("")
 	if err != nil {
 		return err
 	}
 	client := action.NewPullWithOpts(action.WithConfig(cfg))
-	_, err = client.Run(ref)
+	client.Version = chartRef.Tag
+	client.Untar = untar
+	client.UntarDir = untarDir
+	_, err = client.Run("oci://" + chartRef.Repo)
 	return err
 }
 

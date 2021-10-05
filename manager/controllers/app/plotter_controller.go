@@ -38,9 +38,6 @@ type PlotterReconciler struct {
 	ClusterManager multicluster.ClusterManager
 }
 
-// BlueprintNamespace defines a namespace where blueprints and associated resources will be allocated
-const BlueprintNamespace = "fybrik-blueprints"
-
 // Reconcile receives a Plotter CRD
 //nolint:dupl
 func (r *PlotterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
@@ -164,10 +161,16 @@ func (r *PlotterReconciler) convertPlotterModuleToBlueprintModule(plotter *app.P
 			// Get source from plotter assetID list
 			assetInfo := plotter.Spec.Assets[assetID]
 			dataStore = &assetInfo.DataStore
+			vaultMap := make(map[string]app.Vault)
 			// Update vaultAuthPath from the cluster metadata
-			vaultCreds := dataStore.Vault[string(app.ReadFlow)]
-			vaultCreds.AuthPath = plotterModule.VaultAuthPath
-			dataStore.Vault[string(app.ReadFlow)] = vaultCreds
+			// Get only the readFlow related creds
+			vaultMap[string(app.ReadFlow)] = app.Vault{
+				Role:       dataStore.Vault[string(app.ReadFlow)].Role,
+				Address:    dataStore.Vault[string(app.ReadFlow)].Address,
+				SecretPath: dataStore.Vault[string(app.ReadFlow)].SecretPath,
+				AuthPath:   plotterModule.VaultAuthPath,
+			}
+			dataStore.Vault = vaultMap
 		} else {
 			// Fill in the DataSource from the step arguments
 			dataStore = &app.DataStore{

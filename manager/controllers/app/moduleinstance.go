@@ -119,6 +119,12 @@ func (m *ModuleManager) GetCopyDestination(item modules.DataInfo, destinationInt
 		Role:       utils.GetModulesRole(),
 		Address:    utils.GetVaultAddress(),
 	}
+	// The copied asset needs creds for later to be read
+	vaultMap[string(app.ReadFlow)] = app.Vault{
+		SecretPath: vaultSecretPath,
+		Role:       utils.GetModulesRole(),
+		Address:    utils.GetVaultAddress(),
+	}
 	return &app.DataStore{
 		Vault:      vaultMap,
 		Connection: connection,
@@ -382,12 +388,10 @@ func (m *ModuleManager) AddFlowInfoForAsset(item modules.DataInfo, appContext *a
 					Template: "read",
 					Parameters: &app.StepParameters{
 						Source: &app.StepSource{
-							AssetID: datasetID,
+							AssetID: readAssetID,
 							API:     nil,
 						},
-						Sink: &app.StepSink{
-							AssetID: readAssetID,
-						},
+
 						API: moduleAPIToService(readSelector.ModuleCapability.API, readSelector.ModuleCapability.Scope,
 							appContext, readSelector.Module.Name, readAssetID),
 						Actions: actions,
@@ -443,7 +447,8 @@ func moduleAPIToService(api *app.ModuleAPI, scope app.CapabilityScope, appContex
 		releaseName := utils.GetReleaseName(appContext.Name, appContext.Namespace, instanceName)
 		// Current implementation assumes there is only one cluster with read modules
 		// (which is the same cluster the user's workload)
-		fqdn := utils.GenerateModuleEndpointFQDN(releaseName, BlueprintNamespace)
+		blueprintNamespace := utils.GetBlueprintNamespace()
+		fqdn := utils.GenerateModuleEndpointFQDN(releaseName, blueprintNamespace)
 		endpoint = app.EndpointSpec{
 			Hostname: fqdn,
 			Port:     api.Endpoint.Port,

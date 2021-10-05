@@ -25,6 +25,8 @@ var (
 	debugOption = (os.Getenv("HELM_DEBUG") == "true")
 )
 
+const chartPath = "/opt/fybrik/charts/"
+
 func getConfig(kubeNamespace string) (*action.Configuration, error) {
 	actionConfig := new(action.Configuration)
 
@@ -248,6 +250,21 @@ func (r *Impl) Push(chart string, remote string) error {
 	_, err = client.Run(chart, remote)
 
 	return err
+
+// ChartLoad helm chart from cache
+func (r *Impl) ChartLoad(ref string) (*chart.Chart, error) {
+	// check for chart mounted in container
+	chart, err := loader.Load(chartPath + ref)
+	if err == nil {
+		return chart, err
+	}
+
+	cfg, err := getConfig("")
+	if err != nil {
+		return nil, err
+	}
+	load := action.NewChartLoad(cfg)
+	return load.Run(ref)
 }
 
 // Pull helm chart from repo

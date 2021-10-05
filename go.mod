@@ -67,3 +67,4 @@ require (
 )
 
 replace helm.sh/helm/v3 v3.6.2 => github.com/fybrik/helm/v3 v3.6.2-fybrik-update
+replace helm.sh/helm/v3 v3.7.0 => /home/eres/deleteme/helm

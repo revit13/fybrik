@@ -10,7 +10,8 @@ import (
 	"log"
 	"os"
 
-	helmMain "helm.sh/helm/v3/cmd/helm"
+	"path/filepath"
+
 	"helm.sh/helm/v3/pkg/action"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
@@ -26,6 +27,7 @@ var (
 )
 
 const chartPath = "/opt/fybrik/charts/"
+const packedChartsDir = "/tmp/charts/"
 
 func getConfig(kubeNamespace string) (*action.Configuration, error) {
 	actionConfig := new(action.Configuration)
@@ -52,10 +54,8 @@ func debug(format string, v ...interface{}) {
 	}
 }
 
-const protocolPrefix = "oci"
-
 func ChartRef(hostname string, namespace string, name string, tagname string) string {
-	return fmt.Sprintf("%s://%s/%s/%s:%s", protocolPrefix, hostname, namespace, name)
+	return fmt.Sprintf("%s/%s/%s:%s", hostname, namespace, name, tagname)
 }
 
 // Interface of a helm operations
@@ -66,10 +66,10 @@ type Interface interface {
 	Status(kubeNamespace string, releaseName string) (*release.Release, error)
 	RegistryLogin(hostname string, username string, password string, insecure bool) error
 	RegistryLogout(hostname string) error
-	Push(chart *chart.Chart, ref string) error
-	Pull(ref string) error
-	Load(ref string) error
-	Package(chartPath string, destinationPath string, version string)
+	Push(packagePath string, chartPath string) error
+	Pull(ref string, untar bool) error
+	Load(ref string) (*chart.Chart, error)
+	Package(chartPath string, destinationPath string, version string) error
 	GetResources(kubeNamespace string, releaseName string) ([]*unstructured.Unstructured, error)
 }
 
@@ -96,7 +96,7 @@ func (r *Fake) Install(chart *chart.Chart, kubeNamespace string, releaseName str
 }
 
 // Upgrade helm release
-func (r *Fake) Upgrade(kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error) {
+func (r *Fake) Upgrade(chart *chart.Chart, kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error) {
 	r.release = &release.Release{
 		Name: releaseName,
 		Info: &release.Info{Status: release.StatusDeployed},
@@ -120,12 +120,12 @@ func (r *Fake) RegistryLogout(hostname string) error {
 }
 
 // ChartPush helm chart to repo
-func (r *Fake) Push(chart *chart.Chart, ref string) error {
+func (r *Fake) Push(packagePath string, chartPath string) error {
 	return nil
 }
 
 // ChartPull helm chart from repo
-func (r *Fake) Pull(ref string, untar bool, untarDir string) error {
+func (r *Fake) Pull(ref string, untar bool) error {
 	return nil
 }
 
@@ -137,6 +137,11 @@ func (r *Fake) Load(ref string) (*chart.Chart, error) {
 // GetResources returns allocated resources for the specified release (their current state)
 func (r *Fake) GetResources(kubeNamespace string, releaseName string) ([]*unstructured.Unstructured, error) {
 	return r.resources, nil
+}
+
+// Package helm chart from repo
+func (r *Fake) Package(chartPath string, destinationPath string, version string) error {
+	return nil
 }
 
 func NewEmptyFake() *Fake {
@@ -168,23 +173,34 @@ func (r *Impl) Uninstall(kubeNamespace string, releaseName string) (*release.Uni
 }
 
 // Load helm chart
-func (r *Impl) Load(path string) (*chart.Chart, error) {
-	chart, err := loader.Load(path)
+func (r *Impl) Load(ref string) (*chart.Chart, error) {
+	chart, err := loader.Load(chartPath + ref)
 	if err == nil {
 		return chart, err
 	}
+	// Construct the packed chart path
+	chartRef, err := ParseReference(ref)
+	if err != nil {
+		return nil, err
+	}
+	_, chartName := filepath.Split(chartRef.Repo)
+
+	packedChartPath := packedChartsDir + chartName + "-" + chartRef.Tag + ".gtz"
+	chart, err = loader.Load(packedChartPath)
 	return chart, err
 }
 
-// Install helm release
+// Install helm release from packaged chart
 func (r *Impl) Install(chart *chart.Chart, kubeNamespace string, releaseName string, vals map[string]interface{}) (*release.Release, error) {
 	cfg, err := getConfig(kubeNamespace)
 	if err != nil {
 		return nil, err
 	}
+
 	install := action.NewInstall(cfg)
 	install.ReleaseName = releaseName
 	install.Namespace = kubeNamespace
+
 	return install.Run(chart, vals)
 }
 
@@ -215,7 +231,9 @@ func (r *Impl) RegistryLogin(hostname string, username string, password string, 
 	if err != nil {
 		return err
 	}
-	return helmMain.ExperimentalRegistryLogin(cfg, nil, hostname, username, password, insecure)
+	login := action.NewRegistryLogin(cfg)
+	var buf bytes.Buffer
+	return login.Run(&buf, hostname, username, password, insecure)
 }
 
 // RegistryLogout to docker registry v2
@@ -224,7 +242,9 @@ func (r *Impl) RegistryLogout(hostname string) error {
 	if err != nil {
 		return err
 	}
-	return helmMain.ExperimentalRegistryLogout(cfg, nil, hostname)
+	logout := action.NewRegistryLogout(cfg)
+	var buf bytes.Buffer
+	return logout.Run(&buf, hostname)
 }
 
 // Package helm chart from repo
@@ -239,36 +259,18 @@ func (r *Impl) Package(chartPath string, destinationPath string, version string)
 	return err
 }
 
-// Push helm chart to repo
-func (r *Impl) Push(chart string, remote string) error {
+// Push helm chart package to repo
+func (r *Impl) Push(packagePath string, chartPath string) error {
 	cfg, err := getConfig("")
 	if err != nil {
 		return err
 	}
-
-	client := experimental.NewPushWithOpts(experimental.WithPushConfig(cfg))
-	_, err = client.Run(chart, remote)
-
+	_, err = action.NewPushWithOpts(action.WithPushConfig(cfg)).Run(packagePath, chartPath)
 	return err
-
-// ChartLoad helm chart from cache
-func (r *Impl) ChartLoad(ref string) (*chart.Chart, error) {
-	// check for chart mounted in container
-	chart, err := loader.Load(chartPath + ref)
-	if err == nil {
-		return chart, err
-	}
-
-	cfg, err := getConfig("")
-	if err != nil {
-		return nil, err
-	}
-	load := action.NewChartLoad(cfg)
-	return load.Run(ref)
 }
 
 // Pull helm chart from repo
-func (r *Impl) Pull(ref string, untar bool, untarDir string) error {
+func (r *Impl) Pull(ref string, untar bool) error {
 	chartRef, err := ParseReference(ref)
 	if err != nil {
 		return err
@@ -280,7 +282,7 @@ func (r *Impl) Pull(ref string, untar bool, untarDir string) error {
 	client := action.NewPullWithOpts(action.WithConfig(cfg))
 	client.Version = chartRef.Tag
 	client.Untar = untar
-	client.UntarDir = untarDir
+	client.UntarDir = packedChartsDir
 	_, err = client.Run("oci://" + chartRef.Repo)
 	return err
 }

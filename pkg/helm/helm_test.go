@@ -12,6 +12,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"helm.sh/helm/v3/pkg/chart"
+	"helm.sh/helm/v3/pkg/chart/loader"
 	"helm.sh/helm/v3/pkg/release"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	kstatus "sigs.k8s.io/cli-utils/pkg/kstatus/status"
@@ -59,33 +60,12 @@ var (
 	impl          = new(Impl)
 )
 
-func TestHelmCache(t *testing.T) {
-	var err error
-	origChart := buildTestChart()
-
-	err = impl.ChartSave(origChart, chartRef)
-	assert.Nil(t, err)
-	Log(t, "save chart", err)
-
-	chart, err := impl.ChartLoad(chartRef)
-	assert.Nil(t, err)
-	Log(t, "load chart", err)
-
-	err = impl.ChartRemove(chartRef)
-	assert.Nil(t, err)
-	Log(t, "remove chart", err)
-
-	assert.Equal(t, origChart.Metadata.Name, chart.Metadata.Name, "expected loaded chart equals saved chart")
-}
-
 func TestHelmRegistry(t *testing.T) {
+	var err error
 	// Test should only run as integration test if registry is available
 	if _, isSet := os.LookupEnv("DOCKER_HOSTNAME"); !isSet {
 		t.Skip("No integration environment found. Skipping test...")
 	}
-
-	var err error
-	origChart := buildTestChart()
 
 	if username != "" && password != "" {
 		err = impl.RegistryLogin(hostname, username, password, insecure)
@@ -93,24 +73,37 @@ func TestHelmRegistry(t *testing.T) {
 		Log(t, "registry login", err)
 	}
 
-	err = impl.ChartSave(origChart, chartRef)
+	err = impl.Package("testdata/test-chart", "/tmp/", "")
 	assert.Nil(t, err)
-	err = impl.ChartPush(origChart, chartRef)
+	Log(t, "package chart", err)
+
+	ref, err := ParseReference(chartRef)
+	assert.Nil(t, err)
+
+	packagePath := "/tmp/test-chart-0.1.0.tgz"
+	chartPath := "oci://" + ref.Repo
+	err = impl.Push(packagePath, chartPath)
 	assert.Nil(t, err)
 	Log(t, "push chart", err)
 
-	err = impl.ChartPull(chartRef)
+	err = impl.Pull(chartRef, true)
 	assert.Nil(t, err)
 	Log(t, "pull chart", err)
-	chart, err := impl.ChartLoad(chartRef)
+
+	pulledChart, err := impl.Load(chartRef)
 	assert.Nil(t, err)
-	assert.Equal(t, origChart.Metadata.Name, chart.Metadata.Name, "expected pushed chart equals pulled chart")
+
+	origChart, err := loader.Load(packagePath)
+	assert.Nil(t, err)
+
+	assert.Equal(t, origChart.Metadata.Name, pulledChart.Metadata.Name, "expected loaded chart equals saved chart")
 
 	if username != "" && password != "" {
 		err = impl.RegistryLogout(hostname)
 		assert.Nil(t, err)
 		Log(t, "registry logout", err)
 	}
+
 }
 
 func TestHelmRelease(t *testing.T) {

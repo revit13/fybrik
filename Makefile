@@ -39,11 +39,7 @@ run-integration-tests:
 	$(MAKE) cluster-prepare-wait
 	$(MAKE) deploy
 	$(MAKE) configure-vault
-	$(MAKE) -C modules helm
-	$(MAKE) -C modules helm-uninstall # Uninstalls the deployed tests from previous command
 	$(MAKE) -C pkg/helm test
-	$(MAKE) -C manager run-integration-tests
-	$(MAKE) -C modules test
 
 .PHONY: run-notebook-tests
 run-notebook-tests: export DOCKER_HOSTNAME?=localhost:5000

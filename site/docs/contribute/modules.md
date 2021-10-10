@@ -51,13 +51,13 @@ For a full example see the [Arrow Flight Module chart](https://github.com/fybrik
 
 Once your Helm chart is ready, you need to push it to a [OCI-based registry](https://helm.sh/docs/topics/registries/) such as [ghcr.io](https://ghcr.io). This allows the control plane of Fybrik to later pull the chart whenever it needs to be installed.
 
-You can use the [hack/make-rules/helm.mk](https://github.com/fybrik/fybrik/blob/master/hack/make-rules/helm.mk) Makefile, or manually push the chart:
+You can use the [hack/make-rules/helm.mk](https://github.com/fybrik/fybrik/blob/master/hack/make-rules/helm.mk) Makefile, or manually push the chart as described in the [link](https://github.com/helm/community/blob/main/hips/hip-0006.md):
 
 ```bash
 HELM_EXPERIMENTAL_OCI=1 
 helm registry login -u <username> <registry>
-helm chart save <chart folder> <registry>/<path>:<version>
-helm chart push <registry>/<path>:<version>
+helm package <chart folder> -d <local-chart-path>
+helm push <local-chart-path> oci://<registry>/<path>
 ```
 
 ## FybrikModule YAML

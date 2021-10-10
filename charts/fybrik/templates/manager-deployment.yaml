@@ -115,6 +115,8 @@ spec:
             {{- end }}     
             - mountPath: /tmp/taxonomy
               name: fybrik-taxonomy
+            - mountPath: /tmp/charts
+              name: local-charts
             {{- if .Values.manager.chartVolume }}
             - mountPath: /opt/fybrik/
               name: charts
@@ -140,6 +142,8 @@ spec:
           persistentVolumeClaim:
             claimName: "{{ .Values.manager.chartVolume }}"
         {{- end }}
+        - name: local-charts
+          emptyDir: {}
       {{- with .Values.manager.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

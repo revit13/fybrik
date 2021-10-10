@@ -184,9 +184,9 @@ func (r *Impl) Load(ref string) (*chart.Chart, error) {
 		return nil, err
 	}
 	_, chartName := filepath.Split(chartRef.Repo)
-
-	packedChartPath := packedChartsDir + chartName + "-" + chartRef.Tag + ".gtz"
+	packedChartPath := packedChartsDir + chartName + "-" + chartRef.Tag + ".tgz"
 	chart, err = loader.Load(packedChartPath)
+
 	return chart, err
 }
 
@@ -283,6 +283,7 @@ func (r *Impl) Pull(ref string, untar bool) error {
 	client.Version = chartRef.Tag
 	client.Untar = untar
 	client.UntarDir = packedChartsDir
+	client.DestDir = packedChartsDir
 	_, err = client.Run("oci://" + chartRef.Repo)
 	return err
 }

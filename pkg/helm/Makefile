@@ -2,6 +2,7 @@ ROOT_DIR := ../..
 include $(ROOT_DIR)/Makefile.env
 
 SOURCE := \
+	reference.go \
 	helm.go \
 	helm_test.go
 

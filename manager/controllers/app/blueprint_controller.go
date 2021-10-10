@@ -148,14 +148,14 @@ func (r *BlueprintReconciler) applyChartResource(log logr.Logger, chartSpec app.
 	nbytes, _ := yaml.Marshal(args)
 	log.Info(fmt.Sprintf("--- Values.yaml ---\n\n%s\n\n", nbytes))
 
-	err := r.Helmer.Pull(chartSpec.Name, true)
+	err := r.Helmer.Pull(chartSpec.Name, false)
 	if err != nil {
-		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart pull")
+		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed pull")
 	}
 
 	chart, err := r.Helmer.Load(chartSpec.Name)
 	if err != nil {
-		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart load")
+		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed load")
 	}
 
 	rel, err := r.Helmer.Status(kubeNamespace, releaseName)

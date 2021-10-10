@@ -68,6 +68,7 @@ func TestHelmRegistry(t *testing.T) {
 	}
 
 	if username != "" && password != "" {
+		Log(t, "user "+username+"pass "+password+"host "+hostname, err)
 		err = impl.RegistryLogin(hostname, username, password, insecure)
 		assert.Nil(t, err)
 		Log(t, "registry login", err)
@@ -81,17 +82,18 @@ func TestHelmRegistry(t *testing.T) {
 	assert.Nil(t, err)
 
 	packagePath := "/tmp/test-chart-0.1.0.tgz"
-	chartPath := "oci://" + ref.Repo
+	chartPath := "oci://" + ref.Repo + "/"
 	err = impl.Push(packagePath, chartPath)
 	assert.Nil(t, err)
-	Log(t, "push chart", err)
+	Log(t, "push chart "+chartRef, err)
 
-	err = impl.Pull(chartRef, true)
+	err = impl.Pull(chartRef, false)
 	assert.Nil(t, err)
 	Log(t, "pull chart", err)
 
 	pulledChart, err := impl.Load(chartRef)
 	assert.Nil(t, err)
+	Log(t, "load chart", err)
 
 	origChart, err := loader.Load(packagePath)
 	assert.Nil(t, err)

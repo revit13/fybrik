@@ -178,7 +178,7 @@ status:
         observedState:
           ready: true
         releases:
-          my-notebook-tmp-33uu3-fybrik-notebook-sample-ar-c2308: 1
+          notebook-fybrik-notebook-sample-ar-c2308: 1
   observedGeneration: 1
   observedState:
     ready: true

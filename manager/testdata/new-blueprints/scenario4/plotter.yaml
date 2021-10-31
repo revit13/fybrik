@@ -201,7 +201,7 @@ spec:
   templates:
     transform-template:
       modules:
-      - name: read-with-transform
+      - name: arrow-read-with-transform
         chart:
           name: ghcr.io/fybrik/arrow-flight-transform-config:latest
           values:
@@ -214,7 +214,7 @@ spec:
         type: plugin
     read-template:
       modules:
-      - name: read-no-transform
+      - name: arrow-read-without-transform
         chart:
           name: ghcr.io/fybrik/arrow-flight-config:latest
           values:
@@ -235,13 +235,16 @@ status:
       namespace: fybrik-blueprints
       status:
         modules:
-          arrow-flight-module:
+          arrow-read-with-transform:
+            ready: true
+          arrow-read-without-transform:
             ready: true
         observedGeneration: 1
         observedState:
           ready: true
         releases:
-          my-notebook-tmp-33uu3-fybrik-notebook-sample-ar-c2308: 1
+          notebook-fybrik-notebook-arrow-flight-config-13: 1
+          notebook-fybrik-notebook-arrow-flight-transform-config-13: 1
   observedGeneration: 1
   observedState:
     ready: true

@@ -172,13 +172,13 @@ status:
       namespace: fybrik-blueprints
       status:
         modules:
-          arrow-flight-config-module:
+          transform-conf:
             ready: true
         observedGeneration: 1
         observedState:
           ready: true
         releases:
-          my-notebook-tmp-33uu3-fybrik-notebook-sample-ar-c2308: 1
+          notebook-fybrik-notebook-transform-conf: 1
   observedGeneration: 1
   observedState:
     ready: true

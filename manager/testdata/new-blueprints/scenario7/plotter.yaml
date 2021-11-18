@@ -6,7 +6,7 @@ metadata:
   labels:
 spec:
   appSelector:
-    clusterName: ""
+    clusterName: "cluster2"
     workloadSelector:
       matchLabels:
         app: ws-notebook
@@ -115,21 +115,30 @@ status:
     fybrik-notebook-sample/paysim-csv:
       ready: true
   blueprints:
-    thegreendragon:
-      name: my-notebook-tmp-33uu3-fybrik-notebook-sample
+    cluster1:
+      name: cluster1-blueprint
       namespace: fybrik-blueprints
       status:
         modules:
-          arrow-flight-module:
-            ready: true
           copy-a13821ae72:
             ready: true
         observedGeneration: 1
         observedState:
           ready: true
         releases:
+          notebook-fybrik-notebook-sample-co-c2308: 1
+    cluster2:
+      name: cluster2-blueprint
+      namespace: fybrik-blueprints
+      status:
+        modules:
+          arrow-flight-module:
+            ready: true
+        observedGeneration: 1
+        observedState:
+          ready: true
+        releases:
           notebook-fybrik-notebook-sample-ar-c2308: 1
-          notebook-fybrik-notebook-sample-co-31f43: 1
   observedGeneration: 1
   observedState:
     ready: true

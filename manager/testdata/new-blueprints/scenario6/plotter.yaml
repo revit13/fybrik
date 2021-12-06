@@ -75,6 +75,7 @@ spec:
           template: copy
       triggers:
       - init
+      - timer
     - flowType: read
       name: ""
       steps:

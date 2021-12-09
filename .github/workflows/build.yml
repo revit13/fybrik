@@ -15,7 +15,6 @@ env:
   JAVA_VERSION: 11
 
 jobs:
-
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
@@ -66,7 +65,7 @@ jobs:
       DOCKER_USERNAME: ${{ github.actor }}
       DOCKER_PASSWORD: ${{ secrets.MYPAT }}
     needs: [integration-tests]
-    if: ${{ github.event_name != 'pull_request' }}
+    if: ${{ github.event_name != 'pull_request' && github.repository == 'fybrik/fybrik' }}
     steps:
     - uses: actions/checkout@v2
     - name: Download artifact
@@ -86,7 +85,7 @@ jobs:
       name: Infer version
       run: |
         version="${GITHUB_REF#refs/tags/v}"
-        echo "HELM_PUBLIC_TAGNAME=${version}" >> $GITHUB_ENV
+        echo "HELM_PUBLIC_TAGNAME=${version}"
         push_tag_event='true'
         if  [[ $version == refs/* ]] ;
         then

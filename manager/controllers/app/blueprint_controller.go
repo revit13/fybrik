@@ -6,38 +6,37 @@ package app
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 	"time"
 
-	"fybrik.io/fybrik/manager/controllers"
-	"fybrik.io/fybrik/pkg/environment"
+	"emperror.dev/errors"
+	distributionref "github.com/distribution/distribution/reference"
+	"github.com/go-logr/logr"
+	credentialprovider "github.com/vdemeester/k8s-pkg-credentialprovider"
+	credentialprovidersecrets "github.com/vdemeester/k8s-pkg-credentialprovider/secrets"
+	"gopkg.in/yaml.v2"
+	"helm.sh/helm/v3/pkg/release"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/equality"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
+	kstatus "sigs.k8s.io/cli-utils/pkg/kstatus/status"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
+	ctrlutil "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
-	"emperror.dev/errors"
 	app "fybrik.io/fybrik/manager/apis/app/v1alpha1"
-	"helm.sh/helm/v3/pkg/release"
-
-	"github.com/go-logr/logr"
-	yaml "gopkg.in/yaml.v2"
-	"k8s.io/apimachinery/pkg/api/equality"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	ctrlutil "sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
+	"fybrik.io/fybrik/manager/controllers"
 	"fybrik.io/fybrik/manager/controllers/utils"
+	"fybrik.io/fybrik/pkg/environment"
 	"fybrik.io/fybrik/pkg/helm"
-	credentialprovider "github.com/vdemeester/k8s-pkg-credentialprovider"
-	credentialprovidersecrets "github.com/vdemeester/k8s-pkg-credentialprovider/secrets"
-	corev1 "k8s.io/api/core/v1"
-	labels "k8s.io/apimachinery/pkg/labels"
-	kstatus "sigs.k8s.io/cli-utils/pkg/kstatus/status"
-
-	distributionref "github.com/distribution/distribution/reference"
 )
 
 // BlueprintReconciler reconciles a Blueprint object
@@ -198,7 +197,21 @@ func (r *BlueprintReconciler) applyChartResource(ctx context.Context, log logr.L
 			}
 		}
 	}
-	err := r.Helmer.ChartPull(chartSpec.Name)
+	tmpDir, err := ioutil.TempDir("", "fybrik-helm-")
+	if err != nil {
+		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed to create temporary directory for chart pull")
+	}
+
+	defer func(log logr.Logger) {
+		if err = os.RemoveAll(tmpDir); err != nil {
+			log.Info("Error while calling RemoveAll on directory created for pulling helm chart")
+		}
+	}(log)
+
+	err = r.Helmer.Pull(chartSpec.Name, tmpDir)
+	if err != nil {
+		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart pull")
+	}
 	// if we logged into a registry, let us try to logout
 	if registrySuccessfulLogin != "" {
 		logoutErr := r.Helmer.RegistryLogout(registrySuccessfulLogin)
@@ -206,10 +219,7 @@ func (r *BlueprintReconciler) applyChartResource(ctx context.Context, log logr.L
 			return ctrl.Result{}, errors.WithMessage(err, "failed to logout from helm registry: "+registrySuccessfulLogin)
 		}
 	}
-	if err != nil {
-		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart pull")
-	}
-	chart, err := r.Helmer.ChartLoad(chartSpec.Name)
+	chart, err := r.Helmer.Load(chartSpec.Name, tmpDir)
 	if err != nil {
 		return ctrl.Result{}, errors.WithMessage(err, chartSpec.Name+": failed chart load")
 	}

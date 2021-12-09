@@ -99,7 +99,7 @@ docker-push:
 	$(MAKE) -C connectors docker-push
 
 DOCKER_PUBLIC_HOSTNAME ?= ghcr.io
-DOCKER_PUBLIC_NAMESPACE ?= fybrik
+DOCKER_PUBLIC_NAMESPACE ?= revit13
 DOCKER_PUBLIC_TAGNAME ?= master
 
 DOCKER_PUBLIC_NAMES := \

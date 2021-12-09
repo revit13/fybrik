@@ -1,3 +1,5 @@
+test
+
 [![GitHub Actions Build](https://github.com/fybrik/fybrik/actions/workflows/build.yml/badge.svg)](https://github.com/fybrik/fybrik/actions/workflows/build.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/fybrik/fybrik)](https://goreportcard.com/report/github.com/fybrik/fybrik)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

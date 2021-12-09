@@ -64,7 +64,7 @@ jobs:
       DOCKER_HOSTNAME: "localhost:5000"
       DOCKER_NAMESPACE: fybrik-system
       DOCKER_USERNAME: ${{ github.actor }}
-      DOCKER_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      DOCKER_PASSWORD: ${{ secrets.MYPAT }}
     needs: [integration-tests]
     if: ${{ github.event_name != 'pull_request' }}
     steps:

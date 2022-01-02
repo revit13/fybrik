@@ -40,6 +40,12 @@ const (
 	Feature DependencyType = "feature"
 )
 
+// Action is the data transformation that the module supports
+type Action struct {
+	// +required
+	Name taxonomy.ActionName `json:"name"`
+}
+
 // ModuleInOut specifies the protocol and format of the data input and output by the module - if any
 type ModuleInOut struct {
 	// Source specifies the input data protocol and format
@@ -99,7 +105,7 @@ type ModuleCapability struct {
 
 	// Actions are the data transformations that the module supports
 	// +optional
-	Actions []taxonomy.Action `json:"actions,omitempty"`
+	Actions []Action `json:"actions,omitempty"`
 
 	// Plugins enable the module to add libraries to perform actions rather than implementing them by itself
 	// +optional

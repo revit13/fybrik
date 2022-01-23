@@ -16,6 +16,11 @@ jobs:
         with:
           repository: fybrik/fybrik
           path: fybrik-repo
+      - name: Checkout original Operate First repository
+        uses: actions/checkout@v2
+        with:
+          repository: operate-first/apps
+          path: operate-first-repo
       - run: |
           rm -r fybrik-repo/integration/operate-first/*/
           pushd fybrik-repo/hack/tools && ./install_yq.sh && ./install_helm.sh && popd
@@ -30,6 +35,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           signoff: true
+          path: operate-first-repo
           token: ${{ secrets.MYPAT }}
           push-to-fork: revit13/apps
           title: 'Update Operate First files to new release'

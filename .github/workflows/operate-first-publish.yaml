@@ -36,7 +36,7 @@ jobs:
         with:
           signoff: true
           path: operate-first-repo
-          token: ${{ secrets.MYPAT }}
+          token: ${{ secrets.newtoken }}
           push-to-fork: revit13/apps
           title: 'Update Operate First files to new release'
           commit-message: Update Fybrik cluster-scoped resources for Operate First

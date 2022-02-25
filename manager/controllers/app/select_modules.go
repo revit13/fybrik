@@ -74,16 +74,29 @@ type Solution struct {
 // Then, transformations are added to the found paths, and clusters are matched to satisfy restrictions from admin config policies.
 // Optimization is done by the shortest path (the paths are sorted by the length). To be changed in future versions.
 func (p *PlotterGenerator) FindPaths(item *DataInfo, appContext *app.FybrikApplication) []Solution {
-	// data source as appears in the asset metadata
-	source := Node{
+	var source, destination Node
+
+	// construct two nodes of an edge:
+	// this node appears in the asset metadata
+	NodeFromAssetMetadata := Node{
 		Connection: &app.InterfaceDetails{
 			Protocol:   item.DataDetails.Details.Connection.Name,
 			DataFormat: item.DataDetails.Details.DataFormat,
 		},
 		Virtual: false,
 	}
-	// data sink, either a virtual endpoint in read scenarios, or a datastore as in ingest scenario
-	destination := Node{Connection: &item.Context.Requirements.Interface, Virtual: (appContext.Spec.Selector.WorkloadSelector.Size() > 0)}
+	// this node is either a virtual endpoint, or a datastore
+	NodeFromAppRequirements := Node{Connection: &item.Context.Requirements.Interface,
+		Virtual: (appContext.Spec.Selector.WorkloadSelector.Size() > 0)}
+
+	if item.Context.Flow == taxonomy.WriteFlow {
+		source = NodeFromAppRequirements
+		destination = NodeFromAssetMetadata
+	} else {
+		source = NodeFromAssetMetadata
+		destination = NodeFromAppRequirements
+	}
+
 	// find data paths of length up to DATAPATH_LIMIT from data source to the workload, not including transformations or branches
 	bound, err := utils.GetDataPathMaxSize()
 	if err != nil {
@@ -115,8 +128,11 @@ func (p *PlotterGenerator) validate(item *DataInfo, solution Solution, applicati
 		element := &solution.DataPath[ind]
 		element.Actions = []taxonomy.Action{}
 		moduleCapability := element.Module.Spec.Capabilities[element.CapabilityIndex]
-		if !element.Edge.Sink.Virtual {
+		if !element.Edge.Sink.Virtual &&
+			(item.Context.Flow != taxonomy.WriteFlow ||
+				(item.Context.Flow == taxonomy.WriteFlow && item.Context.Requirements.FlowParams.IsNewDataSet)) {
 			// storage is required, plus more actions on copy may be needed
+			// it is not needed in the write flow when the asset is not new
 			isAccountFound := false
 			for _, account := range p.StorageAccounts {
 				// validate restrictions

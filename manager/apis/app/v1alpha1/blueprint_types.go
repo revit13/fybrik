@@ -24,6 +24,10 @@ type AssetContext struct {
 	// +required
 	AssetID string `json:"assetID"`
 
+	// Capability of the module
+	// +required
+	Capability taxonomy.Capability `json:"capability"`
+
 	// Transformations are different types of processing that may be done to the data as it is copied.
 	// +optional
 	Transformations []taxonomy.Action `json:"transformations,omitempty"`
@@ -45,9 +49,6 @@ type ModuleArguments struct {
 	// Assets define asset related arguments, such as data source, transformations, etc.
 	// +optional
 	Assets []AssetContext `json:"assets,omitempty"`
-	// Capability of the module
-	// +required
-	Capability taxonomy.Capability `json:"capability"`
 }
 
 // BlueprintModule is a copy of a FybrikModule Custom Resource.  It contains the information necessary

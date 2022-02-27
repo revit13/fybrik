@@ -28,7 +28,6 @@ opaServer:
       rule[{}] {
         description := "allow the write operation"
         input.action.actionType == "write"
-        true
       }
 
       rule[{"action": {"name":"RedactAction", "columns": column_names}, "policy": description}] {

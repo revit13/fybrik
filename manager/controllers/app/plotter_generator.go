@@ -229,9 +229,9 @@ func (p *PlotterGenerator) AddFlowInfoForAsset(item DataInfo, application *app.F
 				Steps:    [][]app.DataFlowStep{steps},
 			}
 		} else {
-			flow := taxonomy.ReadFlow
-			if item.Context.Flow == taxonomy.WriteFlow {
-				flow = taxonomy.WriteFlow
+			flowType := item.Context.Flow
+			if flowType == "" {
+				flowType = taxonomy.ReadFlow
 			}
 			steps := []app.DataFlowStep{
 				{
@@ -250,7 +250,7 @@ func (p *PlotterGenerator) AddFlowInfoForAsset(item DataInfo, application *app.F
 			}
 			subFlow = app.SubFlow{
 				Name:     "",
-				FlowType: flow,
+				FlowType: flowType,
 				Triggers: []app.SubFlowTrigger{app.WorkloadTrigger},
 				Steps:    [][]app.DataFlowStep{steps},
 			}

@@ -21,4 +21,14 @@ spec:
       requirements:
         interface:
           protocol: fybrik-arrow-flight
+    - dataSetID: 'fybrik-notebook-sample/new-data-parquet'
+      flow: write
+      requirements:
+        interface:
+          protocol: fybrik-arrow-flight
+    - dataSetID: 'fybrik-notebook-sample/new-data-parquet'
+      requirements:
+        interface:
+          protocol: fybrik-arrow-flight
+
 

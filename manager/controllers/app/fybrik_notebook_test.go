@@ -196,8 +196,7 @@ func TestS3Notebook(t *testing.T) {
 	reader, err := flight.NewRecordReader(stream)
 	g.Expect(err).To(gomega.BeNil())
 
-	// write the non PII columns
-	// TODO: remove masked columns
+	// write the data to a new asset
 	// TODO: create a new client based on the asset, currently using the same client
 	// as its the same server
 	writeStream, err := flightClient.DoPut(context.Background())
@@ -222,6 +221,7 @@ func TestS3Notebook(t *testing.T) {
 	for reader.Next() {
 		record := reader.Record()
 		defer record.Release()
+
 		err = wr.Write(record)
 		g.Expect(err).To(gomega.BeNil())
 
@@ -264,7 +264,7 @@ func TestS3Notebook(t *testing.T) {
 	}
 	g.Expect(found).To(gomega.BeTrue())
 
-	// read the written data
+	// read the new written data
 	info, err = flightClient.GetFlightInfo(context.Background(), descr)
 	g.Expect(err).To(gomega.BeNil())
 

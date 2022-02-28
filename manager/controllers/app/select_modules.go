@@ -127,7 +127,6 @@ func (p *PlotterGenerator) bucketAllocationIsNeeded(item *DataInfo) bool {
 	}
 	// it is not needed in the write flow when the asset is not new
 	return false
-
 }
 
 //nolint:gocyclo

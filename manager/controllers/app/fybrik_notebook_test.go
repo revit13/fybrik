@@ -255,10 +255,11 @@ func TestS3Notebook(t *testing.T) {
 			Bucket: &newBucket,
 			Key:    &newObject,
 		})
-		if err == nil { // Could not retrieve object. Assume it does not exist
+		if err == nil {
 			found = true
 			break
 		} else {
+			// Could not retrieve object. Assume it does not exist
 			time.Sleep(1 * time.Second)
 		}
 	}

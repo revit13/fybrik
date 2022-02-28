@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/apache/arrow/go/arrow"
 	"github.com/apache/arrow/go/arrow/array"
@@ -65,8 +66,8 @@ func TestS3Notebook(t *testing.T) {
 		Region:           &region,
 		S3ForcePathStyle: aws.Bool(true),
 	}))
-	svc := s3.New(sess)
-	object, err := svc.GetObject(&s3.GetObjectInput{
+	s3Client := s3.New(sess)
+	object, err := s3Client.GetObject(&s3.GetObjectInput{
 		Bucket: &bucket,
 		Key:    &key1,
 	})
@@ -243,6 +244,25 @@ func TestS3Notebook(t *testing.T) {
 	wr.Close()
 	err = writeStream.CloseSend()
 	g.Expect(err).To(gomega.BeNil())
+
+	// wait until the written data is available
+	count := 10
+	found := false
+	newBucket := "bucket2"
+	newObject := "data.parquet/"
+	for i := 1; i < count; i++ {
+		_, err := s3Client.GetObject(&s3.GetObjectInput{
+			Bucket: &newBucket,
+			Key:    &newObject,
+		})
+		if err == nil { // Could not retrieve object. Assume it does not exist
+			found = true
+			break
+		} else {
+			time.Sleep(1 * time.Second)
+		}
+	}
+	g.Expect(found).To(gomega.BeTrue())
 
 	// read the written data
 	info, err = flightClient.GetFlightInfo(context.Background(), descr)

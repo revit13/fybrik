@@ -189,10 +189,8 @@ func (p *PlotterGenerator) AddFlowInfoForAsset(item DataInfo, application *app.F
 			}
 		}
 		var subFlow app.SubFlow
-		if !element.Sink.Virtual && (item.Context.Flow != taxonomy.WriteFlow ||
-			(item.Context.Flow == taxonomy.WriteFlow && item.Context.Requirements.FlowParams.IsNewDataSet)) {
+		if !element.Sink.Virtual && p.bucketAllocationIsNeeded(&item) {
 			// allocate storage and create a temoprary asset
-			// it is not needed in the write flow when the asset is not new
 			if sinkDataStore, err = p.GetCopyDestination(item, element.Sink.Connection, &element.StorageAccount); err != nil {
 				p.Log.Error().Err(err).Str(logging.DATASETID, item.Context.DataSetID).Msg("Storage allocation for copy failed")
 				return err

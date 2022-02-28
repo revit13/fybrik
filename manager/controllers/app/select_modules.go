@@ -119,6 +119,17 @@ func (p *PlotterGenerator) validSolutions(item *DataInfo, solutions []Solution, 
 	return validPaths
 }
 
+// Return true if bucket allocation is needed. Otherwise return false.
+func (p *PlotterGenerator) bucketAllocationIsNeeded(item *DataInfo) bool {
+	if item.Context.Flow != taxonomy.WriteFlow ||
+		item.Context.Requirements.FlowParams.IsNewDataSet {
+		return true
+	}
+	// it is not needed in the write flow when the asset is not new
+	return false
+
+}
+
 //nolint:gocyclo
 func (p *PlotterGenerator) validate(item *DataInfo, solution Solution, application *app.FybrikApplication) bool {
 	// start from data source, check supported actions and cluster restrictions
@@ -128,11 +139,8 @@ func (p *PlotterGenerator) validate(item *DataInfo, solution Solution, applicati
 		element := &solution.DataPath[ind]
 		element.Actions = []taxonomy.Action{}
 		moduleCapability := element.Module.Spec.Capabilities[element.CapabilityIndex]
-		if !element.Edge.Sink.Virtual &&
-			(item.Context.Flow != taxonomy.WriteFlow ||
-				(item.Context.Flow == taxonomy.WriteFlow && item.Context.Requirements.FlowParams.IsNewDataSet)) {
+		if !element.Edge.Sink.Virtual && p.bucketAllocationIsNeeded(item) {
 			// storage is required, plus more actions on copy may be needed
-			// it is not needed in the write flow when the asset is not new
 			isAccountFound := false
 			for _, account := range p.StorageAccounts {
 				// validate restrictions

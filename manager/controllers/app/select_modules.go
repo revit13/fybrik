@@ -50,9 +50,16 @@ func (p *PathBuilder) solve() (Solution, error) {
 // Then, transformations are added to the found paths, and clusters are matched to satisfy restrictions from admin config policies.
 // Optimization is done by the shortest path (the paths are sorted by the length). To be changed in future versions.
 func (p *PathBuilder) FindPaths() []Solution {
+	var protocol taxonomy.ConnectionType
+	// If the connection name is empty, the default protocol is s3.
+	if p.Asset.DataDetails.Details.Connection.Name == "" {
+		protocol = "s3"
+	} else {
+		protocol = p.Asset.DataDetails.Details.Connection.Name
+	}
 	NodeFromAssetMetadata := Node{
 		Connection: &taxonomy.Interface{
-			Protocol:   p.Asset.DataDetails.Details.Connection.Name,
+			Protocol:   protocol,
 			DataFormat: p.Asset.DataDetails.Details.DataFormat,
 		},
 	}
@@ -324,7 +331,14 @@ func match(source, sink *taxonomy.Interface) bool {
 	if source == nil || sink == nil {
 		return false
 	}
-	return source.DataFormat == sink.DataFormat && source.Protocol == sink.Protocol
+	if source.Protocol != sink.Protocol {
+		return false
+	}
+	// an empty DataFormat value is not checked
+	if source.DataFormat != "" && sink.DataFormat != "" && source.DataFormat != sink.DataFormat {
+		return false
+	}
+	return true
 }
 
 // supportsSourceInterface indicates whether the source interface requirements are met.

@@ -237,9 +237,13 @@ func (p *PathBuilder) findPathsWithinLimit(source, sink *Node, n int) []Solution
 			if !supportsSinkInterface(&edge, sink) {
 				continue
 			}
+
 			edge.Sink = sink
 			// if a module supports both source and sink interfaces, it's an end of the recursion
 			if supportsSourceInterface(&edge, source) {
+				if sink.Connection.DataFormat == "" {
+					setSinkDataFormatFromModule(&edge, edge.Sink)
+				}
 				edge.Source = source
 				// found a path
 				var path []*ResolvedEdge
@@ -365,6 +369,22 @@ func supportsSourceInterface(edge *Edge, source *Node) bool {
 		}
 	}
 	return false
+}
+
+// setSinkDataFormatFromModule sets the data format of the sink node to be the first
+// dataformat supported by the module sink interface.
+// It is called in the case where the sink does not have data format which
+// is treated as "Any".
+//nolint:dupl
+func setSinkDataFormatFromModule(edge *Edge, sink *Node) {
+	capability := edge.Module.Spec.Capabilities[edge.CapabilityIndex]
+	for _, inter := range capability.SupportedInterfaces {
+		if inter.Sink == nil {
+			continue
+		}
+		sink.Connection.DataFormat = inter.Sink.DataFormat
+		break
+	}
 }
 
 // supportsSinkInterface indicates whether the sink interface requirements are met.

@@ -323,6 +323,7 @@ func (p *PlotterGenerator) AddFlowInfoForAsset(item *DataInfo, application *app.
 				Triggers: []app.SubFlowTrigger{app.InitTrigger},
 				Steps:    [][]app.DataFlowStep{steps},
 			})
+
 			// clear steps
 			steps = nil
 		} else {

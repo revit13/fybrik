@@ -733,8 +733,6 @@ func (r *FybrikApplicationReconciler) updateProvisionedStorageStatus(application
 	}
 	// add or update new buckets
 	for datasetID, info := range provisionedStorage {
-		secretName := info.Storage.SecretRef.Name
-		secretNamespace := info.Storage.SecretRef.Namespace
 		details := &api.DataStore{}
 		if info.Details != nil {
 			details = info.Details.DeepCopy()
@@ -742,8 +740,8 @@ func (r *FybrikApplicationReconciler) updateProvisionedStorageStatus(application
 
 		applicationContext.Application.Status.ProvisionedStorage[datasetID] = api.DatasetDetails{
 			DatasetRef:      info.Storage.Name,
-			SecretName:      secretName,
-			SecretNamespace: secretNamespace,
+			SecretName:      info.Storage.SecretRef.Name,
+			SecretNamespace: info.Storage.SecretRef.Namespace,
 			Details:         details,
 		}
 	}

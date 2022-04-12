@@ -32,6 +32,7 @@ const (
 // NewAssetInfo points to the provisoned storage and hold information about the new asset
 type NewAssetInfo struct {
 	Storage *storage.ProvisionedBucket
+	Details *app.DataStore
 }
 
 // PlotterGenerator constructs a plotter based on the requirements (governance actions, data location) and the existing set of FybrikModules
@@ -78,12 +79,6 @@ func (p *PlotterGenerator) AllocateStorage(item *DataInfo, destinationInterface 
 		},
 	}
 
-	assetInfo := NewAssetInfo{
-		Storage: bucket,
-	}
-	p.ProvisionedStorage[item.Context.DataSetID] = assetInfo
-	logging.LogStructure("ProvisionedStorage element", assetInfo, p.Log, zerolog.DebugLevel, false, true)
-
 	vaultSecretPath := vault.PathForReadingKubeSecret(bucket.SecretRef.Namespace, bucket.SecretRef.Name)
 	vaultMap := make(map[string]app.Vault)
 	if utils.IsVaultEnabled() {
@@ -102,11 +97,18 @@ func (p *PlotterGenerator) AllocateStorage(item *DataInfo, destinationInterface 
 		vaultMap[string(taxonomy.WriteFlow)] = app.Vault{}
 		vaultMap[string(taxonomy.ReadFlow)] = app.Vault{}
 	}
-	return &app.DataStore{
+	datastore := &app.DataStore{
 		Vault:      vaultMap,
 		Connection: connection,
 		Format:     destinationInterface.DataFormat,
-	}, nil
+	}
+	assetInfo := NewAssetInfo{
+		Storage: bucket,
+		Details: datastore,
+	}
+	p.ProvisionedStorage[item.Context.DataSetID] = assetInfo
+	logging.LogStructure("ProvisionedStorage element", assetInfo, p.Log, zerolog.DebugLevel, false, true)
+	return datastore, nil
 }
 
 func (p *PlotterGenerator) getAssetDataStore(item *DataInfo) *app.DataStore {

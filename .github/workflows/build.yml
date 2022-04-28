@@ -106,6 +106,7 @@ jobs:
         fi
         echo ::set-output name=version::$version
         echo ::set-output name=publish_images::$publish_images
+        echo "version77 ${version}"
     - name: Publish images
       if: ${{ steps.version.outputs.publish_images == 'true' }}
       env:

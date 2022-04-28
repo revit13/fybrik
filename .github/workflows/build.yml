@@ -26,7 +26,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
     - name: Cache dependencies
@@ -51,7 +51,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -81,7 +81,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -133,7 +133,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
@@ -166,7 +166,7 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install nfs rpms
       run: sudo apt-get update && sudo apt-get install -y nfs-kernel-server nfs-common && sudo modprobe nfsd && sudo modprobe nfs
     - name: Cache dependencies
@@ -204,7 +204,7 @@ jobs:
     needs: [verify, test, integration-tests]
     if: ${{ github.event_name != 'pull_request' && github.repository == 'fybrik/fybrik' }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Download artifact
       if: ${{ github.event_name != 'pull_request' }}
       uses: actions/download-artifact@v2

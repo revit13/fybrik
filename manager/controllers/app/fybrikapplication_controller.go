@@ -217,10 +217,16 @@ func (r *FybrikApplicationReconciler) checkReadiness(applicationContext Applicat
 				setErrorCondition(applicationContext, assetID, err.Error())
 				continue
 			}
+			// merge metadata
+			if err := datacatalog.MergeMetadata(provisionedBucketRef.ResourceMetadata,
+				dataCtx.Requirements.FlowParams.ResourceMetadata); err != nil {
+				// log an error and make a new attempt to register the asset
+				setErrorCondition(applicationContext, assetID, err.Error())
+				continue
+			}
 			// register the asset
 			if newAssetID, err := r.RegisterAsset(assetID, dataCtx.Requirements.FlowParams.Catalog,
-				dataCtx.Requirements.FlowParams.ResourceMetadata, &provisionedBucketRef,
-				applicationContext.Application); err == nil {
+				&provisionedBucketRef, applicationContext.Application); err == nil {
 				state := applicationContext.Application.Status.AssetStates[assetID]
 				state.CatalogedAsset = newAssetID
 				applicationContext.Application.Status.AssetStates[assetID] = state
@@ -489,15 +495,15 @@ func (r *FybrikApplicationReconciler) constructDataInfo(req *DataInfo, appContex
 	input := appContext.Application
 	log := appContext.Log.With().Str(logging.DATASETID, req.Context.DataSetID).Logger()
 	var err error
-	if !req.Context.Requirements.FlowParams.IsNewDataSet {
-		var credentialPath string
-		if input.Spec.SecretRef != "" {
-			if !utils.IsVaultEnabled() {
-				log.Error().Str("SecretRef", input.Spec.SecretRef).Msg("SecretRef defined [%s], but vault is disabled")
-			} else {
-				credentialPath = utils.GetVaultAddress() + vault.PathForReadingKubeSecret(input.Namespace, input.Spec.SecretRef)
-			}
+	var credentialPath string
+	if input.Spec.SecretRef != "" {
+		if !utils.IsVaultEnabled() {
+			log.Error().Str("SecretRef", input.Spec.SecretRef).Msg("SecretRef defined [%s], but vault is disabled")
+		} else {
+			credentialPath = utils.GetVaultAddress() + vault.PathForReadingKubeSecret(input.Namespace, input.Spec.SecretRef)
 		}
+	}
+	if !req.Context.Requirements.FlowParams.IsNewDataSet {
 		var response *datacatalog.GetAssetResponse
 		request := datacatalog.GetAssetRequest{
 			AssetID:       taxonomy.AssetID(req.Context.DataSetID),
@@ -516,6 +522,15 @@ func (r *FybrikApplicationReconciler) constructDataInfo(req *DataInfo, appContex
 		logging.LogStructure("Catalog connector response", response, &log, zerolog.DebugLevel, false, false)
 		response.DeepCopyInto(req.DataDetails)
 	} else if req.Context.Requirements.FlowParams.ResourceMetadata != nil {
+		// Verify that the asset is not registered in the catalog before using the metadata
+		request := datacatalog.GetAssetRequest{
+			AssetID:       taxonomy.AssetID(req.Context.DataSetID),
+			OperationType: datacatalog.READ}
+
+		if _, err = r.DataCatalog.GetAssetInfo(&request, credentialPath); err == nil {
+			log.Error().Err(err).Msg("asset seems to already exists in the catalog")
+			return err
+		}
 		// Fill req.DataDetails with the metadata from the fybrikapplication
 		req.DataDetails.ResourceMetadata = *req.Context.Requirements.FlowParams.ResourceMetadata.DeepCopy()
 	}

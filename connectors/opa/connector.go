@@ -46,7 +46,7 @@ func (r *ConnectorController) GetPoliciesDecisions(c *gin.Context) {
 		return
 	}
 	// Avoid calling data catalog if the resource metadata is not empty
-	if !datacatalog.ResourceMetadataNotEmpty(request.Resource.Metadata) {
+	if datacatalog.ResourceMetadataEmpty(request.Resource.Metadata) {
 		// Get asset metadata from catalog connector
 		requestToCatalog := &datacatalog.GetAssetRequest{
 			AssetID:       request.Resource.ID,

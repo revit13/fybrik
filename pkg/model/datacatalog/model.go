@@ -3,7 +3,11 @@
 
 package datacatalog
 
-import "fybrik.io/fybrik/pkg/model/taxonomy"
+import (
+	"errors"
+
+	"fybrik.io/fybrik/pkg/model/taxonomy"
+)
 
 // OperationType Type of operation requested for the asset
 // +kubebuilder:validation:Enum=read;
@@ -44,10 +48,73 @@ type ResourceDetails struct {
 	DataFormat taxonomy.DataFormat `json:"dataFormat,omitempty"`
 }
 
+// checkMetadataConflicts returns an error if there is a conflict in the values
+// of meta1 and meta2
+func checkMetadataConflicts(meta1, meta2 *ResourceMetadata) error {
+	if meta1 == nil || meta2 == nil {
+		return nil
+	}
+	if meta1.Tags != nil && meta2.Tags != nil {
+		for k, v := range meta1.Tags.Items {
+			if val, ok := meta2.Tags.Items[k]; ok {
+				if val != v {
+					return errors.New("conflicts in ResourceMetadata tags")
+				}
+			}
+		}
+	}
+	if meta1.Geography != "" && meta2.Geography != "" && meta1.Geography != meta2.Geography {
+		return errors.New("geography conflict in ResourceMetadata geography field")
+	}
+	if meta1.Owner != "" && meta2.Owner != "" && meta1.Owner != meta2.Owner {
+		return errors.New("conflict in ResourceMetadata owner field")
+	}
+	if meta1.Name != "" && meta2.Name != "" && meta1.Name != meta2.Name {
+		return errors.New("conflict in ResourceMetadata name field")
+	}
+	return nil
+}
+
+// MergeMetadata merges the metadata in newMetaData into intoMetadata
+// Returns an error if there is a conflict
+func MergeMetadata(intoMetadata, newMetaData *ResourceMetadata) error {
+	if newMetaData == nil {
+		return nil
+	}
+	if newMetaData.Columns != nil {
+		intoMetadata.Columns = append(intoMetadata.Columns, newMetaData.Columns...)
+	}
+	if err := checkMetadataConflicts(intoMetadata, newMetaData); err != nil {
+		return err
+	}
+	if newMetaData.Tags != nil {
+		newTags := newMetaData.Tags.Items
+		if intoMetadata.Tags == nil {
+			intoMetadata.Tags = &taxonomy.Tags{}
+			intoMetadata.Tags.Items = make(map[string]interface{})
+		}
+		oldTags := intoMetadata.Tags.Items
+		for k, v := range newTags {
+			oldTags[k] = v
+		}
+	}
+
+	if newMetaData.Geography != "" {
+		intoMetadata.Geography = newMetaData.Geography
+	}
+	if newMetaData.Owner != "" {
+		intoMetadata.Owner = newMetaData.Owner
+	}
+	if newMetaData.Name != "" {
+		intoMetadata.Name = newMetaData.Name
+	}
+	return nil
+}
+
 // Return true if resourceMetadata is not empty. Otherwise return false.
-func ResourceMetadataNotEmpty(resourceMetadata *ResourceMetadata) bool {
+func ResourceMetadataEmpty(resourceMetadata *ResourceMetadata) bool {
 	if resourceMetadata == nil {
-		return false
+		return true
 	}
 	if resourceMetadata.Columns != nil ||
 		(resourceMetadata.Tags != nil &&
@@ -55,7 +122,7 @@ func ResourceMetadataNotEmpty(resourceMetadata *ResourceMetadata) bool {
 		resourceMetadata.Geography != "" ||
 		resourceMetadata.Name != "" ||
 		resourceMetadata.Owner != "" {
-		return true
+		return false
 	}
-	return false
+	return true
 }

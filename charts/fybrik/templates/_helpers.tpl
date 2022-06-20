@@ -138,3 +138,7 @@ processPodSecurityContext does the following:
 {{- end }}
 {{ mergeOverwrite $globalContext $podSecurityContext | toYaml }}
 {{- end }}
+
+{{- define "fybrik.chartVolumeDir" }}
+{{- printf "/opt/fybrik/" }}
+{{- end }}

@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: List
+metadata:
+  name: Razee
+  namespace: fybrik-system
+items:
+# MongoDB Service resources
+- kind: PersistentVolume
+  apiVersion: v1
+  metadata:
+    name: fybrik-pv-volume
+    namespace: fybrik-system
+    labels:
+      type: local
+  spec:
+    storageClassName: manual
+    capacity:
+      storage: 10Gi
+    volumeMode: Filesystem
+    accessModes:
+      - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain
+    hostPath:
+      path: "/opt/charts/"
+
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: fybrik-pv-claim
+    namespace: fybrik-system
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: manual
+    resources:
+      requests:
+        storage: 3Gi
+

@@ -144,11 +144,11 @@ func NewFake(rls *release.Release, resources []*unstructured.Unstructured) *Fake
 // Impl implementation
 type Impl struct {
 	// if set, the "Load" and "pull" methods will try to check locally mounted charts
-	checkLocalMounts bool
+	localMountPath string
 }
 
-func NewHelmerImpl(checkLMounts bool) *Impl {
-	return &Impl{checkLocalMounts: checkLMounts}
+func NewHelmerImpl(mountPath string) *Impl {
+	return &Impl{localMountPath: mountPath}
 }
 
 // Uninstall helm release
@@ -159,7 +159,7 @@ func (r *Impl) Uninstall(cfg *action.Configuration, releaseName string) (*releas
 
 // Load helm chart
 func (r *Impl) Load(ref, chartPath string) (*chart.Chart, error) {
-	if r.checkLocalMounts {
+	if r.localMountPath != "" {
 		// check for chart mounted in container
 		chrt, err := loader.Load(chartsMountPath + ref)
 		if err == nil {
@@ -261,7 +261,7 @@ func (r *Impl) Package(chartPath, destinationPath, version string) error {
 
 // Pull helm chart from repo
 func (r *Impl) Pull(cfg *action.Configuration, ref, destination string) error {
-	if r.checkLocalMounts {
+	if r.localMountPath != "" {
 		// if chart mounted in container, no need to pull
 		if _, err := os.Stat(chartsMountPath + ref); err == nil {
 			return nil

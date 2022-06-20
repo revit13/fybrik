@@ -102,6 +102,20 @@ run-integration-tests:
 	$(MAKE) -C pkg/helm test
 	$(MAKE) -C samples/rest-server test
 	$(MAKE) -C manager run-integration-tests
+
+	.PHONY: run-charts-volume-test
+	run-charts-volume-test: export DOCKER_HOSTNAME?=localhost:5000
+	run-charts-volume-test: export DOCKER_NAMESPACE?=fybrik-system
+	run-charts-volume-test: VALUES_FILE=charts/fybrik/chart-volume.values.yaml
+run-charts-volume-test:
+	$(MAKE) kind
+	$(MAKE) -C manager run-charts-volume-test-setup
+	$(MAKE) cluster-prepare
+	$(MAKE) docker-build docker-push
+	$(MAKE) cluster-prepare-wait
+	$(MAKE) deploy
+	$(MAKE) configure-vault
+	$(MAKE) -C manager run-notebook-readflow-tests
 	
 
 .PHONY: run-notebook-readflow-tests

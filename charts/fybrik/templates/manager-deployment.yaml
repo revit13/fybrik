@@ -120,8 +120,8 @@ spec:
             {{- toYaml .Values.manager.extraEnvs | nindent 12 }}
             {{- end }}
             {{- if .Values.manager.chartVolume }}
-            - name: CHECK_LOCAL_CHARTS
-              value: "true"
+            - name: LOCAL_CHARTS_DIR
+              value: {{ include "fybrik.chartVolumeDir" . }}
             {{- end }}
           {{- if .Values.clusterScoped }} 
           ports:
@@ -144,7 +144,7 @@ spec:
               name: solver-volume
             {{- end }}
             {{- if .Values.manager.chartVolume }}
-            - mountPath: /opt/fybrik/
+            - mountPath: {{ include "fybrik.chartVolumeDir" . }}
               name: charts
             {{- end }}
           securityContext:

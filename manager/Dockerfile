@@ -5,6 +5,6 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal:8.6
 ENV HOME=/tmp
 WORKDIR /tmp
 COPY manager /
+RUN microdnf install tar
 USER 10001
-
 ENTRYPOINT ["/manager"]

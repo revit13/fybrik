@@ -46,6 +46,13 @@ run-integration-tests: export USE_MOCKUP_CONNECTOR?=true
 run-integration-tests: wait_for_manager
 	NO_SIMULATED_PROGRESS=true USE_EXISTING_CONTROLLER=true USE_EXISTING_CLUSTER=true go test ./... -v -run TestAPIs -count 1
 
+.PHONY: run-charts-volume-test-pre-run
+run-charts-volume-test-pre-run: $(TOOLBIN)/kubectl
+	cd testdata/notebook/chart-volume && $(TOOLBIN)/kubectl -n fybrik-system apply -f pv.yaml
+
+.PHONY: run-charts-volume-test-post-run
+	cd testdata/notebook/chart-volume && ./setup.sh
+
 .PHONY: run-notebook-readflow-tests
 run-notebook-readflow-tests: export DOCKER_HOSTNAME?=localhost:5000
 run-notebook-readflow-tests: export DOCKER_NAMESPACE?=fybrik-system

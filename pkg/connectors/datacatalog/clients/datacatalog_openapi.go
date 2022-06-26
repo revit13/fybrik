@@ -6,6 +6,7 @@ package clients
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"emperror.dev/errors"
@@ -23,6 +24,8 @@ type openAPIDataCatalog struct {
 
 // NewopenApiDataCatalog creates a DataCatalog facade that connects to a openApi service
 func NewOpenAPIDataCatalog(name, connectionURL string, connectionTimeout time.Duration) DataCatalog {
+	log.Println("hehe")
+
 	configuration := &openapiclient.Configuration{
 		DefaultHeader: make(map[string]string),
 		UserAgent:     "OpenAPI-Generator/1.0.0/go",
@@ -35,7 +38,10 @@ func NewOpenAPIDataCatalog(name, connectionURL string, connectionTimeout time.Du
 		},
 		OperationServers: map[string]openapiclient.ServerConfigurations{},
 	}
+	log.Println("koko")
+
 	apiClient := openapiclient.NewAPIClient(configuration)
+	log.Println("kiki")
 
 	return &openAPIDataCatalog{
 		name:   name,

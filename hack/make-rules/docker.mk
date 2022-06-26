@@ -1,7 +1,7 @@
 export DOCKER_USERNAME ?=
 export DOCKER_PASSWORD ?=
 export DOCKER_HOSTNAME ?= ghcr.io
-export DOCKER_NAMESPACE ?= fybrik
+export DOCKER_NAMESPACE ?= revit13
 export DOCKER_TAGNAME ?= 0.0.0
 
 DOCKER_NAME ?= fybrik

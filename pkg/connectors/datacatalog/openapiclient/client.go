@@ -33,6 +33,8 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"crypto/tls"
+	"crypto/x509"
 	"golang.org/x/oauth2"
 )
 
@@ -59,9 +61,25 @@ type service struct {
 // NewAPIClient creates a new API client. Requires a userAgent string describing your application.
 // optionally a custom http.Client to allow for advanced features such as caching.
 func NewAPIClient(cfg *Configuration) *APIClient {
-	if cfg.HTTPClient == nil {
-		cfg.HTTPClient = http.DefaultClient
-	}
+	log.Printf("hiiiii55")
+//	if cfg.HTTPClient == nil {
+		fmt.Println("hiii")
+		log.Printf("hiiiii")
+		loadedCertCA, err := ioutil.ReadFile("/ca-cert.pem")
+		if err != nil {
+			return nil
+		}
+		certPool := x509.NewCertPool()
+		if !certPool.AppendCertsFromPEM(loadedCertCA) {
+			return nil
+		}
+
+		tlsConfig := &tls.Config{
+			RootCAs: certPool,
+		}
+		transport := &http.Transport{TLSClientConfig: tlsConfig}
+		cfg.HTTPClient = &http.Client{Transport: transport}
+//	}
 
 	c := &APIClient{}
 	c.cfg = cfg

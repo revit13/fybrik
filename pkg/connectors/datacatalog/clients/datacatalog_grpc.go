@@ -5,15 +5,17 @@ package clients
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"time"
 
 	"emperror.dev/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
 	app "fybrik.io/fybrik/manager/apis/app/v1alpha1"
@@ -21,6 +23,7 @@ import (
 	"fybrik.io/fybrik/pkg/model/datacatalog"
 	"fybrik.io/fybrik/pkg/model/taxonomy"
 	"fybrik.io/fybrik/pkg/serde"
+	"google.golang.org/grpc/credentials"
 )
 
 // Ensure that grpcDataCatalog implements the DataCatalog interface
@@ -34,12 +37,35 @@ type grpcDataCatalog struct {
 	client     pb.DataCatalogServiceClient
 }
 
+func loadCredentials() (credentials.TransportCredentials, error) {
+	// load the certificate of the CA who signed the server certificate
+	loadedCertCA, err := ioutil.ReadFile("/ca-cert.pem")
+	if err != nil {
+		return nil, err
+	}
+	certPool := x509.NewCertPool()
+	if !certPool.AppendCertsFromPEM(loadedCertCA) {
+		return nil, errors.New("error in AppendCertsFromPEM")
+	}
+
+	config := &tls.Config{
+		RootCAs: certPool,
+	}
+	return credentials.NewTLS(config), nil
+}
+
 // NewGrpcDataCatalog creates a DataCatalog facade that connects to a GRPC service
 // You must call .Close() when you are done using the created instance
 func NewGrpcDataCatalog(name, connectionURL string, connectionTimeout time.Duration) (DataCatalog, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), connectionTimeout)
 	defer cancel()
-	connection, err := grpc.DialContext(ctx, connectionURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	tlsCredentails, err := loadCredentials()
+	if err != nil {
+		return nil, err
+	}
+	fmt.Print("revit " + connectionURL)
+	log.Println("revit " + connectionURL)
+	connection, err := grpc.DialContext(ctx, connectionURL, grpc.WithTransportCredentials(tlsCredentails))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("NewGrpcDataCatalog failed when connecting to %s", connectionURL))
 	}

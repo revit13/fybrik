@@ -3,7 +3,9 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
+	"net/http"
 	"os"
 
 	"emperror.dev/errors"
@@ -53,9 +55,26 @@ func RunCmd() *cobra.Command {
 			handler := connector.NewHandler(client)
 			router := connector.NewRouter(handler)
 			router.Use(gin.Logger())
-
+			loadedCertServer, err := tls.LoadX509KeyPair("/server-cert.pem", "/server-key.pem")
+			if err != nil {
+				fmt.Println(err.Error())
+				return nil
+			}
 			bindAddress := fmt.Sprintf("%s:%d", ip, port)
-			return router.Run(bindAddress)
+			config := &tls.Config{
+
+				Certificates: []tls.Certificate{loadedCertServer},
+				ClientAuth:   tls.NoClientCert,
+				MinVersion:   tls.VersionTLS12,
+			}
+
+			fmt.Println("hoooo")
+
+			//return router.RunTLS(bindAddress, "/server-cert.pem", "/server-key.pem")
+
+			server := http.Server{Addr: bindAddress, Handler: router, TLSConfig: config}
+			return server.ListenAndServeTLS("", "")
+			//return http.ListenAndServeTLS(bindAddress, "/server-cert.pem", "/server-key.pem", router)
 		},
 	}
 	cmd.Flags().StringVar(&ip, "ip", ip, "IP address")

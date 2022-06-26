@@ -5,6 +5,7 @@ package clients
 
 import (
 	"io"
+	"log"
 	"strings"
 	"time"
 
@@ -23,6 +24,7 @@ type DataCatalog interface {
 }
 
 func NewDataCatalog(catalogProviderName, catalogConnectorAddress string, connectionTimeout time.Duration) (DataCatalog, error) {
+	log.Println("revit14")
 	if strings.HasPrefix(catalogConnectorAddress, "http") {
 		return NewOpenAPIDataCatalog(catalogProviderName, catalogConnectorAddress, connectionTimeout), nil
 	}

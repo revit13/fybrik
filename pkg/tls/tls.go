@@ -8,6 +8,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -39,6 +40,7 @@ func GetCertificatesFromSecret(client kclient.Client, secretName, secretNamespac
 
 const tlsCert = "tls.crt"
 const tlsKey = "tls.key"
+const certSuffix = ".crt"
 
 // GetServerTLSConfig returns the server tls config for tls connection between the manager and
 // the connectors based on the following params:
@@ -64,16 +66,20 @@ func GetServerTLSConfig(serverLog *zerolog.Logger, client kclient.Client, certSe
 	}
 	var config *tls.Config
 	if mtls {
-		serverLog.Info().Msg("MTLS is enabled")
+		serverLog.Info().Msg("MTLS authentication is enabled")
 		CACertsData, err := GetCertificatesFromSecret(client, caSecretName, caSecretNamespace)
 		if err != nil {
 			return nil, err
 		}
 		CACertPool := x509.NewCertPool()
-		for _, element := range CACertsData {
+		for key, element := range CACertsData {
+			// skip non cerificate keys like crt.key if exists in the secret
+			if !strings.HasSuffix(key, certSuffix) {
+				continue
+			}
 			if !CACertPool.AppendCertsFromPEM(element) {
-				serverLog.Error().Msg(err.Error())
-				return nil, errors.New("error in GetServerTLSConfig in AppendCertsFromPEM")
+				serverLog.Error().Err(err).Msg(err.Error())
+				return nil, errors.New("error in GetServerTLSConfig in AppendCertsFromPEM trying to lead key:" + key)
 			}
 		}
 
@@ -111,16 +117,20 @@ func GetClientTLSConfig(clientLog *zerolog.Logger, client kclient.Client, certSe
 	}
 
 	caCertPool := x509.NewCertPool()
-	for _, element := range CACertsData {
+	for key, element := range CACertsData {
+		// skip non cerificate keys like crt.key if exists in the secret
+		if !strings.HasSuffix(key, certSuffix) {
+			continue
+		}
 		if !caCertPool.AppendCertsFromPEM(element) {
-			clientLog.Error().Err(err).Msg("error in AppendCertsFromPEM")
-			return nil, errors.New("error in GetClientTLSConfig in AppendCertsFromPEM")
+			clientLog.Error().Err(err).Msg("error in AppendCertsFromPEM trying to load: " + key)
+			return nil, errors.New("error in GetClientTLSConfig in AppendCertsFromPEMtrying to load: " + key)
 		}
 	}
 
 	var tlsConfig *tls.Config
 	if mtls {
-		clientLog.Info().Msg("Mutual is enabled")
+		clientLog.Info().Msg("Mutual authentication is enabled")
 		clientCertsData, err := GetCertificatesFromSecret(client, certSecretName, certSecretNamespace)
 		if err != nil {
 			clientLog.Error().Err(err).Msg("error in GetCertificatesFromSecret tring to get client/server cert")

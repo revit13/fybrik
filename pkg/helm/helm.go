@@ -155,6 +155,7 @@ func NewHelmerImpl(chartsPath string) *Impl {
 // Uninstall helm release
 func (r *Impl) Uninstall(cfg *action.Configuration, releaseName string) (*release.UninstallReleaseResponse, error) {
 	uninstall := action.NewUninstall(cfg)
+	uninstall.Wait = true
 	return uninstall.Run(releaseName)
 }
 

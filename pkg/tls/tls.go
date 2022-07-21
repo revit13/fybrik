@@ -8,12 +8,16 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"errors"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/util/cert"
 	kclient "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"fybrik.io/fybrik/pkg/environment"
@@ -50,7 +54,14 @@ func GetCertificatesFromSecret(client kclient.Client, secretName, secretNamespac
 const (
 	// TLSCertKeySuffix is the key suffix for tls certificates in a kubernetes secret.
 	TLSCertKeySuffix = ".crt"
+	TLSCertSuffix    = ".pem"
 )
+
+var certsDir = environment.GetDataDir() + "/tls-cert"
+var cacertsDir = environment.GetDataDir() + "/tls-cacert"
+
+var certFile = certsDir + "/" + corev1.TLSCertKey
+var certPrivateKey = certsDir + "/" + corev1.TLSPrivateKeyKey
 
 // GetServerConfig returns the server config for tls connection between the manager and
 // the connectors.
@@ -120,68 +131,91 @@ func GetServerConfig(serverLog *zerolog.Logger, client kclient.Client) (*tls.Con
 	return config, nil
 }
 
+func fileExists(path string) bool {
+	if _, err := os.Stat(path); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}
+
+func find(root, ext string) ([]string, error) {
+	var a []string
+	err := filepath.WalkDir(root, func(s string, d fs.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if filepath.Ext(d.Name()) == ext {
+			a = append(a, s)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return a, nil
+}
+
 // GetClientTLSConfig returns the client config for tls connection between the manager and
 // the connectors.
 func GetClientTLSConfig(clientLog *zerolog.Logger, client kclient.Client) (*tls.Config, error) {
-	// certSecretName is  kubernetes secret name which contains the client certificate
-	certSecretName := environment.GetCertSecretName()
-	// certSecretNamespace is kubernetes secret namespace which contains the client certificate
-	certSecretNamespace := environment.GetCertSecretNamespace()
-	// caSecretName is kubernetes secret name which contains ca certificate used by the client to
-	// validate certificate or the server.  Used when mutual tls is used.
-	caSecretName := environment.GetCACERTSecretName()
-	// caSecretNamespace is kubernetes secret namespace which contains ca certificate used by the client to
-	// validate certificate or the server. Used when mutual tls is used.
-	caSecretNamespace := environment.GetCACERTSecretNamespace()
-
-	if caSecretName == "" || caSecretNamespace == "" {
-		// no CA certificates found, returning nil
-		clientLog.Info().Msg(TLSDisabledMsg)
-		return nil, nil
-	}
-	clientLog.Info().Msg(TLSEnabledMsg)
-	CACertsData, err := GetCertificatesFromSecret(client, caSecretName, caSecretNamespace)
+	// Mounted CA certificates
+	caFiles, err := find(cacertsDir, ".pem")
 	if err != nil {
-		clientLog.Error().Err(err).Msg("error in GetCertificatesFromSecret tring to get ca cert")
+		clientLog.Error().Msg(err.Error())
 		return nil, err
 	}
-
-	caCertPool := x509.NewCertPool()
-	for key, element := range CACertsData {
-		// skip non cerificate keys like crt.key if exists in the secret
-		if !strings.HasSuffix(key, TLSCertKeySuffix) {
-			continue
+	var caCertPool *x509.CertPool
+	if caFiles != nil {
+		clientLog.Info().Msg("Found CA Certificates")
+		caCertPool = x509.NewCertPool()
+		for _, s := range caFiles {
+			certs, e := cert.CertsFromFile(s)
+			if e != nil {
+				clientLog.Error().Msg(err.Error())
+				return nil, e
+			}
+			for _, cert := range certs {
+				caCertPool.AddCert(cert)
+			}
 		}
-		if !caCertPool.AppendCertsFromPEM(element) {
-			clientLog.Error().Err(err).Msg("error in AppendCertsFromPEM trying to load: " + key)
-			return nil, errors.New("error in GetClientTLSConfig in AppendCertsFromPEMtrying to load: " + key)
-		}
+	} else {
+		clientLog.Info().Msg("no CA certificates were found")
 	}
 
-	var tlsConfig *tls.Config
-	if certSecretName == "" || certSecretNamespace == "" {
-		clientLog.Info().Msg(MTLSDisabledMsg)
-		tlsConfig = &tls.Config{
+	// Mounted manager certificates
+	certFileExists := fileExists(certsDir + "/" + corev1.TLSCertKey)
+	keyFileExists := fileExists(certsDir + "/" + corev1.TLSPrivateKeyKey)
+
+	// If certificate file exists but not certificate key, or other way around, error out
+	if (certFileExists && !keyFileExists) || (!certFileExists && keyFileExists) {
+		return nil, errors.New("invalid SSL configuration found, please set both certificate file and certificate key file (one is missing)")
+	}
+	if !certFileExists && !keyFileExists {
+		clientLog.Info().Msg("no certificates were found for the manager")
+		if caFiles == nil {
+			clientLog.Info().Msg("no TLS config is used")
+			return nil, nil
+		}
+		clientLog.Info().Msg("TLS config contains manager certificates")
+		tlsConfig := &tls.Config{
 			RootCAs:    caCertPool,
 			MinVersion: tls.VersionTLS13,
 		}
 		return tlsConfig, nil
 	}
 
-	clientLog.Info().Msg(MTLSEnabledMsg)
-	clientCertsData, err := GetCertificatesFromSecret(client, certSecretName, certSecretNamespace)
-	if err != nil {
-		clientLog.Error().Err(err).Msg("error in GetCertificatesFromSecret tring to get client/server cert")
-		return nil, err
-	}
-	cert, err := tls.X509KeyPair(clientCertsData[corev1.TLSCertKey], clientCertsData[corev1.TLSPrivateKeyKey])
+	clientLog.Info().Msg("found manager certificates")
+	managerCerts, err := tls.LoadX509KeyPair(certFile, certPrivateKey)
 	if err != nil {
 		clientLog.Error().Err(err).Msg("error in X509KeyPair")
 		return nil, err
 	}
-	tlsConfig = &tls.Config{
+	clientLog.Info().Msg("TLS config contains manager certificates and CA certificates")
+	tlsConfig := &tls.Config{
 		RootCAs:      caCertPool,
-		Certificates: []tls.Certificate{cert},
+		Certificates: []tls.Certificate{managerCerts},
 		MinVersion:   tls.VersionTLS13,
 	}
 

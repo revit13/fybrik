@@ -37,6 +37,9 @@ const (
 	CertSecretNamespace               string = "CERT_SECRET_NAMESPACE"
 	CACERTSecretName                  string = "CACERT_SECRET_NAME"      //nolint:gosec
 	CACERTSecretNamespace             string = "CACERT_SECRET_NAMESPACE" //nolint:gosec
+	CABundle                          string = "CA_BUNDLE"
+	TLSCertName                       string = "TLS_CERT_FILE"
+	TLSPrivateKey                     string = "TLS_PRIVATE_KEY"
 	LocalClusterName                  string = "ClusterName"
 	LocalZone                         string = "Zone"
 	LocalRegion                       string = "Region"
@@ -93,6 +96,14 @@ func IsUsingTLS() bool {
 // IsUsingMTLS returns true if the connector communication should use mtls.
 func IsUsingMTLS() bool {
 	return strings.ToLower(os.Getenv(UseMTLS)) == "true"
+}
+
+func GetTLSCertName() string {
+	return os.Getenv(TLSCertName)
+}
+
+func GetTLSPrivateKey() string {
+	return os.Getenv(TLSPrivateKey)
 }
 
 // GetCertSecretName returns the name of the kubernetes secret which holds the

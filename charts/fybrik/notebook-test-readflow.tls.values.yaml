@@ -39,6 +39,7 @@ katalogConnector:
       cacertSecretName: "test-tls-ca-certs"
 
 opaConnector:
+  serverURL: https://opa:443
   tls:
     use_tls: true
     use_mtls: true
@@ -49,6 +50,25 @@ opaConnector:
     port: 8443
 
 opaServer:
+ 
+  tls:
+    use_tls: true
+    certs:
+      certSecretName: "test-tls-opa-server-certs"
+      cacertSecretName: "test-tls-ca-certs"
+
+  image: "openpolicyagent/opa:0.36.0-debug"
+  args:
+  - "run"
+  - "--server"
+  - "--log-level=debug"
+  - "--set=decision_logs.console=true"
+  - "--tls-cert-file=/data/tls-cert/tls.crt"
+  - "--tls-private-key-file=/data/tls-cert/tls.key"
+  - "--tls-ca-cert-file=/data/tls-cacert/ca.crt"
+
+  service:
+    port: 443
 
   # Bootstrap policies to load upon startup
   bootstrapPolicies:

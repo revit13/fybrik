@@ -6,6 +6,7 @@ package mockup
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/rs/zerolog/log"
@@ -37,6 +38,11 @@ func deserializeToTaxonomyAction(action map[string]interface{}, taxAction *taxon
 		return fmt.Errorf("error in unmarshalling in deserializeToTaxonomyAction: %v", err)
 	}
 	return nil
+}
+
+func (m *MockPolicyManager) HealthCheck() int {
+	log.Printf("In Health Check ")
+	return http.StatusOK
 }
 
 // GetPoliciesDecisions implements the PolicyCompiler interface

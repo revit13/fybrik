@@ -103,3 +103,8 @@ func (r *ConnectorController) GetPoliciesDecisions(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
+
+func (r *ConnectorController) HealthCheck(c *gin.Context) {
+	// Return OK automatically when checked.
+	c.JSON(http.StatusOK, nil)
+}

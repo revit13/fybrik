@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 
 	"fybrik.io/fybrik/pkg/model/datacatalog"
@@ -17,6 +18,10 @@ import (
 
 type DataCatalogDummy struct {
 	dataDetails map[string]datacatalog.GetAssetResponse
+}
+
+func (m *DataCatalogDummy) HealthCheck() int {
+	return http.StatusOK
 }
 
 func (d *DataCatalogDummy) GetAssetInfo(in *datacatalog.GetAssetRequest, creds string) (*datacatalog.GetAssetResponse, error) {

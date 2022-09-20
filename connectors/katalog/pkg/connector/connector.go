@@ -39,6 +39,11 @@ func NewHandler(client kclient.Client) *Handler {
 	return handler
 }
 
+func (r *Handler) healthCheck(c *gin.Context) {
+	// Return OK automatically when checked.
+	c.JSON(http.StatusOK, nil)
+}
+
 func (r *Handler) getAssetInfo(c *gin.Context) {
 	// Parse request
 	var request datacatalog.GetAssetRequest

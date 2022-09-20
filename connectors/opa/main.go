@@ -33,6 +33,7 @@ var (
 func NewRouter(controller *ConnectorController) *gin.Engine {
 	router := gin.Default()
 	router.POST("/getPoliciesDecisions", controller.GetPoliciesDecisions)
+	router.GET("/healthz", controller.HealthCheck)
 	return router
 }
 

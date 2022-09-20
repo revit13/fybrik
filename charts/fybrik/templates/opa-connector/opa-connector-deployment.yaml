@@ -47,6 +47,27 @@ spec:
             {{- end }}
               containerPort: {{ .Values.opaConnector.service.port }}
               protocol: TCP
+          readinessProbe:
+            {{- mergeOverwrite (deepCopy .Values.global.readinessProbe) .Values.opaConnector.readinessProbe | toYaml | nindent 12 }}
+            httpGet:
+              path: /healthz
+              port: {{ .Values.opaConnector.service.port }}
+              {{- if .Values.opaConnector.tls.use_tls }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              port: {{ .Values.opaConnector.service.port }}
+              {{- end }}
+          livenessProbe:
+            {{- mergeOverwrite (deepCopy .Values.global.livenessProbe) .Values.opaConnector.livenessProbe | toYaml | nindent 12 }}
+            httpGet:
+              path: /healthz
+              port: {{ .Values.opaConnector.service.port }}
+              {{- if .Values.opaConnector.tls.use_tls }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              {{- end }}
           env:
             - name: DATA_DIR
               value: {{ include "fybrik.getDataDir" . }}

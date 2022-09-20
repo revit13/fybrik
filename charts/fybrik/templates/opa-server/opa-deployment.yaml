@@ -92,6 +92,26 @@ spec:
             {{- end }}
               containerPort: {{ .Values.opaServer.service.port }}
               protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.opaServer.service.port }}
+              {{- if .Values.opaServer.tls.use_tls }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              {{- end }}
+            {{- mergeOverwrite (deepCopy .Values.global.readinessProbe) .Values.opaServer.readinessProbe | toYaml | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.opaServer.service.port }}
+              {{- if .Values.opaServer.tls.use_tls }}
+              scheme: HTTPS
+              {{- else }}
+              scheme: HTTP
+              {{- end }}
+            {{- mergeOverwrite (deepCopy .Values.global.livenessProbe) .Values.opaServer.livenessProbe | toYaml | nindent 12 }}
           resources:
             {{- toYaml .Values.opaServer.resources | nindent 12 }}
           volumeMounts:

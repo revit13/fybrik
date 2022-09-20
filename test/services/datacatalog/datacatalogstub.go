@@ -56,6 +56,10 @@ func main() {
 		c.JSON(http.StatusOK, dataCatalogResp)
 	})
 
+	router.GET("/healthz", func(c *gin.Context) {
+		c.String(http.StatusOK, "`/health` API endpoint is used to perform health checks.")
+	})
+
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Serving REST APIs as part of data catalog stub")
 	})

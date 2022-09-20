@@ -41,7 +41,6 @@ func deserializeToTaxonomyAction(action map[string]interface{}, taxAction *taxon
 }
 
 func (m *MockPolicyManager) HealthCheck() int {
-	log.Printf("In Health Check ")
 	return http.StatusOK
 }
 

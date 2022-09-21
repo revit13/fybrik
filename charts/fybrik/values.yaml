@@ -364,6 +364,8 @@ opaServer:
   # ref: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#security-context-1
   containerSecurityContext: {}
 
+  enableReadinessProbe: true
+  enableLivenessProbe: true
   readinessProbe: {}
   livenessProbe: {}
 

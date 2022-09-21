@@ -49,24 +49,16 @@ spec:
               protocol: TCP
           readinessProbe:
             {{- mergeOverwrite (deepCopy .Values.global.readinessProbe) .Values.openmetadataConnector.readinessProbe | toYaml | nindent 12 }}
-            httpGet:
-              path: /healthz
-              port: {{ .Values.openmetadataConnector.service.port }}
-              {{- if .Values.openmetadataConnector.tls.use_tls }}
-              scheme: HTTPS
-              {{- else }}
-              scheme: HTTP
-              {{- end }}
+            exec:
+              command:
+              - ls
+              - /tmp
           livenessProbe:
             {{- mergeOverwrite (deepCopy .Values.global.livenessProbe) .Values.openmetadataConnector.livenessProbe | toYaml | nindent 12 }}
-            httpGet:
-              path: /healthz
-              port: {{ .Values.openmetadataConnector.service.port }}
-              {{- if .Values.openmetadataConnector.tls.use_tls }}
-              scheme: HTTPS
-              {{- else }}
-              scheme: HTTP
-              {{- end }}
+            exec:
+              command:
+              - ls
+              - /tmp
           resources:
             {{- toYaml .Values.openmetadataConnector.resources | nindent 12 }}
           env:

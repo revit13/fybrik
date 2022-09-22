@@ -5,7 +5,8 @@ include $(ROOT_DIR)/hack/make-rules/tools.mk
 KUBE_NAMESPACE ?= fybrik-system
 WITH_OPENSHIFT ?= false
 
-VAULT_VALUES_FILE ?= charts/vault/env/dev/plugin-secrets-kubernetes-reader-values.yaml
+#VAULT_VALUES_FILE ?= charts/vault/env/dev/vault-single-cluster-values.yaml
+VAULT_VALUES_FILE ?= charts/vault/env/standalone/vault-single-cluster-values-tls.yaml
 
 .PHONY: deploy
 deploy: $(TOOLBIN)/kubectl $(TOOLBIN)/helm
@@ -16,7 +17,6 @@ deploy: $(TOOLBIN)/kubectl $(TOOLBIN)/helm
 	$(TOOLBIN)/helm install vault $(ROOT_DIR)/charts/vault \
 		--set "vault.global.openshift=$(WITH_OPENSHIFT)" \
                 --set "vault.injector.enabled=false" \
-                --set "vault.server.dev.enabled=true" \
 		--values $(ROOT_DIR)/$(VAULT_VALUES_FILE) \
 		--namespace $(KUBE_NAMESPACE) \
 		--wait --timeout 120s

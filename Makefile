@@ -123,7 +123,6 @@ run-notebook-readflow-tests:
 	$(MAKE) -C test/services docker-build docker-push
 	$(MAKE) cluster-prepare-wait
 	$(MAKE) deploy
-	$(MAKE) configure-vault
 	$(MAKE) -C manager run-notebook-readflow-tests
 
 .PHONY: run-notebook-readflow-tls-tests
@@ -138,7 +137,6 @@ run-notebook-readflow-tls-tests:
 	$(MAKE) cluster-prepare-wait
 	cd manager/testdata/notebook/read-flow-tls && ./setup-certs.sh
 	$(MAKE) deploy
-	$(MAKE) configure-vault
 	$(MAKE) -C manager run-notebook-readflow-tests
 
 .PHONY: run-notebook-readflow-tls-system-cacerts-tests

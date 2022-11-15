@@ -912,6 +912,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../tasks/add-vault-plugin/" class="md-nav__link">
+        Adding a new HashiCorp Vault Plugin
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../tasks/omd-discover-s3-asset/" class="md-nav__link">
         Discovering an S3 asset through the OpenMetadata UI
       </a>
@@ -1537,14 +1551,17 @@ kubectl <span class="nb">wait</span> --for<span class="o">=</span><span class="n
 <li><a href="https://fybrik.io/dev/reference/katalog/">katalog</a>: a data catalog stub used for testing and evaluation purposes.</li>
 </ol>
 <p>In this guide we use the OpenMetadata data catalog.</p>
-<p>To use OpenMetadata, you can either use an existing deployment, or run the following commands to deploy OpenMetadata in kubernetes:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Kubernetes</label><label for="__tabbed_3_2">IBM OpenShift</label></div>
+<p>To use OpenMetadata, you can either use an existing deployment, or run the following commands to deploy OpenMetadata in kubernetes.</p>
+<p><em>Note:</em> OpenMetadata deployment requires a cluster storage provisioner that has PersistentVolume capability of ReadWriteMany Access Mode.
+Below we provide examples of OpenMetadata installations on a single node kind cluster (for development and testing) and an 
+OpenShift cluster on <a href="https://www.ibm.com/cloud">IBM Cloud</a>. For other deployments please check <a href="https://docs.open-metadata.org/deployment/kubernetes">OpenMetadata Kubernetes deployment</a> </p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">A single node Kind cluster</label><label for="__tabbed_3_2">IBM OpenShift</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">FYBRIK_BRANCH</span><span class="o">=</span>master
 curl https://raw.githubusercontent.com/fybrik/fybrik/master/third_party/openmetadata/install_OM.sh <span class="p">|</span> bash -
 </code></pre></div>
-If you want to change the OpenMetadata configuration parameters, run:
+Alternatively, if you want to change the OpenMetadata configuration parameters, run:
 <div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">FYBRIK_BRANCH</span><span class="o">=</span>master
 curl https://raw.githubusercontent.com/fybrik/fybrik/master/third_party/openmetadata/install_OM.sh <span class="p">|</span> bash -s -- --operation getFiles
 </code></pre></div>
@@ -1554,7 +1571,7 @@ This command downloads the installation files to a temporary directory. Follow t
 <p><div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">FYBRIK_BRANCH</span><span class="o">=</span>master
 curl https://raw.githubusercontent.com/fybrik/fybrik/master/third_party/openmetadata/install_OM.sh <span class="p">|</span> bash -s -- --k8s-type ibm-openshift
 </code></pre></div>
-If you want to change the OpenMetadata configuration parameters, run:
+Alternatively, if you want to change the OpenMetadata configuration parameters, run:
 <div class="highlight"><pre><span></span><code><span class="nb">export</span> <span class="nv">FYBRIK_BRANCH</span><span class="o">=</span>master
 curl https://raw.githubusercontent.com/fybrik/fybrik/master/third_party/openmetadata/install_OM.sh <span class="p">|</span> bash -s -- --k8s-type ibm-openshift --operation getFiles
 </code></pre></div>
@@ -1578,7 +1595,7 @@ helm install fybrik charts/fybrik --set global.tag<span class="o">=</span>master
 </code></pre></div></p>
 </details>
 <p>The control plane includes a <code>manager</code> service that connects to a data catalog and to a policy manager.
-Install the Fybrik release with a built-in data catalog and with <a href="https://www.openpolicyagent.org">Open Policy Agent</a> as the policy manager:</p>
+Install the Fybrik release with <a href="https://open-metadata.org/">OpenMetadata</a> as the data catalog and with <a href="https://www.openpolicyagent.org">Open Policy Agent</a> as the policy manager:</p>
 <div class="highlight"><pre><span></span><code>helm install fybrik-crd fybrik-charts/fybrik-crd -n fybrik-system --version master --wait
 helm install fybrik fybrik-charts/fybrik --set coordinator.catalog<span class="o">=</span>openmetadata --set openmetadataConnector.openmetadata_endpoint<span class="o">=</span>http://openmetadata.open-metadata:8585/api -n fybrik-system --version master --wait
 </code></pre></div>

@@ -16,6 +16,9 @@ if [[ "${DEPLOY_OPENMETADATA}" -eq 0 ]]; then
 else
   port=8080
   local_port=8081
+  if [[ "${DEPLOY_TLS_TEST_CERTS}" -eq 1 ]]; then
+    port=8443
+  fi
   # Deploy openmetadata asset
   kubectl port-forward svc/openmetadata-connector -n fybrik-system $local_port:$port &
   # Wait until curl command succeed

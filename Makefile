@@ -132,6 +132,7 @@ run-notebook-readflow-tests-katalog:
 
 .PHONY: run-notebook-readflow-tls-tests
 run-notebook-readflow-tls-tests: export VALUES_FILE=charts/fybrik/notebook-test-readflow.tls.values.yaml
+run-notebook-readflow-tls-tests: export OPENMETADATA_VALUES_FILE=manager/testdata/notebook/read-flow-tls/openmetadata-tls-values.yaml
 run-notebook-readflow-tls-tests: export DEPLOY_TLS_TEST_CERTS=1
 run-notebook-readflow-tls-tests: export VAULT_VALUES_FILE=charts/vault/env/ha/vault-single-cluster-values-tls.yaml
 run-notebook-readflow-tls-tests: export RUN_VAULT_CONFIGURATION_SCRIPT=0

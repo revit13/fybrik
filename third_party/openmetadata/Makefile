@@ -1,4 +1,13 @@
 include Makefile.env
+ROOT_DIR:=../..
+
+OPENMETADATA_VALUES_FILE ?= ""
+ifneq ($(OPENMETADATA_VALUES_FILE),"")
+  OPENMETADATA_VALUES_FILE_STRING=--values $(ROOT_DIR)/$(OPENMETADATA_VALUES_FILE)
+else
+  OPENMETADATA_VALUES_FILE_STRING=
+endif
+
 
 all: deploy-openmetadata prepare-openmetadata-for-fybrik
 
@@ -39,7 +48,7 @@ endif
 	@kubectl create secret generic mysql-secrets --from-literal=openmetadata-mysql-password=${OPENMETADATA_MYSQL_PASSWORD} -n ${INSTALLATION_NAMESPACE} || true
 	@kubectl create secret generic airflow-secrets --from-literal=openmetadata-airflow-password=${OPENMETADATA_AIRFLOW_PASSWORD} -n ${INSTALLATION_NAMESPACE} || true
 	echo installing openmetadata
-	@helm install openmetadata open-metadata/openmetadata --version ${OPENMETADATA_HELM_CHART_VERSION} --wait --timeout 20m -n ${INSTALLATION_NAMESPACE} \
+	@helm install openmetadata open-metadata/openmetadata --version ${OPENMETADATA_HELM_CHART_VERSION} --wait --timeout 20m -n ${INSTALLATION_NAMESPACE} ${OPENMETADATA_VALUES_FILE_STRING} \
 --set global.airflow.host=${AIRFLOW_ENDPOINT} \
 --set global.airflow.openmetadata.serverHostApiUrl=${OPENMETADATA_ENDPOINT} \
 --set global.database.auth.username=${OPENMETADATA_MYSQL_USER} \

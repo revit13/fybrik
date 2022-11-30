@@ -1,0 +1,16 @@
+extraVolumes: 
+  - name: configvolume # this volume is read only
+    configMap:
+      name: openmetadata-tls-cm
+  - name: cert
+    secret:
+      secretName: openmetadata-ssl-keystore-cert
+      optional: false # default setting; "openmetadata-ssl-keystore-cert" must exist
+extraVolumeMounts:
+  - mountPath: /openmetadata-0.12.1/conf
+    name: configvolume
+    readOnly: true
+  - name: cert
+    mountPath: /openmetadata-0.12.1/keystore 
+    readOnly: true
+

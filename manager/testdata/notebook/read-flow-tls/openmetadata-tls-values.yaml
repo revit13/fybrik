@@ -7,7 +7,8 @@ extraVolumes:
       secretName: openmetadata-ssl-keystore-cert
       optional: false # default setting; "openmetadata-ssl-keystore-cert" must exist
 extraVolumeMounts:
-  - mountPath: /openmetadata-0.12.1/conf
+  - mountPath: /openmetadata-0.12.1/conf/openmetadata.yaml
+    subPath: openmetadata.yaml
     name: configvolume
     readOnly: true
   - name: cert

@@ -535,7 +535,7 @@ openmetadataConnector:
   enabled: auto
 
   # Image name or a hub/image[:tag]
-  image: "ghcr.io/fybrik/openmetadata-connector:0.3.0"
+  image: "ghcr.io/revit13/openmetadata-connector:0.0.14"
 
   # Overrides global.imagePullPolicy
   imagePullPolicy: "Always"
@@ -622,7 +622,7 @@ openmetadataConnector:
 
   dirSizeLimit: 200Mi
 
-  openmetadata_endpoint: "http://openmetadata.open-metadata:8585/api"
+  openmetadata_endpoint: "https://openmetadata.open-metadata:8585/api"
   openmetadata_sleep_interval: 100
   openmetadata_num_retries: 1000
 

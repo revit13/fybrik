@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: test-tls-openmetadata-cert
+  namespace: fybrik-system
+spec:
+  dnsNames:
+  - openmetadata
+  - openmetadata.openmetadata
+  - openmetadata.svc
+  - openmetadata.openmetadata.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: test-tls-ca-issuer
+  secretName: test-tls-openmetadata-certs

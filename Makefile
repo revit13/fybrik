@@ -20,6 +20,8 @@ export RUN_VAULT_CONFIGURATION_SCRIPT ?= 1
 export CATALOGED_ASSET ?= openmetadata-s3.default.bucket1."data.csv"
 # If true, deploy openmetadata
 export DEPLOY_OPENMETADATA ?= 1
+# If true, avoid creating a new cluster.
+export USE_EXISTING_CLUSTER ?= 0
 
 .PHONY: all
 all: generate manifests generate-docs verify
@@ -60,6 +62,11 @@ manifests: $(TOOLBIN)/controller-gen $(TOOLBIN)/yq
 .PHONY: docker-mirror-read
 docker-mirror-read:
 	$(TOOLS_DIR)/docker_mirror.sh $(TOOLS_DIR)/docker_mirror.conf
+
+.PHONY: undeploy-fybrik
+undeploy-fybrik:
+	$(TOOLBIN)/helm uninstall fybrik-crd --namespace $(KUBE_NAMESPACE)
+	$(TOOLBIN)/helm uninstall fybrik --namespace $(KUBE_NAMESPACE)
 
 .PHONY: deploy-fybrik
 deploy-fybrik: export VALUES_FILE?=charts/fybrik/values.yaml
@@ -181,7 +188,9 @@ run-namescope-integration-tests:
 setup-cluster: export DOCKER_HOSTNAME?=localhost:5000
 setup-cluster: export DOCKER_NAMESPACE?=fybrik-system
 setup-cluster:
+ifeq ($(USE_EXISTING_CLUSTER),0)
 	$(MAKE) kind
+endif
 	$(MAKE) cluster-prepare
 	$(MAKE) docker-build docker-push
 	$(MAKE) -C test/services docker-build docker-push
@@ -215,6 +224,19 @@ ifeq ($(DEPLOY_TLS_TEST_CERTS),1)
 endif
 	$(MAKE) -C third_party/datashim deploy-wait
 	$(MAKE) -C third_party/vault deploy-wait
+
+.PHONY: clean-cluster-prepare
+clean-cluster-prepare:
+	$(MAKE) -C third_party/cert-manager undeploy
+ifeq ($(DEPLOY_TLS_TEST_CERTS),1)
+	$(MAKE) -C third_party/kubernetes-reflector undeploy
+endif
+ifeq ($(DEPLOY_OPENMETADATA),1)
+	$(MAKE) -C third_party/openmetadata undeploy
+endif
+	$(MAKE) -C third_party/vault undeploy
+	$(MAKE) -C third_party/datashim undeploy
+	
 
 # Build only the docker images needed for integration testing
 .PHONY: docker-minimal-it

@@ -205,7 +205,9 @@ jobs:
           ${{ github.workspace }}/hack/tools/lib
         key: ${{ runner.os }}-c-${{ hashFiles('hack/make-rules/tools.mk') }}-${{ hashFiles('hack/tools/requirements.sh') }}-go-${{ hashFiles('**/go.sum') }}
     - name: Install tools
-      run: make install-tools
+      run: |
+           echo "DEPLOY_OPENMETADATA=0" >> $GITHUB_ENV
+           make install-tools
     - name: Write flow notebook tests
       run: make run-notebook-writeflow-tests
     - name: Prepare for next step

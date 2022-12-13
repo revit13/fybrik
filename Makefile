@@ -127,7 +127,7 @@ run-integration-tests:
 run-notebook-readflow-tests: export VALUES_FILE=charts/fybrik/notebook-test-readflow.values.yaml
 run-notebook-readflow-tests:
 	$(MAKE) setup-cluster
-	$(MAKE) -C manager run-notebook-readflow-tests
+	#$(MAKE) -C manager run-notebook-readflow-tests
 
 .PHONY: run-notebook-readflow-tests-katalog
 run-notebook-readflow-tests-katalog: export HELM_SETTINGS=--set "coordinator.catalog=katalog"
@@ -174,7 +174,7 @@ run-notebook-readflow-bc-tests:
 run-notebook-writeflow-tests: export VALUES_FILE=charts/fybrik/notebook-test-writeflow.values.yaml
 run-notebook-writeflow-tests:
 	$(MAKE) setup-cluster
-	$(MAKE) -C manager run-notebook-writeflow-tests
+	#$(MAKE) -C manager run-notebook-writeflow-tests
 
 .PHONY: run-namescope-integration-tests
 run-namescope-integration-tests: export HELM_SETTINGS=--set "clusterScoped=false" --set "applicationNamespace=default"

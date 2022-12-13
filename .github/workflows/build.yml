@@ -60,7 +60,7 @@ jobs:
         make undeploy-fybrik
         make clean-cluster-prepare
         env -i bash
-        killall kubectl
+        killall kubectl || true
     - name: Read flow notebook tests
       run: make run-notebook-readflow-tests
     - name: Clean cluster
@@ -68,7 +68,7 @@ jobs:
         make undeploy-fybrik
         make clean-cluster-prepare
         env -i bash
-        killall kubectl
+        killall kubectl || true
     - name: Read flow notebook tests with tls
       run: make run-notebook-readflow-tls-tests
     - name: Clean cluster
@@ -84,7 +84,7 @@ jobs:
         make undeploy-fybrik
         make clean-cluster-prepare
         env -i bash
-        killall kubectl
+        killall kubectl || true
     - name: Read flow notebook tests with katalog
       run: make run-notebook-readflow-tests-katalog
 

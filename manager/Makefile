@@ -61,6 +61,11 @@ run-notebook-writeflow-tests: prep-test
 	cd testdata/notebook/write-flow && ./setup.sh
 	NO_SIMULATED_PROGRESS=true USE_EXISTING_CONTROLLER=true USE_EXISTING_CLUSTER=true go test ./... $(TEST_OPTIONS) -run TestS3NotebookWriteFlow -count 1
 
+.PHONY: clean-notebook-resources
+clean-notebook-resources:
+	cd manager/testdata/notebook/read-flow-tls && ./clean-certs.sh || true
+	cd manager/testdata/notebook/read-flow && ./cleanup.sh || true
+
 DEBUG := ./debug.out
 
 $(DEBUG): main.go */*/*.go

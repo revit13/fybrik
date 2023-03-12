@@ -25,6 +25,8 @@ export USE_OPENMETADATA_CATALOG ?= 1
 # If true, avoid creating a new cluster.
 export USE_EXISTING_CLUSTER ?= 0
 
+export HELM_OP ?= install
+
 DOCKER_PUBLIC_HOSTNAME ?= ghcr.io
 DOCKER_PUBLIC_NAMESPACE ?= fybrik
 DOCKER_TAXONOMY_NAME_TAG ?= taxonomy-cli:$(TAXONOMY_CLI_VERSION)
@@ -98,16 +100,16 @@ deploy-fybrik: $(TOOLBIN)/kubectl $(TOOLBIN)/helm
 deploy-fybrik:
 	$(TOOLBIN)/kubectl create namespace $(KUBE_NAMESPACE) || true
 ifeq ($(DEPLOY_FYBRIK_DEV_VERSION),1)
-	$(TOOLBIN)/helm install fybrik-crd charts/fybrik-crd  \
+	$(TOOLBIN)/helm $(HELM_OP) fybrik-crd charts/fybrik-crd  \
                --namespace $(KUBE_NAMESPACE) --wait --timeout 120s
-	$(TOOLBIN)/helm install fybrik charts/fybrik --values $(VALUES_FILE) $(HELM_SETTINGS) \
+	$(TOOLBIN)/helm $(HELM_OP) fybrik charts/fybrik --values $(VALUES_FILE) $(HELM_SETTINGS) \
                --namespace $(KUBE_NAMESPACE) --wait --timeout 120s
 else
 	$(TOOLBIN)/helm repo add fybrik-charts $(FYBRIK_CHARTS)
 	$(TOOLBIN)/helm repo update
-	$(TOOLBIN)/helm install fybrik-crd fybrik-charts/fybrik-crd  \
+	$(TOOLBIN)/helm $(HELM_OP) fybrik-crd fybrik-charts/fybrik-crd  \
                --namespace $(KUBE_NAMESPACE) --version $(LATEST_BACKWARD_SUPPORTED_CRD_VERSION) --wait --timeout 120s
-	$(TOOLBIN)/helm install fybrik charts/fybrik --values $(VALUES_FILE) $(HELM_SETTINGS) \
+	$(TOOLBIN)/helm $(HELM_OP) fybrik charts/fybrik --values $(VALUES_FILE) $(HELM_SETTINGS) \
                --namespace $(KUBE_NAMESPACE) --wait --timeout 120s
 endif
 
@@ -251,16 +253,9 @@ ifeq ($(DEPLOY_TLS_TEST_CERTS),1)
 endif
 	$(MAKE) -C third_party/vault deploy-wait
 
-.PHONY: clean-cluster-prepare
-clean-cluster-prepare:
-	cd manager/testdata/notebook/read-flow-tls && ./clean-certs.sh || true
-	$(MAKE) -C third_party/cert-manager undeploy
-	$(MAKE) -C third_party/kubernetes-reflector undeploy || true
-ifeq ($(DEPLOY_OPENMETADATA_SERVER),1)
-	$(MAKE) -C third_party/openmetadata undeploy
-endif
-	$(MAKE) -C third_party/vault undeploy
-	
+.PHONY: clean-notebook-resources
+clean-notebook-resources:
+	$(MAKE) -C manager clean-notebook-resources
 
 # Build only the docker images needed for integration testing
 .PHONY: docker-minimal-it

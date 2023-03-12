@@ -4,16 +4,17 @@
 
 set -x
 
-kubectl create namespace fybrik-notebook-sample
-kubectl config set-context --current --namespace=fybrik-notebook-sample
+kubectl delete namespace fybrik-notebook-sample || true
+NS="fybrik-system"; kubectl -n $NS get configmap | awk '/sample/{print $1}' | xargs  kubectl delete -n $NS configmap
+
+kubectl port-forward svc/openmetadata-connector -n fybrik-system $local_port:$port &
+
+curl -X POST localhost:8080/getAssetInfo -d '{"assetID": "AssetID", "operationType": "read"}' -H "Content-type: application/json"   -H "X-Request-Datacatalog-Cred: QQQ"
 
 # Create asset and secret
 kubectl -n fybrik-notebook-sample apply -f s3credentials.yaml
 
-if [[ "${USE_OPENMETADATA_CATALOG}" -eq 0 ]]; then
-  # Deploy katalog asset
-  kubectl -n fybrik-notebook-sample apply -f katalog-asset.yaml
-else
+if [[ "${USE_OPENMETADATA_CATALOG}" -eq 1 ]]; then
   port=8080
   local_port=8081
   prefix=http
@@ -28,10 +29,11 @@ else
   fi
   # Deploy openmetadata asset
   kubectl port-forward svc/openmetadata-connector -n fybrik-system $local_port:$port &
+  CATALOGED_ASSET="openmetadata-s3.default.bucket1.\"data.csv\""
   # Wait until curl command succeed
   c=0
   # -k flag is used to skip server verification to avoid errors regarding target host name 'localhost'
-  while [[ $(curl $certs -k -X POST $prefix://localhost:$local_port/createAsset -d @om-asset.json) != *'assetID'* ]]
+  while [[ $(curl -X POST $certs $prefix:localhost:${local_port}/getAssetInfo -d '{"assetID": ${CATALOGED_ASSET}, "operationType": "read"}' -H "Content-type: application/json"   -H "X-Request-Datacatalog-Cred: QQQ") != *'assetID'* ]]
   do
     echo "waiting for curl command to createAsset to succeed"
     ((c++)) && ((c==25)) && break

@@ -234,32 +234,34 @@ jobs:
         # in a job will have access.
         echo "DEPLOY_OPENMETADATA_SERVER=0" >> $GITHUB_ENV
         echo "USE_EXISTING_CLUSTER=1" >> $GITHUB_ENV
-    - name: Clean cluster
+        echo "HELM_OP=upgrade" >> $GITHUB_ENV
+    - name: Clean cand prepare cluster for next step
       run: |
-        make undeploy-fybrik
-        make clean-cluster-prepare
+        make clean-notebook-resources
         killall kubectl || true
     - name: Read flow notebook tests
       run: make run-notebook-readflow-tests
-    - name: Clean cluster
+    - name: Clean cand prepare cluster for next step
       run: |
-        make undeploy-fybrik
-        make clean-cluster-prepare
+        make clean-notebook-resources
+        make create-certs
+        make -C third_party/vault deploy
         killall kubectl || true
     - name: Read flow notebook tests with tls
       run: make run-notebook-readflow-tls-tests
-    - name: Clean cluster
+    - name: Clean cand prepare cluster for next step
       run: |
-        make undeploy-fybrik
-        make clean-cluster-prepare
+        make clean-notebook-resources
+        make create-certs
+        make -C third_party/vault deploy
         killall kubectl || true
     - name: Read flow notebook tests with tls using system CA certs
       run: make run-notebook-readflow-tls-system-cacerts-tests
-    - name: Clean cluster
+    - name: Clean cand prepare cluster for next step
       if: ${{ ! github.event.pull_request.draft }}
       run: |
-        make undeploy-fybrik
-        make clean-cluster-prepare
+        make clean-notebook-resources
+        make -C third_party/vault deploy
         killall kubectl || true
     - name: Read flow notebook tests with katalog
       if: ${{ ! github.event.pull_request.draft }}

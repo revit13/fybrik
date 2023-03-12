@@ -4,6 +4,7 @@ include $(ROOT_DIR)/hack/make-rules/tools.mk
 
 KUBE_NAMESPACE ?= fybrik-system
 WITH_OPENSHIFT ?= false
+HELM_OP ?= install
 
 VAULT_VALUES_FILE ?= charts/vault/env/dev/plugin-secrets-values.yaml
 
@@ -13,7 +14,7 @@ deploy: $(TOOLBIN)/kubectl $(TOOLBIN)/helm
 	$(TOOLBIN)/kubectl create namespace $(KUBE_NAMESPACE) || true
 	$(TOOLBIN)/helm repo add hashicorp https://helm.releases.hashicorp.com
 	$(TOOLBIN)/helm dependency update $(ROOT_DIR)/charts/vault
-	$(TOOLBIN)/helm install vault $(ROOT_DIR)/charts/vault \
+	$(TOOLBIN)/helm $(HELM_OP) vault $(ROOT_DIR)/charts/vault \
 		--set "vault.global.openshift=$(WITH_OPENSHIFT)" \
                 --set "vault.injector.enabled=false" \
 		--values $(ROOT_DIR)/$(VAULT_VALUES_FILE) \

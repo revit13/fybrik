@@ -218,14 +218,14 @@ run-namescope-integration-tests:
 setup-cluster: export DOCKER_HOSTNAME?=localhost:5000
 setup-cluster: export DOCKER_NAMESPACE?=fybrik-system
 setup-cluster:
-ifeq ($(USE_EXISTING_CLUSTER),0)
+ifeq ($(USE_EXISTING_CLUSTER),0)	
 	$(MAKE) kind
-endif
 	$(MAKE) cluster-prepare
 	$(MAKE) docker-build docker-push
 	$(MAKE) -C test/services docker-build docker-push
 	$(MAKE) cluster-prepare-wait
 	$(MAKE) -C charts test
+endif
 	$(MAKE) deploy-fybrik
 ifeq ($(COPY_TEST_CACERTS), 1)
 	cd manager/testdata/notebook/read-flow-tls && ./copy-cacert-to-pods.sh
@@ -234,12 +234,16 @@ ifeq ($(RUN_VAULT_CONFIGURATION_SCRIPT),1)
 	$(MAKE) configure-vault
 endif
 
+.PHONY: create-certs
+ create-certs:
+ 	$(MAKE) -C third_party/kubernetes-reflector deploy
+	cd manager/testdata/notebook/read-flow-tls && ./setup-certs.sh
+
 .PHONY: cluster-prepare
 cluster-prepare:
 	$(MAKE) -C third_party/cert-manager deploy
 ifeq ($(DEPLOY_TLS_TEST_CERTS),1)
-	$(MAKE) -C third_party/kubernetes-reflector deploy
-	cd manager/testdata/notebook/read-flow-tls && ./setup-certs.sh
+	make create-certs
 endif
 ifeq ($(DEPLOY_OPENMETADATA_SERVER),1)
 	$(MAKE) -C third_party/openmetadata all

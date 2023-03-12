@@ -26,7 +26,7 @@ if [[ "${USE_OPENMETADATA_CATALOG}" -eq 1 ]]; then
   # Wait until curl command succeed
   c=0
   # -k flag is used to skip server verification to avoid errors regarding target host name 'localhost'
-  while [[ $(curl $certs -k -X POST $prefix:localhost:${local_port}/getAssetInfo -d '{"assetID": ${CATALOGED_ASSET}, "operationType": "read"}' -H "Content-type: application/json"   -H "X-Request-Datacatalog-Cred: QQQ") != *'assetID'* ]]
+  while [[ $(curl $certs -k -X DLEETE $prefix:localhost:${local_port}/deleteAsset -d '{"assetID": ${CATALOGED_ASSET}' -H "Content-type: application/json") != *'assetID'* ]]
   do
     echo "waiting for curl command to createAsset to succeed"
     ((c++)) && ((c==25)) && break

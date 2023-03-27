@@ -57,6 +57,9 @@ registry_create() {
           registry:2
     fi
   fi
+  # Document the local registry
+  # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
+  kubectl apply -f kind-registry-comfig-map.yaml
 }
 
 kind_delete() {
@@ -97,11 +100,11 @@ cleanup)
   ;;
 multi)
   header_text "Installing kind multi-cluster"
-  kind_create kind kind-config.yaml &
+  #kind_create kind kind-config.yaml &
   kind_create control kind-control-config.yaml &
   wait
-  registry_create
-  install_nginx_ingress control &
+ # registry_create
+  #install_nginx_ingress control &
   ;;
 *)
   header_text "Installing kind cluster"

@@ -31,27 +31,8 @@ coordinator:
     # vault service in local setup is exposed via nodeport
     address: http://control-control-plane:31752
 
-  # Configures the Razee instance to be used by the coordinator manager in a multicluster setup
-  razee:
-    # URL for Razee local deployment
-    url: "http://razeedash-api-lb.razee.svc.cluster.local:8081/graphql"
-    # Usernane for Razee local deployment (dev only - fake login)
-    user: "razee-dev@example.com"
-    # Password for Razee local deployment (dev only - fake password)
-    password: "password123"
-
 # Manager component
 manager:
   # Set to true to enable socat in the manager pod to forward
   # traffic from a localhost registry. Used only for development and integration tests.
   socat: true
-
-# OPA connector component
-opaConnector:
-  # Image name or a hub/image[:tag]
-  image: "serverpolicymanager-mock"
-
-# Katalog connector component
-katalogConnector:
-  # Image name or a hub/image[:tag]
-  image: "data-catalog-mock"

@@ -1,17 +1,17 @@
 # Copyright 2020 IBM Corp.
 # SPDX-License-Identifier: Apache-2.0
 # This script is meant for local development with kind
+set -x
 
 export DOCKER_HOSTNAME=localhost:5000
 export DOCKER_NAMESPACE=fybrik-system
 export VALUES_FILE=charts/fybrik/kind-control.values.yaml
 export VAULT_VALUES_FILE=charts/vault/env/dev/local-multi-cluster.yaml
+export HELM_SETTINGS=--set "coordinator.catalog=katalog"
 
 make kind-setup-multi
 kubectl config use-context kind-control
-make -C third_party/razee all
 
-kubectl config use-context kind-control
 make cluster-prepare
 make docker-minimal-it
 make cluster-prepare-wait

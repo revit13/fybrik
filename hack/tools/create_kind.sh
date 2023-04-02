@@ -57,9 +57,6 @@ registry_create() {
           registry:2
     fi
   fi
-  # Document the local registry
-  # https://github.com/kubernetes/enhancements/tree/master/keps/sig-cluster-lifecycle/generic/1755-communicating-a-local-registry
-  kubectl apply -f kind-registry-comfig-map.yaml
 }
 
 kind_delete() {
@@ -83,7 +80,7 @@ install_nginx_ingress() {
 
         echo Install ingress-nginx
         # Using v1.0.3 because of https://github.com/kubernetes/ingress-nginx/issues/7810
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.3/deploy/static/provider/kind/deploy.yaml
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v${INGINX_INGRESS_CONTROLLER}/deploy/static/provider/kind/deploy.yaml
         kubectl wait --namespace ingress-nginx \
           --for=condition=ready pod \
           --selector=app.kubernetes.io/component=controller \
@@ -100,11 +97,11 @@ cleanup)
   ;;
 multi)
   header_text "Installing kind multi-cluster"
-  #kind_create kind kind-config.yaml &
+  kind_create kind kind-config.yaml &
   kind_create control kind-control-config.yaml &
   wait
- # registry_create
-  #install_nginx_ingress control &
+  registry_create
+  install_nginx_ingress control &
   ;;
 *)
   header_text "Installing kind cluster"

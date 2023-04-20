@@ -1,0 +1,86 @@
+rm -Rf auto-generated/
+docker run --rm \
+	-v /data/revital/fybrik/pkg/multicluster/argocd:/local \
+	-u "217778265:10002" \
+	openapitools/openapi-generator-cli:v5.3.1 generate -g go \
+	--additional-properties=packageName=openapiclient,isGoSubmodule=false \
+	--global-property=apis,supportingFiles,apiDocs=false \
+	--git-host=fybrik.io \
+	--git-user-id=argocd \
+	--git-repo-id=argocd-go-models \
+	-o /local/auto-generated/client \
+	-i /local/swagger.json
+[main] INFO  o.o.codegen.DefaultGenerator - Generating with dryRun=false
+[main] INFO  o.o.c.ignore.CodegenIgnoreProcessor - Output directory (/local/auto-generated/client) does not exist, or is inaccessible. No file (.openapi-generator-ignore) will be evaluated.
+[main] INFO  o.o.codegen.DefaultGenerator - OpenAPI Generator: go (client)
+[main] INFO  o.o.codegen.DefaultGenerator - Generator 'go' is considered stable.
+[main] INFO  o.o.c.languages.AbstractGoCodegen - Environment variable GO_POST_PROCESS_FILE not defined so Go code may not be properly formatted. To define it, try `export GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w"` (Linux/Mac)
+[main] INFO  o.o.c.languages.AbstractGoCodegen - NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.DefaultGenerator - Skipping generation of models.
+[main] WARN  o.o.c.languages.AbstractGoCodegen - type (reserved word) cannot be used as parameter name. Renamed to type_
+[main] WARN  o.o.c.languages.AbstractGoCodegen - type (reserved word) cannot be used as model name. Renamed to model_type
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_account_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/AccountServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_application_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/ApplicationServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_application_set_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/ApplicationSetServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_certificate_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/CertificateServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_cluster_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/ClusterServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_gpg_key_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/GPGKeyServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_notification_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/NotificationServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_project_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/ProjectServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_repo_creds_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/RepoCredsServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_repository_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/RepositoryServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_session_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/SessionServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_settings_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/SettingsServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api_version_service.go
+[main] INFO  o.o.codegen.TemplateManager - Skipped /local/auto-generated/client/docs/VersionServiceApi.md (Skipped by apiDocs options supplied by user.)
+[main] INFO  o.o.codegen.utils.URLPathUtils - 'host' (OAS 2.0) or 'servers' (OAS 3.0) not defined in the spec. Default to [http://localhost] for server URL [http://localhost/]
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/api/openapi.yaml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/README.md
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/git_push.sh
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/.gitignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/configuration.go
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/client.go
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/response.go
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/go.mod
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/go.sum
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/.travis.yml
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/utils.go
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/.openapi-generator-ignore
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/.openapi-generator/VERSION
+[main] INFO  o.o.codegen.TemplateManager - writing file /local/auto-generated/client/.openapi-generator/FILES
+################################################################################
+# Thanks for using OpenAPI Generator.                                          #
+# Please consider donation to help us maintain this project 🙏                 #
+# https://opencollective.com/openapi_generator/donate                          #
+################################################################################
+#rm -f ../../../pkg/multicluster/argocd/auto-generated/client/go.mod ../../../pkg/multicluster/argocd/auto-generated/client/go.sum ../../../pkg/multicluster/argocd/auto-generated/client/.travis.yml
+rm -f ../../../pkg/multicluster/argocd/auto-generated/client/README.md ../../../pkg/multicluster/argocd/auto-generated/client/git_push.sh
+rm -f ../../../pkg/multicluster/argocd/auto-generated/client/.gitignore ../../../pkg/multicluster/argocd/auto-generated/client/.openapi-generator-ignore
+rm -r ../../../pkg/multicluster/argocd/auto-generated/client/api

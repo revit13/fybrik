@@ -1,0 +1,6 @@
+.gitignore
+.travis.yml
+go.mod
+git_push.sh
+README.md
+go.sum

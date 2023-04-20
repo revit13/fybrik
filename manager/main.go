@@ -36,6 +36,7 @@ import (
 	"fybrik.io/fybrik/pkg/logging"
 	"fybrik.io/fybrik/pkg/monitor"
 	"fybrik.io/fybrik/pkg/multicluster"
+	"fybrik.io/fybrik/pkg/multicluster/argocd"
 	"fybrik.io/fybrik/pkg/multicluster/local"
 	"fybrik.io/fybrik/pkg/multicluster/razee"
 	"fybrik.io/fybrik/pkg/utils"
@@ -340,6 +341,8 @@ func newPolicyManager() (pmclient.PolicyManager, error) {
 // newClusterManager decides based on the environment variables that are set which
 // cluster manager instance should be initiated.
 func newClusterManager(mgr manager.Manager) (multicluster.ClusterManager, error) {
+	//return argocd.NewArgoCDClusterManager("https://argo-argocd-server.argocd:443")
+	return argocd.NewArgoCDClusterManager("http://argo-argocd-server.argocd:80")
 	multiClusterGroup := os.Getenv("MULTICLUSTER_GROUP")
 	if user, razeeLocal := os.LookupEnv("RAZEE_USER"); razeeLocal {
 		razeeURL := strings.TrimSpace(os.Getenv("RAZEE_URL"))

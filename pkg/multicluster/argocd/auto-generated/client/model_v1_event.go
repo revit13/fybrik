@@ -19,9 +19,9 @@ type V1Event struct {
 	Action             *string            `json:"action,omitempty"`
 	Count              *int32             `json:"count,omitempty"`
 	EventTime          *V1MicroTime       `json:"eventTime,omitempty"`
-	FirstTimestamp     *V1Time            `json:"firstTimestamp,omitempty"`
+	FirstTimestamp     *string            `json:"firstTimestamp,omitempty"`
 	InvolvedObject     *V1ObjectReference `json:"involvedObject,omitempty"`
-	LastTimestamp      *V1Time            `json:"lastTimestamp,omitempty"`
+	LastTimestamp      *string            `json:"lastTimestamp,omitempty"`
 	Message            *string            `json:"message,omitempty"`
 	Metadata           *V1ObjectMeta      `json:"metadata,omitempty"`
 	Reason             *string            `json:"reason,omitempty"`
@@ -147,9 +147,9 @@ func (o *V1Event) SetEventTime(v V1MicroTime) {
 }
 
 // GetFirstTimestamp returns the FirstTimestamp field value if set, zero value otherwise.
-func (o *V1Event) GetFirstTimestamp() V1Time {
+func (o *V1Event) GetFirstTimestamp() string {
 	if o == nil || o.FirstTimestamp == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.FirstTimestamp
@@ -157,7 +157,7 @@ func (o *V1Event) GetFirstTimestamp() V1Time {
 
 // GetFirstTimestampOk returns a tuple with the FirstTimestamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1Event) GetFirstTimestampOk() (*V1Time, bool) {
+func (o *V1Event) GetFirstTimestampOk() (*string, bool) {
 	if o == nil || o.FirstTimestamp == nil {
 		return nil, false
 	}
@@ -173,8 +173,8 @@ func (o *V1Event) HasFirstTimestamp() bool {
 	return false
 }
 
-// SetFirstTimestamp gets a reference to the given V1Time and assigns it to the FirstTimestamp field.
-func (o *V1Event) SetFirstTimestamp(v V1Time) {
+// SetFirstTimestamp gets a reference to the given string and assigns it to the FirstTimestamp field.
+func (o *V1Event) SetFirstTimestamp(v string) {
 	o.FirstTimestamp = &v
 }
 
@@ -211,9 +211,9 @@ func (o *V1Event) SetInvolvedObject(v V1ObjectReference) {
 }
 
 // GetLastTimestamp returns the LastTimestamp field value if set, zero value otherwise.
-func (o *V1Event) GetLastTimestamp() V1Time {
+func (o *V1Event) GetLastTimestamp() string {
 	if o == nil || o.LastTimestamp == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.LastTimestamp
@@ -221,7 +221,7 @@ func (o *V1Event) GetLastTimestamp() V1Time {
 
 // GetLastTimestampOk returns a tuple with the LastTimestamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1Event) GetLastTimestampOk() (*V1Time, bool) {
+func (o *V1Event) GetLastTimestampOk() (*string, bool) {
 	if o == nil || o.LastTimestamp == nil {
 		return nil, false
 	}
@@ -237,8 +237,8 @@ func (o *V1Event) HasLastTimestamp() bool {
 	return false
 }
 
-// SetLastTimestamp gets a reference to the given V1Time and assigns it to the LastTimestamp field.
-func (o *V1Event) SetLastTimestamp(v V1Time) {
+// SetLastTimestamp gets a reference to the given string and assigns it to the LastTimestamp field.
+func (o *V1Event) SetLastTimestamp(v string) {
 	o.LastTimestamp = &v
 }
 

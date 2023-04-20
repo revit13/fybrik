@@ -16,9 +16,9 @@ import (
 
 // V1alpha1ClusterCacheInfo struct for V1alpha1ClusterCacheInfo
 type V1alpha1ClusterCacheInfo struct {
-	ApisCount         *string `json:"apisCount,omitempty"`
-	LastCacheSyncTime *V1Time `json:"lastCacheSyncTime,omitempty"`
-	ResourcesCount    *string `json:"resourcesCount,omitempty"`
+	ApisCount         *int32  `json:"apisCount,omitempty"`
+	LastCacheSyncTime *string `json:"lastCacheSyncTime,omitempty"`
+	ResourcesCount    *int32  `json:"resourcesCount,omitempty"`
 }
 
 // NewV1alpha1ClusterCacheInfo instantiates a new V1alpha1ClusterCacheInfo object
@@ -39,9 +39,9 @@ func NewV1alpha1ClusterCacheInfoWithDefaults() *V1alpha1ClusterCacheInfo {
 }
 
 // GetApisCount returns the ApisCount field value if set, zero value otherwise.
-func (o *V1alpha1ClusterCacheInfo) GetApisCount() string {
+func (o *V1alpha1ClusterCacheInfo) GetApisCount() int32 {
 	if o == nil || o.ApisCount == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 	return *o.ApisCount
@@ -49,7 +49,7 @@ func (o *V1alpha1ClusterCacheInfo) GetApisCount() string {
 
 // GetApisCountOk returns a tuple with the ApisCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ClusterCacheInfo) GetApisCountOk() (*string, bool) {
+func (o *V1alpha1ClusterCacheInfo) GetApisCountOk() (*int32, bool) {
 	if o == nil || o.ApisCount == nil {
 		return nil, false
 	}
@@ -65,15 +65,15 @@ func (o *V1alpha1ClusterCacheInfo) HasApisCount() bool {
 	return false
 }
 
-// SetApisCount gets a reference to the given string and assigns it to the ApisCount field.
-func (o *V1alpha1ClusterCacheInfo) SetApisCount(v string) {
+// SetApisCount gets a reference to the given int32 and assigns it to the ApisCount field.
+func (o *V1alpha1ClusterCacheInfo) SetApisCount(v int32) {
 	o.ApisCount = &v
 }
 
 // GetLastCacheSyncTime returns the LastCacheSyncTime field value if set, zero value otherwise.
-func (o *V1alpha1ClusterCacheInfo) GetLastCacheSyncTime() V1Time {
+func (o *V1alpha1ClusterCacheInfo) GetLastCacheSyncTime() string {
 	if o == nil || o.LastCacheSyncTime == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.LastCacheSyncTime
@@ -81,7 +81,7 @@ func (o *V1alpha1ClusterCacheInfo) GetLastCacheSyncTime() V1Time {
 
 // GetLastCacheSyncTimeOk returns a tuple with the LastCacheSyncTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ClusterCacheInfo) GetLastCacheSyncTimeOk() (*V1Time, bool) {
+func (o *V1alpha1ClusterCacheInfo) GetLastCacheSyncTimeOk() (*string, bool) {
 	if o == nil || o.LastCacheSyncTime == nil {
 		return nil, false
 	}
@@ -97,15 +97,15 @@ func (o *V1alpha1ClusterCacheInfo) HasLastCacheSyncTime() bool {
 	return false
 }
 
-// SetLastCacheSyncTime gets a reference to the given V1Time and assigns it to the LastCacheSyncTime field.
-func (o *V1alpha1ClusterCacheInfo) SetLastCacheSyncTime(v V1Time) {
+// SetLastCacheSyncTime gets a reference to the given string and assigns it to the LastCacheSyncTime field.
+func (o *V1alpha1ClusterCacheInfo) SetLastCacheSyncTime(v string) {
 	o.LastCacheSyncTime = &v
 }
 
 // GetResourcesCount returns the ResourcesCount field value if set, zero value otherwise.
-func (o *V1alpha1ClusterCacheInfo) GetResourcesCount() string {
+func (o *V1alpha1ClusterCacheInfo) GetResourcesCount() int32 {
 	if o == nil || o.ResourcesCount == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 	return *o.ResourcesCount
@@ -113,7 +113,7 @@ func (o *V1alpha1ClusterCacheInfo) GetResourcesCount() string {
 
 // GetResourcesCountOk returns a tuple with the ResourcesCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ClusterCacheInfo) GetResourcesCountOk() (*string, bool) {
+func (o *V1alpha1ClusterCacheInfo) GetResourcesCountOk() (*int32, bool) {
 	if o == nil || o.ResourcesCount == nil {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *V1alpha1ClusterCacheInfo) HasResourcesCount() bool {
 	return false
 }
 
-// SetResourcesCount gets a reference to the given string and assigns it to the ResourcesCount field.
-func (o *V1alpha1ClusterCacheInfo) SetResourcesCount(v string) {
+// SetResourcesCount gets a reference to the given int32 and assigns it to the ResourcesCount field.
+func (o *V1alpha1ClusterCacheInfo) SetResourcesCount(v int32) {
 	o.ResourcesCount = &v
 }
 

@@ -12,10 +12,8 @@ export HELM_SETTINGS="--set "coordinator.catalog=katalog""
 export DEPLOY_OPENMETADATA_SERVER=0
 
 make kind-setup-multi
-kubectl config use-context kind-control
-make -C third_party/razee all
 
-# setup control cluster
+# setup coordinator cluster
 kubectl config use-context kind-control
 make cluster-prepare
 make docker-build
@@ -35,3 +33,10 @@ make vault-setup-kind-multi
 # Switch to control cluster after setup
 kubectl config use-context kind-control
 
+
+make -C third_party/argocd deploy
+make -C third_party/argocd deploy-wait
+
+
+#argocd login --core
+#argocd cluster add kind-kind -y

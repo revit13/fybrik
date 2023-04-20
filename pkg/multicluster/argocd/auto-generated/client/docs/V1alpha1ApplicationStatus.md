@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **Conditions** | Pointer to [**[]V1alpha1ApplicationCondition**](V1alpha1ApplicationCondition.md) |  | [optional] 
 **Health** | Pointer to [**V1alpha1HealthStatus**](V1alpha1HealthStatus.md) |  | [optional] 
 **History** | Pointer to [**[]V1alpha1RevisionHistory**](V1alpha1RevisionHistory.md) |  | [optional] 
-**ObservedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**ObservedAt** | Pointer to **string** |  | [optional] 
 **OperationState** | Pointer to [**V1alpha1OperationState**](V1alpha1OperationState.md) |  | [optional] 
-**ReconciledAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**ReconciledAt** | Pointer to **string** |  | [optional] 
 **ResourceHealthSource** | Pointer to **string** |  | [optional] 
 **Resources** | Pointer to [**[]V1alpha1ResourceStatus**](V1alpha1ResourceStatus.md) |  | [optional] 
 **SourceType** | Pointer to **string** |  | [optional] 
@@ -113,20 +113,20 @@ HasHistory returns a boolean if a field has been set.
 
 ### GetObservedAt
 
-`func (o *V1alpha1ApplicationStatus) GetObservedAt() V1Time`
+`func (o *V1alpha1ApplicationStatus) GetObservedAt() string`
 
 GetObservedAt returns the ObservedAt field if non-nil, zero value otherwise.
 
 ### GetObservedAtOk
 
-`func (o *V1alpha1ApplicationStatus) GetObservedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1ApplicationStatus) GetObservedAtOk() (*string, bool)`
 
 GetObservedAtOk returns a tuple with the ObservedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetObservedAt
 
-`func (o *V1alpha1ApplicationStatus) SetObservedAt(v V1Time)`
+`func (o *V1alpha1ApplicationStatus) SetObservedAt(v string)`
 
 SetObservedAt sets ObservedAt field to given value.
 
@@ -163,20 +163,20 @@ HasOperationState returns a boolean if a field has been set.
 
 ### GetReconciledAt
 
-`func (o *V1alpha1ApplicationStatus) GetReconciledAt() V1Time`
+`func (o *V1alpha1ApplicationStatus) GetReconciledAt() string`
 
 GetReconciledAt returns the ReconciledAt field if non-nil, zero value otherwise.
 
 ### GetReconciledAtOk
 
-`func (o *V1alpha1ApplicationStatus) GetReconciledAtOk() (*V1Time, bool)`
+`func (o *V1alpha1ApplicationStatus) GetReconciledAtOk() (*string, bool)`
 
 GetReconciledAtOk returns a tuple with the ReconciledAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetReconciledAt
 
-`func (o *V1alpha1ApplicationStatus) SetReconciledAt(v V1Time)`
+`func (o *V1alpha1ApplicationStatus) SetReconciledAt(v string)`
 
 SetReconciledAt sets ReconciledAt field to given value.
 

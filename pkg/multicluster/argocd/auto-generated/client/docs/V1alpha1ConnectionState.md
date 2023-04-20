@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AttemptedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**AttemptedAt** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Status** | Pointer to **string** |  | [optional] 
 
@@ -29,20 +29,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetAttemptedAt
 
-`func (o *V1alpha1ConnectionState) GetAttemptedAt() V1Time`
+`func (o *V1alpha1ConnectionState) GetAttemptedAt() string`
 
 GetAttemptedAt returns the AttemptedAt field if non-nil, zero value otherwise.
 
 ### GetAttemptedAtOk
 
-`func (o *V1alpha1ConnectionState) GetAttemptedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1ConnectionState) GetAttemptedAtOk() (*string, bool)`
 
 GetAttemptedAtOk returns a tuple with the AttemptedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAttemptedAt
 
-`func (o *V1alpha1ConnectionState) SetAttemptedAt(v V1Time)`
+`func (o *V1alpha1ConnectionState) SetAttemptedAt(v string)`
 
 SetAttemptedAt sets AttemptedAt field to given value.
 

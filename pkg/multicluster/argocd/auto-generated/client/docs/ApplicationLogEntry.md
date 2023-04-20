@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Content** | Pointer to **string** |  | [optional] 
 **Last** | Pointer to **bool** |  | [optional] 
 **PodName** | Pointer to **string** |  | [optional] 
-**TimeStamp** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**TimeStamp** | Pointer to **string** |  | [optional] 
 **TimeStampStr** | Pointer to **string** |  | [optional] 
 
 ## Methods
@@ -106,20 +106,20 @@ HasPodName returns a boolean if a field has been set.
 
 ### GetTimeStamp
 
-`func (o *ApplicationLogEntry) GetTimeStamp() V1Time`
+`func (o *ApplicationLogEntry) GetTimeStamp() string`
 
 GetTimeStamp returns the TimeStamp field if non-nil, zero value otherwise.
 
 ### GetTimeStampOk
 
-`func (o *ApplicationLogEntry) GetTimeStampOk() (*V1Time, bool)`
+`func (o *ApplicationLogEntry) GetTimeStampOk() (*string, bool)`
 
 GetTimeStampOk returns a tuple with the TimeStamp field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTimeStamp
 
-`func (o *ApplicationLogEntry) SetTimeStamp(v V1Time)`
+`func (o *ApplicationLogEntry) SetTimeStamp(v string)`
 
 SetTimeStamp sets TimeStamp field to given value.
 

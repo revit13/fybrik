@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**CreatedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**CreatedAt** | Pointer to **string** |  | [optional] 
 **Health** | Pointer to [**V1alpha1HealthStatus**](V1alpha1HealthStatus.md) |  | [optional] 
 **Images** | Pointer to **[]string** |  | [optional] 
 **Info** | Pointer to [**[]V1alpha1InfoItem**](V1alpha1InfoItem.md) |  | [optional] 
@@ -34,20 +34,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetCreatedAt
 
-`func (o *V1alpha1ResourceNode) GetCreatedAt() V1Time`
+`func (o *V1alpha1ResourceNode) GetCreatedAt() string`
 
 GetCreatedAt returns the CreatedAt field if non-nil, zero value otherwise.
 
 ### GetCreatedAtOk
 
-`func (o *V1alpha1ResourceNode) GetCreatedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1ResourceNode) GetCreatedAtOk() (*string, bool)`
 
 GetCreatedAtOk returns a tuple with the CreatedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCreatedAt
 
-`func (o *V1alpha1ResourceNode) SetCreatedAt(v V1Time)`
+`func (o *V1alpha1ResourceNode) SetCreatedAt(v string)`
 
 SetCreatedAt sets CreatedAt field to given value.
 

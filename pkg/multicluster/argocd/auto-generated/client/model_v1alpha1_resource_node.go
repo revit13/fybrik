@@ -16,7 +16,7 @@ import (
 
 // V1alpha1ResourceNode struct for V1alpha1ResourceNode
 type V1alpha1ResourceNode struct {
-	CreatedAt       *V1Time                         `json:"createdAt,omitempty"`
+	CreatedAt       *string                         `json:"createdAt,omitempty"`
 	Health          *V1alpha1HealthStatus           `json:"health,omitempty"`
 	Images          *[]string                       `json:"images,omitempty"`
 	Info            *[]V1alpha1InfoItem             `json:"info,omitempty"`
@@ -44,9 +44,9 @@ func NewV1alpha1ResourceNodeWithDefaults() *V1alpha1ResourceNode {
 }
 
 // GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *V1alpha1ResourceNode) GetCreatedAt() V1Time {
+func (o *V1alpha1ResourceNode) GetCreatedAt() string {
 	if o == nil || o.CreatedAt == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.CreatedAt
@@ -54,7 +54,7 @@ func (o *V1alpha1ResourceNode) GetCreatedAt() V1Time {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ResourceNode) GetCreatedAtOk() (*V1Time, bool) {
+func (o *V1alpha1ResourceNode) GetCreatedAtOk() (*string, bool) {
 	if o == nil || o.CreatedAt == nil {
 		return nil, false
 	}
@@ -70,8 +70,8 @@ func (o *V1alpha1ResourceNode) HasCreatedAt() bool {
 	return false
 }
 
-// SetCreatedAt gets a reference to the given V1Time and assigns it to the CreatedAt field.
-func (o *V1alpha1ResourceNode) SetCreatedAt(v V1Time) {
+// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+func (o *V1alpha1ResourceNode) SetCreatedAt(v string) {
 	o.CreatedAt = &v
 }
 

@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **Action** | Pointer to **string** |  | [optional] 
 **Count** | Pointer to **int32** |  | [optional] 
 **EventTime** | Pointer to [**V1MicroTime**](V1MicroTime.md) |  | [optional] 
-**FirstTimestamp** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**FirstTimestamp** | Pointer to **string** |  | [optional] 
 **InvolvedObject** | Pointer to [**V1ObjectReference**](V1ObjectReference.md) |  | [optional] 
-**LastTimestamp** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**LastTimestamp** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Metadata** | Pointer to [**V1ObjectMeta**](V1ObjectMeta.md) |  | [optional] 
 **Reason** | Pointer to **string** |  | [optional] 
@@ -116,20 +116,20 @@ HasEventTime returns a boolean if a field has been set.
 
 ### GetFirstTimestamp
 
-`func (o *V1Event) GetFirstTimestamp() V1Time`
+`func (o *V1Event) GetFirstTimestamp() string`
 
 GetFirstTimestamp returns the FirstTimestamp field if non-nil, zero value otherwise.
 
 ### GetFirstTimestampOk
 
-`func (o *V1Event) GetFirstTimestampOk() (*V1Time, bool)`
+`func (o *V1Event) GetFirstTimestampOk() (*string, bool)`
 
 GetFirstTimestampOk returns a tuple with the FirstTimestamp field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFirstTimestamp
 
-`func (o *V1Event) SetFirstTimestamp(v V1Time)`
+`func (o *V1Event) SetFirstTimestamp(v string)`
 
 SetFirstTimestamp sets FirstTimestamp field to given value.
 
@@ -166,20 +166,20 @@ HasInvolvedObject returns a boolean if a field has been set.
 
 ### GetLastTimestamp
 
-`func (o *V1Event) GetLastTimestamp() V1Time`
+`func (o *V1Event) GetLastTimestamp() string`
 
 GetLastTimestamp returns the LastTimestamp field if non-nil, zero value otherwise.
 
 ### GetLastTimestampOk
 
-`func (o *V1Event) GetLastTimestampOk() (*V1Time, bool)`
+`func (o *V1Event) GetLastTimestampOk() (*string, bool)`
 
 GetLastTimestampOk returns a tuple with the LastTimestamp field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLastTimestamp
 
-`func (o *V1Event) SetLastTimestamp(v V1Time)`
+`func (o *V1Event) SetLastTimestamp(v string)`
 
 SetLastTimestamp sets LastTimestamp field to given value.
 

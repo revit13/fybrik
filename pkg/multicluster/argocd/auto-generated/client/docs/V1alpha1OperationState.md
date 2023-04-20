@@ -4,12 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**FinishedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**FinishedAt** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** | Message holds any pertinent messages when attempting to perform operation (typically errors). | [optional] 
 **Operation** | Pointer to [**V1alpha1Operation**](V1alpha1Operation.md) |  | [optional] 
 **Phase** | Pointer to **string** |  | [optional] 
 **RetryCount** | Pointer to **string** |  | [optional] 
-**StartedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**StartedAt** | Pointer to **string** |  | [optional] 
 **SyncResult** | Pointer to [**V1alpha1SyncOperationResult**](V1alpha1SyncOperationResult.md) |  | [optional] 
 
 ## Methods
@@ -33,20 +33,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetFinishedAt
 
-`func (o *V1alpha1OperationState) GetFinishedAt() V1Time`
+`func (o *V1alpha1OperationState) GetFinishedAt() string`
 
 GetFinishedAt returns the FinishedAt field if non-nil, zero value otherwise.
 
 ### GetFinishedAtOk
 
-`func (o *V1alpha1OperationState) GetFinishedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1OperationState) GetFinishedAtOk() (*string, bool)`
 
 GetFinishedAtOk returns a tuple with the FinishedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFinishedAt
 
-`func (o *V1alpha1OperationState) SetFinishedAt(v V1Time)`
+`func (o *V1alpha1OperationState) SetFinishedAt(v string)`
 
 SetFinishedAt sets FinishedAt field to given value.
 
@@ -158,20 +158,20 @@ HasRetryCount returns a boolean if a field has been set.
 
 ### GetStartedAt
 
-`func (o *V1alpha1OperationState) GetStartedAt() V1Time`
+`func (o *V1alpha1OperationState) GetStartedAt() string`
 
 GetStartedAt returns the StartedAt field if non-nil, zero value otherwise.
 
 ### GetStartedAtOk
 
-`func (o *V1alpha1OperationState) GetStartedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1OperationState) GetStartedAtOk() (*string, bool)`
 
 GetStartedAtOk returns a tuple with the StartedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStartedAt
 
-`func (o *V1alpha1OperationState) SetStartedAt(v V1Time)`
+`func (o *V1alpha1OperationState) SetStartedAt(v string)`
 
 SetStartedAt sets StartedAt field to given value.
 

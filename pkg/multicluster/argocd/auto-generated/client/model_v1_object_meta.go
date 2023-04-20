@@ -19,9 +19,9 @@ type V1ObjectMeta struct {
 	Annotations *map[string]string `json:"annotations,omitempty"`
 	// Deprecated: ClusterName is a legacy field that was always cleared by the system and never used; it will be removed completely in 1.25.  The name in the go struct is changed to help clients detect accidental use.  +optional
 	ClusterName                *string   `json:"clusterName,omitempty"`
-	CreationTimestamp          *V1Time   `json:"creationTimestamp,omitempty"`
+	CreationTimestamp          *string   `json:"creationTimestamp,omitempty"`
 	DeletionGracePeriodSeconds *string   `json:"deletionGracePeriodSeconds,omitempty"`
-	DeletionTimestamp          *V1Time   `json:"deletionTimestamp,omitempty"`
+	DeletionTimestamp          *string   `json:"deletionTimestamp,omitempty"`
 	Finalizers                 *[]string `json:"finalizers,omitempty"`
 	// GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.  If this field is specified and the generated name exists, the server will return a 409.  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency +optional
 	GenerateName *string            `json:"generateName,omitempty"`
@@ -122,9 +122,9 @@ func (o *V1ObjectMeta) SetClusterName(v string) {
 }
 
 // GetCreationTimestamp returns the CreationTimestamp field value if set, zero value otherwise.
-func (o *V1ObjectMeta) GetCreationTimestamp() V1Time {
+func (o *V1ObjectMeta) GetCreationTimestamp() string {
 	if o == nil || o.CreationTimestamp == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.CreationTimestamp
@@ -132,7 +132,7 @@ func (o *V1ObjectMeta) GetCreationTimestamp() V1Time {
 
 // GetCreationTimestampOk returns a tuple with the CreationTimestamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1ObjectMeta) GetCreationTimestampOk() (*V1Time, bool) {
+func (o *V1ObjectMeta) GetCreationTimestampOk() (*string, bool) {
 	if o == nil || o.CreationTimestamp == nil {
 		return nil, false
 	}
@@ -148,8 +148,8 @@ func (o *V1ObjectMeta) HasCreationTimestamp() bool {
 	return false
 }
 
-// SetCreationTimestamp gets a reference to the given V1Time and assigns it to the CreationTimestamp field.
-func (o *V1ObjectMeta) SetCreationTimestamp(v V1Time) {
+// SetCreationTimestamp gets a reference to the given string and assigns it to the CreationTimestamp field.
+func (o *V1ObjectMeta) SetCreationTimestamp(v string) {
 	o.CreationTimestamp = &v
 }
 
@@ -186,9 +186,9 @@ func (o *V1ObjectMeta) SetDeletionGracePeriodSeconds(v string) {
 }
 
 // GetDeletionTimestamp returns the DeletionTimestamp field value if set, zero value otherwise.
-func (o *V1ObjectMeta) GetDeletionTimestamp() V1Time {
+func (o *V1ObjectMeta) GetDeletionTimestamp() string {
 	if o == nil || o.DeletionTimestamp == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.DeletionTimestamp
@@ -196,7 +196,7 @@ func (o *V1ObjectMeta) GetDeletionTimestamp() V1Time {
 
 // GetDeletionTimestampOk returns a tuple with the DeletionTimestamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1ObjectMeta) GetDeletionTimestampOk() (*V1Time, bool) {
+func (o *V1ObjectMeta) GetDeletionTimestampOk() (*string, bool) {
 	if o == nil || o.DeletionTimestamp == nil {
 		return nil, false
 	}
@@ -212,8 +212,8 @@ func (o *V1ObjectMeta) HasDeletionTimestamp() bool {
 	return false
 }
 
-// SetDeletionTimestamp gets a reference to the given V1Time and assigns it to the DeletionTimestamp field.
-func (o *V1ObjectMeta) SetDeletionTimestamp(v V1Time) {
+// SetDeletionTimestamp gets a reference to the given string and assigns it to the DeletionTimestamp field.
+func (o *V1ObjectMeta) SetDeletionTimestamp(v string) {
 	o.DeletionTimestamp = &v
 }
 

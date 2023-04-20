@@ -6,9 +6,9 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Annotations** | Pointer to **map[string]string** |  | [optional] 
 **ClusterName** | Pointer to **string** | Deprecated: ClusterName is a legacy field that was always cleared by the system and never used; it will be removed completely in 1.25.  The name in the go struct is changed to help clients detect accidental use.  +optional | [optional] 
-**CreationTimestamp** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**CreationTimestamp** | Pointer to **string** |  | [optional] 
 **DeletionGracePeriodSeconds** | Pointer to **string** |  | [optional] 
-**DeletionTimestamp** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**DeletionTimestamp** | Pointer to **string** |  | [optional] 
 **Finalizers** | Pointer to **[]string** |  | [optional] 
 **GenerateName** | Pointer to **string** | GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.  If this field is specified and the generated name exists, the server will return a 409.  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency +optional | [optional] 
 **Generation** | Pointer to **string** |  | [optional] 
@@ -92,20 +92,20 @@ HasClusterName returns a boolean if a field has been set.
 
 ### GetCreationTimestamp
 
-`func (o *V1ObjectMeta) GetCreationTimestamp() V1Time`
+`func (o *V1ObjectMeta) GetCreationTimestamp() string`
 
 GetCreationTimestamp returns the CreationTimestamp field if non-nil, zero value otherwise.
 
 ### GetCreationTimestampOk
 
-`func (o *V1ObjectMeta) GetCreationTimestampOk() (*V1Time, bool)`
+`func (o *V1ObjectMeta) GetCreationTimestampOk() (*string, bool)`
 
 GetCreationTimestampOk returns a tuple with the CreationTimestamp field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCreationTimestamp
 
-`func (o *V1ObjectMeta) SetCreationTimestamp(v V1Time)`
+`func (o *V1ObjectMeta) SetCreationTimestamp(v string)`
 
 SetCreationTimestamp sets CreationTimestamp field to given value.
 
@@ -142,20 +142,20 @@ HasDeletionGracePeriodSeconds returns a boolean if a field has been set.
 
 ### GetDeletionTimestamp
 
-`func (o *V1ObjectMeta) GetDeletionTimestamp() V1Time`
+`func (o *V1ObjectMeta) GetDeletionTimestamp() string`
 
 GetDeletionTimestamp returns the DeletionTimestamp field if non-nil, zero value otherwise.
 
 ### GetDeletionTimestampOk
 
-`func (o *V1ObjectMeta) GetDeletionTimestampOk() (*V1Time, bool)`
+`func (o *V1ObjectMeta) GetDeletionTimestampOk() (*string, bool)`
 
 GetDeletionTimestampOk returns a tuple with the DeletionTimestamp field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDeletionTimestamp
 
-`func (o *V1ObjectMeta) SetDeletionTimestamp(v V1Time)`
+`func (o *V1ObjectMeta) SetDeletionTimestamp(v string)`
 
 SetDeletionTimestamp sets DeletionTimestamp field to given value.
 

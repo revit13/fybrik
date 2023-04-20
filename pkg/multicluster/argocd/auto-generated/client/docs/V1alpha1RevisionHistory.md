@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**DeployStartedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
-**DeployedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**DeployStartedAt** | Pointer to **string** |  | [optional] 
+**DeployedAt** | Pointer to **string** |  | [optional] 
 **Id** | Pointer to **string** |  | [optional] 
 **Revision** | Pointer to **string** |  | [optional] 
 **Revisions** | Pointer to **[]string** |  | [optional] 
@@ -33,20 +33,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetDeployStartedAt
 
-`func (o *V1alpha1RevisionHistory) GetDeployStartedAt() V1Time`
+`func (o *V1alpha1RevisionHistory) GetDeployStartedAt() string`
 
 GetDeployStartedAt returns the DeployStartedAt field if non-nil, zero value otherwise.
 
 ### GetDeployStartedAtOk
 
-`func (o *V1alpha1RevisionHistory) GetDeployStartedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1RevisionHistory) GetDeployStartedAtOk() (*string, bool)`
 
 GetDeployStartedAtOk returns a tuple with the DeployStartedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDeployStartedAt
 
-`func (o *V1alpha1RevisionHistory) SetDeployStartedAt(v V1Time)`
+`func (o *V1alpha1RevisionHistory) SetDeployStartedAt(v string)`
 
 SetDeployStartedAt sets DeployStartedAt field to given value.
 
@@ -58,20 +58,20 @@ HasDeployStartedAt returns a boolean if a field has been set.
 
 ### GetDeployedAt
 
-`func (o *V1alpha1RevisionHistory) GetDeployedAt() V1Time`
+`func (o *V1alpha1RevisionHistory) GetDeployedAt() string`
 
 GetDeployedAt returns the DeployedAt field if non-nil, zero value otherwise.
 
 ### GetDeployedAtOk
 
-`func (o *V1alpha1RevisionHistory) GetDeployedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1RevisionHistory) GetDeployedAtOk() (*string, bool)`
 
 GetDeployedAtOk returns a tuple with the DeployedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDeployedAt
 
-`func (o *V1alpha1RevisionHistory) SetDeployedAt(v V1Time)`
+`func (o *V1alpha1RevisionHistory) SetDeployedAt(v string)`
 
 SetDeployedAt sets DeployedAt field to given value.
 

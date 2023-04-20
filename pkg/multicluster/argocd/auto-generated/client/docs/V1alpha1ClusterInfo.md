@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ApiVersions** | Pointer to **[]string** |  | [optional] 
-**ApplicationsCount** | Pointer to **string** |  | [optional] 
+**ApplicationsCount** | Pointer to **int32** |  | [optional] 
 **CacheInfo** | Pointer to [**V1alpha1ClusterCacheInfo**](V1alpha1ClusterCacheInfo.md) |  | [optional] 
 **ConnectionState** | Pointer to [**V1alpha1ConnectionState**](V1alpha1ConnectionState.md) |  | [optional] 
 **ServerVersion** | Pointer to **string** |  | [optional] 
@@ -56,20 +56,20 @@ HasApiVersions returns a boolean if a field has been set.
 
 ### GetApplicationsCount
 
-`func (o *V1alpha1ClusterInfo) GetApplicationsCount() string`
+`func (o *V1alpha1ClusterInfo) GetApplicationsCount() int32`
 
 GetApplicationsCount returns the ApplicationsCount field if non-nil, zero value otherwise.
 
 ### GetApplicationsCountOk
 
-`func (o *V1alpha1ClusterInfo) GetApplicationsCountOk() (*string, bool)`
+`func (o *V1alpha1ClusterInfo) GetApplicationsCountOk() (*int32, bool)`
 
 GetApplicationsCountOk returns a tuple with the ApplicationsCount field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetApplicationsCount
 
-`func (o *V1alpha1ClusterInfo) SetApplicationsCount(v string)`
+`func (o *V1alpha1ClusterInfo) SetApplicationsCount(v int32)`
 
 SetApplicationsCount sets ApplicationsCount field to given value.
 

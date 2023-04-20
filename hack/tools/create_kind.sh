@@ -84,7 +84,22 @@ install_nginx_ingress() {
           --for=condition=ready pod \
           --selector=app.kubernetes.io/component=controller \
           --timeout=90s
-        kubectl apply -f ingress-nginx.yaml -n "$KUBE_NAMESPACE"
+        # Apply the Vault ingress
+        # Related to https://github.com/cert-manager/cert-manager/issues/2908
+        # webhook not really ready after "helm install --wait"
+        # A workaround is to loop until the ingress is applied as expected
+        CMD="kubectl apply -f ingress-nginx.yaml -n ${KUBE_NAMESPACE}"
+
+        count=0
+        until $CMD
+        do
+        if [[ $count -eq 10 ]]
+        then
+          break
+        fi
+        sleep 1
+        ((count=count+1))
+        done
 }
 
 case "$op" in

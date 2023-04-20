@@ -5,15 +5,12 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **CommonAnnotations** | Pointer to **map[string]string** |  | [optional] 
-**CommonAnnotationsEnvsubst** | Pointer to **bool** |  | [optional] 
 **CommonLabels** | Pointer to **map[string]string** |  | [optional] 
 **ForceCommonAnnotations** | Pointer to **bool** |  | [optional] 
 **ForceCommonLabels** | Pointer to **bool** |  | [optional] 
 **Images** | Pointer to **[]string** |  | [optional] 
 **NamePrefix** | Pointer to **string** |  | [optional] 
 **NameSuffix** | Pointer to **string** |  | [optional] 
-**Namespace** | Pointer to **string** |  | [optional] 
-**Replicas** | Pointer to [**[]V1alpha1KustomizeReplica**](V1alpha1KustomizeReplica.md) |  | [optional] 
 **Version** | Pointer to **string** |  | [optional] 
 
 ## Methods
@@ -59,31 +56,6 @@ SetCommonAnnotations sets CommonAnnotations field to given value.
 `func (o *V1alpha1ApplicationSourceKustomize) HasCommonAnnotations() bool`
 
 HasCommonAnnotations returns a boolean if a field has been set.
-
-### GetCommonAnnotationsEnvsubst
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetCommonAnnotationsEnvsubst() bool`
-
-GetCommonAnnotationsEnvsubst returns the CommonAnnotationsEnvsubst field if non-nil, zero value otherwise.
-
-### GetCommonAnnotationsEnvsubstOk
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetCommonAnnotationsEnvsubstOk() (*bool, bool)`
-
-GetCommonAnnotationsEnvsubstOk returns a tuple with the CommonAnnotationsEnvsubst field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetCommonAnnotationsEnvsubst
-
-`func (o *V1alpha1ApplicationSourceKustomize) SetCommonAnnotationsEnvsubst(v bool)`
-
-SetCommonAnnotationsEnvsubst sets CommonAnnotationsEnvsubst field to given value.
-
-### HasCommonAnnotationsEnvsubst
-
-`func (o *V1alpha1ApplicationSourceKustomize) HasCommonAnnotationsEnvsubst() bool`
-
-HasCommonAnnotationsEnvsubst returns a boolean if a field has been set.
 
 ### GetCommonLabels
 
@@ -234,56 +206,6 @@ SetNameSuffix sets NameSuffix field to given value.
 `func (o *V1alpha1ApplicationSourceKustomize) HasNameSuffix() bool`
 
 HasNameSuffix returns a boolean if a field has been set.
-
-### GetNamespace
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetNamespace() string`
-
-GetNamespace returns the Namespace field if non-nil, zero value otherwise.
-
-### GetNamespaceOk
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetNamespaceOk() (*string, bool)`
-
-GetNamespaceOk returns a tuple with the Namespace field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetNamespace
-
-`func (o *V1alpha1ApplicationSourceKustomize) SetNamespace(v string)`
-
-SetNamespace sets Namespace field to given value.
-
-### HasNamespace
-
-`func (o *V1alpha1ApplicationSourceKustomize) HasNamespace() bool`
-
-HasNamespace returns a boolean if a field has been set.
-
-### GetReplicas
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetReplicas() []V1alpha1KustomizeReplica`
-
-GetReplicas returns the Replicas field if non-nil, zero value otherwise.
-
-### GetReplicasOk
-
-`func (o *V1alpha1ApplicationSourceKustomize) GetReplicasOk() (*[]V1alpha1KustomizeReplica, bool)`
-
-GetReplicasOk returns a tuple with the Replicas field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetReplicas
-
-`func (o *V1alpha1ApplicationSourceKustomize) SetReplicas(v []V1alpha1KustomizeReplica)`
-
-SetReplicas sets Replicas field to given value.
-
-### HasReplicas
-
-`func (o *V1alpha1ApplicationSourceKustomize) HasReplicas() bool`
-
-HasReplicas returns a boolean if a field has been set.
 
 ### GetVersion
 

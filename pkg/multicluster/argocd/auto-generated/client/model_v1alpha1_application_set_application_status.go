@@ -17,7 +17,7 @@ import (
 // V1alpha1ApplicationSetApplicationStatus struct for V1alpha1ApplicationSetApplicationStatus
 type V1alpha1ApplicationSetApplicationStatus struct {
 	Application        *string `json:"application,omitempty"`
-	LastTransitionTime *V1Time `json:"lastTransitionTime,omitempty"`
+	LastTransitionTime *string `json:"lastTransitionTime,omitempty"`
 	Message            *string `json:"message,omitempty"`
 	Status             *string `json:"status,omitempty"`
 	Step               *string `json:"step,omitempty"`
@@ -73,9 +73,9 @@ func (o *V1alpha1ApplicationSetApplicationStatus) SetApplication(v string) {
 }
 
 // GetLastTransitionTime returns the LastTransitionTime field value if set, zero value otherwise.
-func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTime() V1Time {
+func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTime() string {
 	if o == nil || o.LastTransitionTime == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.LastTransitionTime
@@ -83,7 +83,7 @@ func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTime() V1Time
 
 // GetLastTransitionTimeOk returns a tuple with the LastTransitionTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTimeOk() (*V1Time, bool) {
+func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTimeOk() (*string, bool) {
 	if o == nil || o.LastTransitionTime == nil {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *V1alpha1ApplicationSetApplicationStatus) HasLastTransitionTime() bool {
 	return false
 }
 
-// SetLastTransitionTime gets a reference to the given V1Time and assigns it to the LastTransitionTime field.
-func (o *V1alpha1ApplicationSetApplicationStatus) SetLastTransitionTime(v V1Time) {
+// SetLastTransitionTime gets a reference to the given string and assigns it to the LastTransitionTime field.
+func (o *V1alpha1ApplicationSetApplicationStatus) SetLastTransitionTime(v string) {
 	o.LastTransitionTime = &v
 }
 

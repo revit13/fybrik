@@ -26,6 +26,7 @@ cluster:
 
 # Configuration when deploying to a coordinator cluster.
 coordinator:
+  catalog: "katalog"
   vault:
     enabled: true
     # This is the public address of the nginx controller service in the control cluster.

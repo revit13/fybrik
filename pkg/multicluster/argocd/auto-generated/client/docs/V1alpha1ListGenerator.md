@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Elements** | Pointer to [**[]V1JSON**](V1JSON.md) |  | [optional] 
-**ElementsYaml** | Pointer to **string** |  | [optional] 
 **Template** | Pointer to [**V1alpha1ApplicationSetTemplate**](V1alpha1ApplicationSetTemplate.md) |  | [optional] 
 
 ## Methods
@@ -51,31 +50,6 @@ SetElements sets Elements field to given value.
 `func (o *V1alpha1ListGenerator) HasElements() bool`
 
 HasElements returns a boolean if a field has been set.
-
-### GetElementsYaml
-
-`func (o *V1alpha1ListGenerator) GetElementsYaml() string`
-
-GetElementsYaml returns the ElementsYaml field if non-nil, zero value otherwise.
-
-### GetElementsYamlOk
-
-`func (o *V1alpha1ListGenerator) GetElementsYamlOk() (*string, bool)`
-
-GetElementsYamlOk returns a tuple with the ElementsYaml field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetElementsYaml
-
-`func (o *V1alpha1ListGenerator) SetElementsYaml(v string)`
-
-SetElementsYaml sets ElementsYaml field to given value.
-
-### HasElementsYaml
-
-`func (o *V1alpha1ListGenerator) HasElementsYaml() bool`
-
-HasElementsYaml returns a boolean if a field has been set.
 
 ### GetTemplate
 

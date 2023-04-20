@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Author** | Pointer to **string** |  | [optional] 
-**Date** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**Date** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** | Message contains the message associated with the revision, most likely the commit message. | [optional] 
 **SignatureInfo** | Pointer to **string** | SignatureInfo contains a hint on the signer if the revision was signed with GPG, and signature verification is enabled. | [optional] 
 **Tags** | Pointer to **[]string** |  | [optional] 
@@ -56,20 +56,20 @@ HasAuthor returns a boolean if a field has been set.
 
 ### GetDate
 
-`func (o *V1alpha1RevisionMetadata) GetDate() V1Time`
+`func (o *V1alpha1RevisionMetadata) GetDate() string`
 
 GetDate returns the Date field if non-nil, zero value otherwise.
 
 ### GetDateOk
 
-`func (o *V1alpha1RevisionMetadata) GetDateOk() (*V1Time, bool)`
+`func (o *V1alpha1RevisionMetadata) GetDateOk() (*string, bool)`
 
 GetDateOk returns a tuple with the Date field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetDate
 
-`func (o *V1alpha1RevisionMetadata) SetDate(v V1Time)`
+`func (o *V1alpha1RevisionMetadata) SetDate(v string)`
 
 SetDate sets Date field to given value.
 

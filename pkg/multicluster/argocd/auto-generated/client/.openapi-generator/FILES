@@ -106,7 +106,6 @@ docs/V1ObjectMeta.md
 docs/V1ObjectReference.md
 docs/V1OwnerReference.md
 docs/V1PortStatus.md
-docs/V1Time.md
 docs/V1alpha1AWSAuthConfig.md
 docs/V1alpha1AppProject.md
 docs/V1alpha1AppProjectList.md
@@ -117,7 +116,6 @@ docs/V1alpha1ApplicationCondition.md
 docs/V1alpha1ApplicationDestination.md
 docs/V1alpha1ApplicationList.md
 docs/V1alpha1ApplicationMatchExpression.md
-docs/V1alpha1ApplicationPreservedFields.md
 docs/V1alpha1ApplicationSet.md
 docs/V1alpha1ApplicationSetApplicationStatus.md
 docs/V1alpha1ApplicationSetCondition.md
@@ -175,7 +173,6 @@ docs/V1alpha1JWTTokens.md
 docs/V1alpha1JsonnetVar.md
 docs/V1alpha1KnownTypeField.md
 docs/V1alpha1KustomizeOptions.md
-docs/V1alpha1KustomizeReplica.md
 docs/V1alpha1ListGenerator.md
 docs/V1alpha1ManagedNamespaceMetadata.md
 docs/V1alpha1MatrixGenerator.md
@@ -325,7 +322,6 @@ model_v1_object_meta.go
 model_v1_object_reference.go
 model_v1_owner_reference.go
 model_v1_port_status.go
-model_v1_time.go
 model_v1alpha1_app_project.go
 model_v1alpha1_app_project_list.go
 model_v1alpha1_app_project_spec.go
@@ -335,7 +331,6 @@ model_v1alpha1_application_condition.go
 model_v1alpha1_application_destination.go
 model_v1alpha1_application_list.go
 model_v1alpha1_application_match_expression.go
-model_v1alpha1_application_preserved_fields.go
 model_v1alpha1_application_set.go
 model_v1alpha1_application_set_application_status.go
 model_v1alpha1_application_set_condition.go
@@ -394,7 +389,6 @@ model_v1alpha1_jwt_token.go
 model_v1alpha1_jwt_tokens.go
 model_v1alpha1_known_type_field.go
 model_v1alpha1_kustomize_options.go
-model_v1alpha1_kustomize_replica.go
 model_v1alpha1_list_generator.go
 model_v1alpha1_managed_namespace_metadata.go
 model_v1alpha1_matrix_generator.go

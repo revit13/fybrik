@@ -10,7 +10,7 @@ Name | Type | Description | Notes
 **Manager** | Pointer to **string** | Manager is an identifier of the workflow managing these fields. | [optional] 
 **Operation** | Pointer to **string** | Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are &#39;Apply&#39; and &#39;Update&#39;. | [optional] 
 **Subresource** | Pointer to **string** | Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource. | [optional] 
-**Time** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**Time** | Pointer to **string** |  | [optional] 
 
 ## Methods
 
@@ -183,20 +183,20 @@ HasSubresource returns a boolean if a field has been set.
 
 ### GetTime
 
-`func (o *V1ManagedFieldsEntry) GetTime() V1Time`
+`func (o *V1ManagedFieldsEntry) GetTime() string`
 
 GetTime returns the Time field if non-nil, zero value otherwise.
 
 ### GetTimeOk
 
-`func (o *V1ManagedFieldsEntry) GetTimeOk() (*V1Time, bool)`
+`func (o *V1ManagedFieldsEntry) GetTimeOk() (*string, bool)`
 
 GetTimeOk returns a tuple with the Time field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetTime
 
-`func (o *V1ManagedFieldsEntry) SetTime(v V1Time)`
+`func (o *V1ManagedFieldsEntry) SetTime(v string)`
 
 SetTime sets Time field to given value.
 

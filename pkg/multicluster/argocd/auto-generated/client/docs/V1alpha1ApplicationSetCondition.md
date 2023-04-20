@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**LastTransitionTime** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**LastTransitionTime** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Reason** | Pointer to **string** |  | [optional] 
 **Status** | Pointer to **string** |  | [optional] 
@@ -31,20 +31,20 @@ but it doesn't guarantee that properties required by API are set
 
 ### GetLastTransitionTime
 
-`func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTime() V1Time`
+`func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTime() string`
 
 GetLastTransitionTime returns the LastTransitionTime field if non-nil, zero value otherwise.
 
 ### GetLastTransitionTimeOk
 
-`func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTimeOk() (*V1Time, bool)`
+`func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTimeOk() (*string, bool)`
 
 GetLastTransitionTimeOk returns a tuple with the LastTransitionTime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLastTransitionTime
 
-`func (o *V1alpha1ApplicationSetCondition) SetLastTransitionTime(v V1Time)`
+`func (o *V1alpha1ApplicationSetCondition) SetLastTransitionTime(v string)`
 
 SetLastTransitionTime sets LastTransitionTime field to given value.
 

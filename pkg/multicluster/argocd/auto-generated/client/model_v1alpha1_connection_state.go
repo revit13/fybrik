@@ -16,7 +16,7 @@ import (
 
 // V1alpha1ConnectionState struct for V1alpha1ConnectionState
 type V1alpha1ConnectionState struct {
-	AttemptedAt *V1Time `json:"attemptedAt,omitempty"`
+	AttemptedAt *string `json:"attemptedAt,omitempty"`
 	Message     *string `json:"message,omitempty"`
 	Status      *string `json:"status,omitempty"`
 }
@@ -39,9 +39,9 @@ func NewV1alpha1ConnectionStateWithDefaults() *V1alpha1ConnectionState {
 }
 
 // GetAttemptedAt returns the AttemptedAt field value if set, zero value otherwise.
-func (o *V1alpha1ConnectionState) GetAttemptedAt() V1Time {
+func (o *V1alpha1ConnectionState) GetAttemptedAt() string {
 	if o == nil || o.AttemptedAt == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.AttemptedAt
@@ -49,7 +49,7 @@ func (o *V1alpha1ConnectionState) GetAttemptedAt() V1Time {
 
 // GetAttemptedAtOk returns a tuple with the AttemptedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ConnectionState) GetAttemptedAtOk() (*V1Time, bool) {
+func (o *V1alpha1ConnectionState) GetAttemptedAtOk() (*string, bool) {
 	if o == nil || o.AttemptedAt == nil {
 		return nil, false
 	}
@@ -65,8 +65,8 @@ func (o *V1alpha1ConnectionState) HasAttemptedAt() bool {
 	return false
 }
 
-// SetAttemptedAt gets a reference to the given V1Time and assigns it to the AttemptedAt field.
-func (o *V1alpha1ConnectionState) SetAttemptedAt(v V1Time) {
+// SetAttemptedAt gets a reference to the given string and assigns it to the AttemptedAt field.
+func (o *V1alpha1ConnectionState) SetAttemptedAt(v string) {
 	o.AttemptedAt = &v
 }
 

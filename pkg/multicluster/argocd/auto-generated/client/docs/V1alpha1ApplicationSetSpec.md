@@ -6,7 +6,6 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Generators** | Pointer to [**[]V1alpha1ApplicationSetGenerator**](V1alpha1ApplicationSetGenerator.md) |  | [optional] 
 **GoTemplate** | Pointer to **bool** |  | [optional] 
-**PreservedFields** | Pointer to [**V1alpha1ApplicationPreservedFields**](V1alpha1ApplicationPreservedFields.md) |  | [optional] 
 **Strategy** | Pointer to [**V1alpha1ApplicationSetStrategy**](V1alpha1ApplicationSetStrategy.md) |  | [optional] 
 **SyncPolicy** | Pointer to [**V1alpha1ApplicationSetSyncPolicy**](V1alpha1ApplicationSetSyncPolicy.md) |  | [optional] 
 **Template** | Pointer to [**V1alpha1ApplicationSetTemplate**](V1alpha1ApplicationSetTemplate.md) |  | [optional] 
@@ -79,31 +78,6 @@ SetGoTemplate sets GoTemplate field to given value.
 `func (o *V1alpha1ApplicationSetSpec) HasGoTemplate() bool`
 
 HasGoTemplate returns a boolean if a field has been set.
-
-### GetPreservedFields
-
-`func (o *V1alpha1ApplicationSetSpec) GetPreservedFields() V1alpha1ApplicationPreservedFields`
-
-GetPreservedFields returns the PreservedFields field if non-nil, zero value otherwise.
-
-### GetPreservedFieldsOk
-
-`func (o *V1alpha1ApplicationSetSpec) GetPreservedFieldsOk() (*V1alpha1ApplicationPreservedFields, bool)`
-
-GetPreservedFieldsOk returns a tuple with the PreservedFields field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPreservedFields
-
-`func (o *V1alpha1ApplicationSetSpec) SetPreservedFields(v V1alpha1ApplicationPreservedFields)`
-
-SetPreservedFields sets PreservedFields field to given value.
-
-### HasPreservedFields
-
-`func (o *V1alpha1ApplicationSetSpec) HasPreservedFields() bool`
-
-HasPreservedFields returns a boolean if a field has been set.
 
 ### GetStrategy
 

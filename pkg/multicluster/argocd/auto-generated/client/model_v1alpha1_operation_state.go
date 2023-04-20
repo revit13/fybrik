@@ -16,13 +16,13 @@ import (
 
 // V1alpha1OperationState struct for V1alpha1OperationState
 type V1alpha1OperationState struct {
-	FinishedAt *V1Time `json:"finishedAt,omitempty"`
+	FinishedAt *string `json:"finishedAt,omitempty"`
 	// Message holds any pertinent messages when attempting to perform operation (typically errors).
 	Message    *string                      `json:"message,omitempty"`
 	Operation  *V1alpha1Operation           `json:"operation,omitempty"`
 	Phase      *string                      `json:"phase,omitempty"`
 	RetryCount *string                      `json:"retryCount,omitempty"`
-	StartedAt  *V1Time                      `json:"startedAt,omitempty"`
+	StartedAt  *string                      `json:"startedAt,omitempty"`
 	SyncResult *V1alpha1SyncOperationResult `json:"syncResult,omitempty"`
 }
 
@@ -44,9 +44,9 @@ func NewV1alpha1OperationStateWithDefaults() *V1alpha1OperationState {
 }
 
 // GetFinishedAt returns the FinishedAt field value if set, zero value otherwise.
-func (o *V1alpha1OperationState) GetFinishedAt() V1Time {
+func (o *V1alpha1OperationState) GetFinishedAt() string {
 	if o == nil || o.FinishedAt == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.FinishedAt
@@ -54,7 +54,7 @@ func (o *V1alpha1OperationState) GetFinishedAt() V1Time {
 
 // GetFinishedAtOk returns a tuple with the FinishedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1OperationState) GetFinishedAtOk() (*V1Time, bool) {
+func (o *V1alpha1OperationState) GetFinishedAtOk() (*string, bool) {
 	if o == nil || o.FinishedAt == nil {
 		return nil, false
 	}
@@ -70,8 +70,8 @@ func (o *V1alpha1OperationState) HasFinishedAt() bool {
 	return false
 }
 
-// SetFinishedAt gets a reference to the given V1Time and assigns it to the FinishedAt field.
-func (o *V1alpha1OperationState) SetFinishedAt(v V1Time) {
+// SetFinishedAt gets a reference to the given string and assigns it to the FinishedAt field.
+func (o *V1alpha1OperationState) SetFinishedAt(v string) {
 	o.FinishedAt = &v
 }
 
@@ -204,9 +204,9 @@ func (o *V1alpha1OperationState) SetRetryCount(v string) {
 }
 
 // GetStartedAt returns the StartedAt field value if set, zero value otherwise.
-func (o *V1alpha1OperationState) GetStartedAt() V1Time {
+func (o *V1alpha1OperationState) GetStartedAt() string {
 	if o == nil || o.StartedAt == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.StartedAt
@@ -214,7 +214,7 @@ func (o *V1alpha1OperationState) GetStartedAt() V1Time {
 
 // GetStartedAtOk returns a tuple with the StartedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1OperationState) GetStartedAtOk() (*V1Time, bool) {
+func (o *V1alpha1OperationState) GetStartedAtOk() (*string, bool) {
 	if o == nil || o.StartedAt == nil {
 		return nil, false
 	}
@@ -230,8 +230,8 @@ func (o *V1alpha1OperationState) HasStartedAt() bool {
 	return false
 }
 
-// SetStartedAt gets a reference to the given V1Time and assigns it to the StartedAt field.
-func (o *V1alpha1OperationState) SetStartedAt(v V1Time) {
+// SetStartedAt gets a reference to the given string and assigns it to the StartedAt field.
+func (o *V1alpha1OperationState) SetStartedAt(v string) {
 	o.StartedAt = &v
 }
 

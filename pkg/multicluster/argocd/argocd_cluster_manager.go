@@ -44,8 +44,7 @@ func NewArgoCDClusterManager(connectionURL string) (multicluster.ClusterManager,
 				Description: "Endpoint URL",
 			},
 		},
-		HTTPClient:    retryClient.StandardClient(),
-		DefaultHeader: map[string]string{"Authorization": "Basic YWRtaW46R2FOcjdvckJKYkppNFNOeQ=="},
+		HTTPClient: retryClient.StandardClient(),
 	}
 
 	// https://argo-cd.readthedocs.io/en/stable/developer-guide/api-docs/#authorization
@@ -70,14 +69,15 @@ func NewArgoCDClusterManager(connectionURL string) (multicluster.ClusterManager,
 		return nil, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
 	}
 
-	logger.Info().Msg("Token: " + *sessionResp.Token)
-	logger.Info().Msg("httpResp code: " + *sessionResp.Token)
+	token := fmt.Sprintf("Bearer %s", *sessionResp.Token)
+	configuration.DefaultHeader = map[string]string{"Authorization": token}
 
-	//logger.Info().Str(clusterGroupKey, clusterGroup).Str("orgID", me.OrgId).Msg("Initializing ArgoCD cluster manager")
+	logger.Info().Msg("Bearer token successfully fetched")
+
 	logger.Info().Msg("Initializing ArgoCD cluster manager")
 
 	return &argocdClusterManager{
-		client: apiClient,
+		client: argoclient.NewAPIClient(&configuration),
 		log:    logger,
 	}, nil
 }
@@ -97,7 +97,7 @@ func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 		return nil, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
 	}
 	if !clusters.HasItems() {
-		cm.log.Error().Msg("Failed to list clusters")
+		cm.log.Error().Msg("Failed to list clusters: no cluster exists")
 		return nil, errors.New("no cluster exists")
 	}
 	clustersList := clusters.GetItems()

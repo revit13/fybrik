@@ -27,7 +27,7 @@ type V1alpha1Cluster struct {
 	// Holds list of namespaces which are accessible in that cluster. Cluster level resources will be ignored if namespace list is not empty.
 	Namespaces         *[]string `json:"namespaces,omitempty"`
 	Project            *string   `json:"project,omitempty"`
-	RefreshRequestedAt *V1Time   `json:"refreshRequestedAt,omitempty"`
+	RefreshRequestedAt *string   `json:"refreshRequestedAt,omitempty"`
 	Server             *string   `json:"server,omitempty"`
 	ServerVersion      *string   `json:"serverVersion,omitempty"`
 	// Shard contains optional shard number. Calculated on the fly by the application controller if not specified.
@@ -340,9 +340,9 @@ func (o *V1alpha1Cluster) SetProject(v string) {
 }
 
 // GetRefreshRequestedAt returns the RefreshRequestedAt field value if set, zero value otherwise.
-func (o *V1alpha1Cluster) GetRefreshRequestedAt() V1Time {
+func (o *V1alpha1Cluster) GetRefreshRequestedAt() string {
 	if o == nil || o.RefreshRequestedAt == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.RefreshRequestedAt
@@ -350,7 +350,7 @@ func (o *V1alpha1Cluster) GetRefreshRequestedAt() V1Time {
 
 // GetRefreshRequestedAtOk returns a tuple with the RefreshRequestedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1Cluster) GetRefreshRequestedAtOk() (*V1Time, bool) {
+func (o *V1alpha1Cluster) GetRefreshRequestedAtOk() (*string, bool) {
 	if o == nil || o.RefreshRequestedAt == nil {
 		return nil, false
 	}
@@ -366,8 +366,8 @@ func (o *V1alpha1Cluster) HasRefreshRequestedAt() bool {
 	return false
 }
 
-// SetRefreshRequestedAt gets a reference to the given V1Time and assigns it to the RefreshRequestedAt field.
-func (o *V1alpha1Cluster) SetRefreshRequestedAt(v V1Time) {
+// SetRefreshRequestedAt gets a reference to the given string and assigns it to the RefreshRequestedAt field.
+func (o *V1alpha1Cluster) SetRefreshRequestedAt(v string) {
 	o.RefreshRequestedAt = &v
 }
 

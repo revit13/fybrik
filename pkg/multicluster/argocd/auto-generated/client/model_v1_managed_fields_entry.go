@@ -26,7 +26,7 @@ type V1ManagedFieldsEntry struct {
 	Operation *string `json:"operation,omitempty"`
 	// Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.
 	Subresource *string `json:"subresource,omitempty"`
-	Time        *V1Time `json:"time,omitempty"`
+	Time        *string `json:"time,omitempty"`
 }
 
 // NewV1ManagedFieldsEntry instantiates a new V1ManagedFieldsEntry object
@@ -239,9 +239,9 @@ func (o *V1ManagedFieldsEntry) SetSubresource(v string) {
 }
 
 // GetTime returns the Time field value if set, zero value otherwise.
-func (o *V1ManagedFieldsEntry) GetTime() V1Time {
+func (o *V1ManagedFieldsEntry) GetTime() string {
 	if o == nil || o.Time == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.Time
@@ -249,7 +249,7 @@ func (o *V1ManagedFieldsEntry) GetTime() V1Time {
 
 // GetTimeOk returns a tuple with the Time field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1ManagedFieldsEntry) GetTimeOk() (*V1Time, bool) {
+func (o *V1ManagedFieldsEntry) GetTimeOk() (*string, bool) {
 	if o == nil || o.Time == nil {
 		return nil, false
 	}
@@ -265,8 +265,8 @@ func (o *V1ManagedFieldsEntry) HasTime() bool {
 	return false
 }
 
-// SetTime gets a reference to the given V1Time and assigns it to the Time field.
-func (o *V1ManagedFieldsEntry) SetTime(v V1Time) {
+// SetTime gets a reference to the given string and assigns it to the Time field.
+func (o *V1ManagedFieldsEntry) SetTime(v string) {
 	o.Time = &v
 }
 

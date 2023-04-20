@@ -16,7 +16,7 @@ import (
 
 // V1alpha1ApplicationSetCondition struct for V1alpha1ApplicationSetCondition
 type V1alpha1ApplicationSetCondition struct {
-	LastTransitionTime *V1Time `json:"lastTransitionTime,omitempty"`
+	LastTransitionTime *string `json:"lastTransitionTime,omitempty"`
 	Message            *string `json:"message,omitempty"`
 	Reason             *string `json:"reason,omitempty"`
 	Status             *string `json:"status,omitempty"`
@@ -41,9 +41,9 @@ func NewV1alpha1ApplicationSetConditionWithDefaults() *V1alpha1ApplicationSetCon
 }
 
 // GetLastTransitionTime returns the LastTransitionTime field value if set, zero value otherwise.
-func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTime() V1Time {
+func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTime() string {
 	if o == nil || o.LastTransitionTime == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.LastTransitionTime
@@ -51,7 +51,7 @@ func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTime() V1Time {
 
 // GetLastTransitionTimeOk returns a tuple with the LastTransitionTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTimeOk() (*V1Time, bool) {
+func (o *V1alpha1ApplicationSetCondition) GetLastTransitionTimeOk() (*string, bool) {
 	if o == nil || o.LastTransitionTime == nil {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *V1alpha1ApplicationSetCondition) HasLastTransitionTime() bool {
 	return false
 }
 
-// SetLastTransitionTime gets a reference to the given V1Time and assigns it to the LastTransitionTime field.
-func (o *V1alpha1ApplicationSetCondition) SetLastTransitionTime(v V1Time) {
+// SetLastTransitionTime gets a reference to the given string and assigns it to the LastTransitionTime field.
+func (o *V1alpha1ApplicationSetCondition) SetLastTransitionTime(v string) {
 	o.LastTransitionTime = &v
 }
 

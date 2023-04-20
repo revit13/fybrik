@@ -1,8 +1,22 @@
 # Multicluster setup
 
 Fybrik is dynamic in its multi cluster capabilities in that it has abstractions to support multiple
-different cross-cluster orchestration mechanisms. Currently, only one multi cluster orchestration mechanism is implemented
-and is using [Razee](http://razee.io) for the orchestration.
+different cross-cluster orchestration mechanisms.
+
+## Multicluster operation with Argo CD
+
+[Argo CD](https://argo-cd.readthedocs.io/en/stable/) is a declarative, GitOps continuous delivery tool for Kubernetes.
+It can be used for deploy Kubernetes resources on remote clusters and track the deployment status of such deployments.
+
+Prerequisites:
+
+* Git account to store Fybrik resources.
+
+### Installing Argo CD on Kubernetes
+
+[Argo CD](https://argo-cd.readthedocs.io/en/stable/) [Get started](https://argo-cd.readthedocs.io/en/stable/getting_started/) page
+contains the [operator installation command](https://argo-cd.readthedocs.io/en/stable/getting_started/#1-install-argo-cd).
+Alternatively, Argo CD [Helm charts](https://github.com/argoproj/argo-helm) are also available.
 
 ## Multicluster operation with Razee
 

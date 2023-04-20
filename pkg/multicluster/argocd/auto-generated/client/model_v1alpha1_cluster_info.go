@@ -17,7 +17,7 @@ import (
 // V1alpha1ClusterInfo struct for V1alpha1ClusterInfo
 type V1alpha1ClusterInfo struct {
 	ApiVersions       *[]string                 `json:"apiVersions,omitempty"`
-	ApplicationsCount *string                   `json:"applicationsCount,omitempty"`
+	ApplicationsCount *int32                    `json:"applicationsCount,omitempty"`
 	CacheInfo         *V1alpha1ClusterCacheInfo `json:"cacheInfo,omitempty"`
 	ConnectionState   *V1alpha1ConnectionState  `json:"connectionState,omitempty"`
 	ServerVersion     *string                   `json:"serverVersion,omitempty"`
@@ -73,9 +73,9 @@ func (o *V1alpha1ClusterInfo) SetApiVersions(v []string) {
 }
 
 // GetApplicationsCount returns the ApplicationsCount field value if set, zero value otherwise.
-func (o *V1alpha1ClusterInfo) GetApplicationsCount() string {
+func (o *V1alpha1ClusterInfo) GetApplicationsCount() int32 {
 	if o == nil || o.ApplicationsCount == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 	return *o.ApplicationsCount
@@ -83,7 +83,7 @@ func (o *V1alpha1ClusterInfo) GetApplicationsCount() string {
 
 // GetApplicationsCountOk returns a tuple with the ApplicationsCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1ClusterInfo) GetApplicationsCountOk() (*string, bool) {
+func (o *V1alpha1ClusterInfo) GetApplicationsCountOk() (*int32, bool) {
 	if o == nil || o.ApplicationsCount == nil {
 		return nil, false
 	}
@@ -99,8 +99,8 @@ func (o *V1alpha1ClusterInfo) HasApplicationsCount() bool {
 	return false
 }
 
-// SetApplicationsCount gets a reference to the given string and assigns it to the ApplicationsCount field.
-func (o *V1alpha1ClusterInfo) SetApplicationsCount(v string) {
+// SetApplicationsCount gets a reference to the given int32 and assigns it to the ApplicationsCount field.
+func (o *V1alpha1ClusterInfo) SetApplicationsCount(v int32) {
 	o.ApplicationsCount = &v
 }
 

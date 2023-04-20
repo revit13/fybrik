@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** |  | [optional] 
 **Namespaces** | Pointer to **[]string** | Holds list of namespaces which are accessible in that cluster. Cluster level resources will be ignored if namespace list is not empty. | [optional] 
 **Project** | Pointer to **string** |  | [optional] 
-**RefreshRequestedAt** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**RefreshRequestedAt** | Pointer to **string** |  | [optional] 
 **Server** | Pointer to **string** |  | [optional] 
 **ServerVersion** | Pointer to **string** |  | [optional] 
 **Shard** | Pointer to **string** | Shard contains optional shard number. Calculated on the fly by the application controller if not specified. | [optional] 
@@ -264,20 +264,20 @@ HasProject returns a boolean if a field has been set.
 
 ### GetRefreshRequestedAt
 
-`func (o *V1alpha1Cluster) GetRefreshRequestedAt() V1Time`
+`func (o *V1alpha1Cluster) GetRefreshRequestedAt() string`
 
 GetRefreshRequestedAt returns the RefreshRequestedAt field if non-nil, zero value otherwise.
 
 ### GetRefreshRequestedAtOk
 
-`func (o *V1alpha1Cluster) GetRefreshRequestedAtOk() (*V1Time, bool)`
+`func (o *V1alpha1Cluster) GetRefreshRequestedAtOk() (*string, bool)`
 
 GetRefreshRequestedAtOk returns a tuple with the RefreshRequestedAt field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetRefreshRequestedAt
 
-`func (o *V1alpha1Cluster) SetRefreshRequestedAt(v V1Time)`
+`func (o *V1alpha1Cluster) SetRefreshRequestedAt(v string)`
 
 SetRefreshRequestedAt sets RefreshRequestedAt field to given value.
 

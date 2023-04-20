@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Application** | Pointer to **string** |  | [optional] 
-**LastTransitionTime** | Pointer to [**V1Time**](V1Time.md) |  | [optional] 
+**LastTransitionTime** | Pointer to **string** |  | [optional] 
 **Message** | Pointer to **string** |  | [optional] 
 **Status** | Pointer to **string** |  | [optional] 
 **Step** | Pointer to **string** |  | [optional] 
@@ -56,20 +56,20 @@ HasApplication returns a boolean if a field has been set.
 
 ### GetLastTransitionTime
 
-`func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTime() V1Time`
+`func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTime() string`
 
 GetLastTransitionTime returns the LastTransitionTime field if non-nil, zero value otherwise.
 
 ### GetLastTransitionTimeOk
 
-`func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTimeOk() (*V1Time, bool)`
+`func (o *V1alpha1ApplicationSetApplicationStatus) GetLastTransitionTimeOk() (*string, bool)`
 
 GetLastTransitionTimeOk returns a tuple with the LastTransitionTime field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLastTransitionTime
 
-`func (o *V1alpha1ApplicationSetApplicationStatus) SetLastTransitionTime(v V1Time)`
+`func (o *V1alpha1ApplicationSetApplicationStatus) SetLastTransitionTime(v string)`
 
 SetLastTransitionTime sets LastTransitionTime field to given value.
 

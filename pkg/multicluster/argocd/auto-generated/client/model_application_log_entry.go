@@ -19,7 +19,7 @@ type ApplicationLogEntry struct {
 	Content      *string `json:"content,omitempty"`
 	Last         *bool   `json:"last,omitempty"`
 	PodName      *string `json:"podName,omitempty"`
-	TimeStamp    *V1Time `json:"timeStamp,omitempty"`
+	TimeStamp    *string `json:"timeStamp,omitempty"`
 	TimeStampStr *string `json:"timeStampStr,omitempty"`
 }
 
@@ -137,9 +137,9 @@ func (o *ApplicationLogEntry) SetPodName(v string) {
 }
 
 // GetTimeStamp returns the TimeStamp field value if set, zero value otherwise.
-func (o *ApplicationLogEntry) GetTimeStamp() V1Time {
+func (o *ApplicationLogEntry) GetTimeStamp() string {
 	if o == nil || o.TimeStamp == nil {
-		var ret V1Time
+		var ret string
 		return ret
 	}
 	return *o.TimeStamp
@@ -147,7 +147,7 @@ func (o *ApplicationLogEntry) GetTimeStamp() V1Time {
 
 // GetTimeStampOk returns a tuple with the TimeStamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ApplicationLogEntry) GetTimeStampOk() (*V1Time, bool) {
+func (o *ApplicationLogEntry) GetTimeStampOk() (*string, bool) {
 	if o == nil || o.TimeStamp == nil {
 		return nil, false
 	}
@@ -163,8 +163,8 @@ func (o *ApplicationLogEntry) HasTimeStamp() bool {
 	return false
 }
 
-// SetTimeStamp gets a reference to the given V1Time and assigns it to the TimeStamp field.
-func (o *ApplicationLogEntry) SetTimeStamp(v V1Time) {
+// SetTimeStamp gets a reference to the given string and assigns it to the TimeStamp field.
+func (o *ApplicationLogEntry) SetTimeStamp(v string) {
 	o.TimeStamp = &v
 }
 

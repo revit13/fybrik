@@ -146,6 +146,30 @@ coordinator:
       # Token authentication
       token: "root"
 
+  # Configures the ArgoCD instance to be used by the coordinator manager in a multicluster setup
+  argocd:
+    # URL for ArgoCD local deployment
+    url: ""
+    # Usernane for ArgoCD local deployment
+    user: ""
+    # Password for ArgoCD local deployment
+    password: ""
+    # gitRepo is a git repository that holds ArgoCD applications yamls.
+    # For Fybrik deployment the format of the file names are as follows:
+    # fybrik-<cluster-name>.yaml for argocd applications to deploy Fybrik chart.
+    # fybrik-crd-<cluster-name>.yaml for argocd applications to deploy Fybrik CRD chart.
+    appsGitRepo:
+      # URL for git repository that holds ArgoCD applications yamls
+      url: ""
+      # Usernane for git repository repo
+      user: ""
+      # Password for git repository repo
+      password: ""
+      # path to ArgoCD applications yamls for Fybrik deployment
+      fybrikAppsPath: ""
+      # path to ArgoCD applications yamls for Blueprints deployment
+      blueprintsAppsPath: ""
+      
   # Configures the Razee instance to be used by the coordinator manager in a multicluster setup
   razee:
     # Overrides the multicluster group that should be used.

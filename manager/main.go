@@ -342,9 +342,11 @@ func newPolicyManager() (pmclient.PolicyManager, error) {
 // cluster manager instance should be initiated.
 func newClusterManager(mgr manager.Manager) (multicluster.ClusterManager, error) {
 	//return argocd.NewArgoCDClusterManager("https://argo-argocd-server.argocd:443")
-	return argocd.NewArgoCDClusterManager("http://argo-argocd-server.argocd:80")
 	multiClusterGroup := os.Getenv("MULTICLUSTER_GROUP")
-	if user, razeeLocal := os.LookupEnv("RAZEE_USER"); razeeLocal {
+	if argocdUrl, argocdConf := os.LookupEnv("ARGOCD_URL"); argocdConf {
+		return argocd.NewArgoCDClusterManager(argocdUrl, "admin", "GaNr7orBJbJi4SNy", "https://github.com/revit13/argocd-test.git", "revit13",
+			"xxx", "argocd-fybrik-apps", "blueprints")
+	} else if user, razeeLocal := os.LookupEnv("RAZEE_USER"); razeeLocal {
 		razeeURL := strings.TrimSpace(os.Getenv("RAZEE_URL"))
 		password := strings.TrimSpace(os.Getenv("RAZEE_PASSWORD"))
 

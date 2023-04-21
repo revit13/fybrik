@@ -13,6 +13,7 @@ import (
 
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/zerolog"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	app "fybrik.io/fybrik/manager/apis/app/v1beta1"
 
@@ -22,13 +23,31 @@ import (
 	argoclient "fybrik.io/fybrik/pkg/multicluster/argocd/auto-generated/client"
 )
 
-// argocdClusterManager for argocd cluster configuration
-type argocdClusterManager struct {
-	client *argoclient.APIClient
-	log    zerolog.Logger
+const (
+	clusterMetadataConfigMapSL = "/api/v1/namespaces/fybrik-system/configmaps/cluster-metadata"
+)
+
+var (
+	scheme = runtime.NewScheme()
+)
+
+type gitRepo struct {
+	password           string
+	username           string
+	url                string
+	fybrikAppsPath     string
+	blueprintsAppsPath string
 }
 
-func NewArgoCDClusterManager(connectionURL string) (multicluster.ClusterManager, error) {
+// argocdClusterManager for argocd cluster configuration
+type argocdClusterManager struct {
+	client            *argoclient.APIClient
+	log               zerolog.Logger
+	argoCDAppsGitRepo gitRepo
+}
+
+func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoUser, gitRepoPassword, gitRepoFybrikAppsPath,
+	gitRepoBlueprintsAppsPath string) (multicluster.ClusterManager, error) {
 	logger := logging.LogInit(logging.SETUP, "ArgoCDManager")
 	//log := logging.LogInit(logging.SETUP, "datacatalog client")
 	tlsConfig := &tls.Config{
@@ -49,8 +68,6 @@ func NewArgoCDClusterManager(connectionURL string) (multicluster.ClusterManager,
 
 	// https://argo-cd.readthedocs.io/en/stable/developer-guide/api-docs/#authorization
 	apiClient := argoclient.NewAPIClient(&configuration)
-	password := "GaNr7orBJbJi4SNy"
-	user := "admin"
 
 	sessionReq := argoclient.SessionSessionCreateRequest{
 		Username: &user,
@@ -79,12 +96,25 @@ func NewArgoCDClusterManager(connectionURL string) (multicluster.ClusterManager,
 	return &argocdClusterManager{
 		client: argoclient.NewAPIClient(&configuration),
 		log:    logger,
+		argoCDAppsGitRepo: gitRepo{
+			password:           password,
+			username:           user,
+			url:                gitRepoUrl,
+			fybrikAppsPath:     gitRepoFybrikAppsPath,
+			blueprintsAppsPath: gitRepoBlueprintsAppsPath,
+		},
 	}, nil
 }
+
+/*func (cm *argocdClusterManager) getYamlFile() {
+	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s/fybrik-%s.yaml", cm.argoCDAppsGitRepo.usename,
+		cm.argoCDAppsGitRepo.repo, branch, path, *cluster.Name)
+}*/
 
 // GetClusters returns a list of registered clusters
 func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 	cm.log.Info().Msg("list clusters")
+	//var clusters []multicluster.Cluster
 	req := cm.client.ClusterServiceApi.ClusterServiceList(context.Background())
 
 	clusters, httpResp, err := cm.client.ClusterServiceApi.ClusterServiceListExecute(req)

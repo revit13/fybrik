@@ -8,6 +8,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 
@@ -25,6 +26,7 @@ import (
 
 const (
 	clusterMetadataConfigMapSL = "/api/v1/namespaces/fybrik-system/configmaps/cluster-metadata"
+	gitRepoBranch              = "master"
 )
 
 var (
@@ -106,10 +108,24 @@ func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoU
 	}, nil
 }
 
-/*func (cm *argocdClusterManager) getYamlFile() {
-	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s/fybrik-%s.yaml", cm.argoCDAppsGitRepo.usename,
-		cm.argoCDAppsGitRepo.repo, branch, path, *cluster.Name)
-}*/
+func (cm *argocdClusterManager) getYamlFile(clusterName string) ([]byte, error) {
+	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s/fybrik-%s.yaml", cm.argoCDAppsGitRepo.username,
+		cm.argoCDAppsGitRepo.url, gitRepoBranch, cm.argoCDAppsGitRepo.fybrikAppsPath, clusterName)
+
+	resp, err := http.Get(url)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to get application yaml file: " + url)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to get application yaml file: " + url)
+		return nil, err
+	}
+	return body, nil
+
+}
 
 // GetClusters returns a list of registered clusters
 func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
@@ -133,6 +149,10 @@ func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 	clustersList := clusters.GetItems()
 	for _, cluster := range clustersList {
 		cm.log.Info().Msg("cluster name: " + *cluster.Name)
+		_, err := cm.getYamlFile(*cluster.Name)
+		if err != nil {
+			return nil, err
+		}
 
 	}
 	return nil, nil

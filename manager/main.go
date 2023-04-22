@@ -344,8 +344,15 @@ func newClusterManager(mgr manager.Manager) (multicluster.ClusterManager, error)
 	//return argocd.NewArgoCDClusterManager("https://argo-argocd-server.argocd:443")
 	multiClusterGroup := os.Getenv("MULTICLUSTER_GROUP")
 	if argocdUrl, argocdConf := os.LookupEnv("ARGOCD_URL"); argocdConf {
-		return argocd.NewArgoCDClusterManager(argocdUrl, "admin", "GaNr7orBJbJi4SNy", "https://github.com/revit13/argocd-test.git", "revit13",
-			"xxx", "argocd-fybrik-apps", "blueprints")
+		argocdUser := strings.TrimSpace(os.Getenv("ARGOCD_USER"))
+		argocdPassword := strings.TrimSpace(os.Getenv("ARGOCD_PASSWORD"))
+		argocdGitRepoUrl := strings.TrimSpace(os.Getenv("ARGOCD_GIT_URL"))
+		argocdGitRepoUser := strings.TrimSpace(os.Getenv("ARGOCD_GIT_USER"))
+		argocdGitRepoPassword := strings.TrimSpace(os.Getenv("ARGOCD_GIT_PASSWODRD"))
+		argocdGitRepoFybrikAppsPath := strings.TrimSpace(os.Getenv("ARGOCD_GIT_FYBRIK_APPS_PATH"))
+		argocdGitRepoBlueprintsAppsPath := strings.TrimSpace(os.Getenv("ARGOCD_GIT_BLUEPRINTS_APPS_PATH"))
+		return argocd.NewArgoCDClusterManager(argocdUrl, argocdUser, argocdPassword, argocdGitRepoUrl, argocdGitRepoUser,
+			argocdGitRepoPassword, argocdGitRepoFybrikAppsPath, argocdGitRepoBlueprintsAppsPath)
 	} else if user, razeeLocal := os.LookupEnv("RAZEE_USER"); razeeLocal {
 		razeeURL := strings.TrimSpace(os.Getenv("RAZEE_URL"))
 		password := strings.TrimSpace(os.Getenv("RAZEE_PASSWORD"))

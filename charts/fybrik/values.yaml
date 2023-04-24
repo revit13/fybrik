@@ -154,6 +154,11 @@ coordinator:
     user: ""
     # Password for ArgoCD local deployment
     password: ""
+    # ArgoCD applications names prefix for the Fybrik helm chart deployment.
+    # The full applications names are expected to be of the form: fybrikAppsPrefix-<cluster-name>
+    # for example, when the cluster name is "kind-kind" and the prefix is "fybrik" then the
+    # ArgoCD application name is "fybrik-kind-kind"
+    fybrikAppsPrefix: "fybrik"
     # gitRepo is a git repository that holds ArgoCD applications yamls.
     # For Fybrik deployment the format of the file names are as follows:
     # fybrik-<cluster-name>.yaml for argocd applications to deploy Fybrik chart.
@@ -165,12 +170,6 @@ coordinator:
       user: ""
       # Password for git repository repo
       password: ""
-      # Prefix of ArgoCD applications names for the Fybrik helm chart deployment.
-      # The full applications names are expected to be of the form: fybrikAppsPrefix-<cluster-name>
-      # for example, when the cluster name is "kind-kind" and the prefix is "fybrik" then the
-      # ArgoCD application name is "fybrik-kind-kind"
-      # default value is "fybrik"
-      fybrikAppsPrefix: "fybrik"
       # path to ArgoCD applications yamls for Blueprints deployment
       blueprintsAppsPath: ""
       

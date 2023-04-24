@@ -349,10 +349,10 @@ func newClusterManager(mgr manager.Manager) (multicluster.ClusterManager, error)
 		argocdGitRepoUrl := strings.TrimSpace(os.Getenv("ARGOCD_GIT_URL"))
 		argocdGitRepoUser := strings.TrimSpace(os.Getenv("ARGOCD_GIT_USER"))
 		argocdGitRepoPassword := strings.TrimSpace(os.Getenv("ARGOCD_GIT_PASSWODRD"))
-		argocdGitRepoFybrikAppsPath := strings.TrimSpace(os.Getenv("ARGOCD_GIT_FYBRIK_APPS_PATH"))
+		argocdFybrikAppsNamePrefix := strings.TrimSpace(os.Getenv("ARGOCD_FYBRIK_APPS_NAME_PREFIX"))
 		argocdGitRepoBlueprintsAppsPath := strings.TrimSpace(os.Getenv("ARGOCD_GIT_BLUEPRINTS_APPS_PATH"))
 		return argocd.NewArgoCDClusterManager(argocdUrl, argocdUser, argocdPassword, argocdGitRepoUrl, argocdGitRepoUser,
-			argocdGitRepoPassword, argocdGitRepoFybrikAppsPath, argocdGitRepoBlueprintsAppsPath)
+			argocdGitRepoPassword, argocdFybrikAppsNamePrefix, argocdGitRepoBlueprintsAppsPath)
 	} else if user, razeeLocal := os.LookupEnv("RAZEE_USER"); razeeLocal {
 		razeeURL := strings.TrimSpace(os.Getenv("RAZEE_URL"))
 		password := strings.TrimSpace(os.Getenv("RAZEE_PASSWORD"))

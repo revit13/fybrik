@@ -8,12 +8,12 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/rs/zerolog"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	app "fybrik.io/fybrik/manager/apis/app/v1beta1"
@@ -26,7 +26,7 @@ import (
 
 const (
 	clusterMetadataConfigMapSL = "/api/v1/namespaces/fybrik-system/configmaps/cluster-metadata"
-	gitRepoBranch              = "master"
+	gitRepoBranch              = "main"
 )
 
 var (
@@ -37,18 +37,18 @@ type gitRepo struct {
 	password           string
 	username           string
 	url                string
-	fybrikAppsPath     string
 	blueprintsAppsPath string
 }
 
 // argocdClusterManager for argocd cluster configuration
 type argocdClusterManager struct {
-	client            *argoclient.APIClient
-	log               zerolog.Logger
-	argoCDAppsGitRepo gitRepo
+	client                     *argoclient.APIClient
+	log                        zerolog.Logger
+	argoCDAppsGitRepo          gitRepo
+	argocdFybrikAppsNamePrefix string
 }
 
-func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoUser, gitRepoPassword, gitRepoFybrikAppsPath,
+func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoUser, gitRepoPassword, argocdFybrikAppsNamePrefix,
 	gitRepoBlueprintsAppsPath string) (multicluster.ClusterManager, error) {
 	logger := logging.LogInit(logging.SETUP, "ArgoCDManager")
 	//log := logging.LogInit(logging.SETUP, "datacatalog client")
@@ -99,20 +99,39 @@ func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoU
 		client: argoclient.NewAPIClient(&configuration),
 		log:    logger,
 		argoCDAppsGitRepo: gitRepo{
-			password:           password,
-			username:           user,
+			password:           gitRepoPassword,
+			username:           gitRepoUser,
 			url:                gitRepoUrl,
-			fybrikAppsPath:     gitRepoFybrikAppsPath,
 			blueprintsAppsPath: gitRepoBlueprintsAppsPath,
 		},
+		argocdFybrikAppsNamePrefix: argocdFybrikAppsNamePrefix,
 	}, nil
 }
 
+/*
 func (cm *argocdClusterManager) getYamlFile(clusterName string) ([]byte, error) {
-	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/%s/%s/fybrik-%s.yaml", cm.argoCDAppsGitRepo.username,
-		cm.argoCDAppsGitRepo.url, gitRepoBranch, cm.argoCDAppsGitRepo.fybrikAppsPath, clusterName)
+	url := strings.Replace(cm.argoCDAppsGitRepo.url, "github.com", "raw.githubusercontent.com", 1)
+	url = fmt.Sprintf("%s/%s/%s/fybrik-%s.yaml", url, gitRepoBranch, cm.argoCDAppsGitRepo.fybrikAppsPath, clusterName)
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: true,
+	}
+	retryClient := retryablehttp.NewClient()
+	retryClient.HTTPClient.Transport = &http.Transport{TLSClientConfig: tlsConfig}
+	configuration := argoclient.Configuration{
+		Servers: argoclient.ServerConfigurations{
+			argoclient.ServerConfiguration{
+				URL:         url,
+				Description: "Endpoint URL",
+			},
+		},
+		HTTPClient: retryClient.StandardClient(),
+	}
+	creds := fmt.Sprintf("%s:%s", cm.argoCDAppsGitRepo.username, cm.argoCDAppsGitRepo.password)
+	credsEnc := b64.StdEncoding.EncodeToString([]byte(creds))
+	configuration.DefaultHeader = map[string]string{"Basic": credsEnc}
 
-	resp, err := http.Get(url)
+	resp, err := configuration.HTTPClient.Get(url)
+
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to get application yaml file: " + url)
 		return nil, err
@@ -124,16 +143,57 @@ func (cm *argocdClusterManager) getYamlFile(clusterName string) ([]byte, error) 
 		return nil, err
 	}
 	return body, nil
+}*/
 
+func (cm *argocdClusterManager) packClusterConfigMap(params map[string]string) *v1.ConfigMap {
+	configMap := v1.ConfigMap{}
+	configMap.Data = params
+	return &configMap
+}
+
+func (cm *argocdClusterManager) getClusterInfo(clusterName string) (multicluster.Cluster, error) {
+	var cluster multicluster.Cluster
+	req := cm.client.ApplicationServiceApi.ApplicationServiceGet(context.Background(),
+		cm.argocdFybrikAppsNamePrefix+"-"+clusterName)
+	argocdApplication, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceGetExecute(req)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to get argocd application")
+		return cluster, err
+	}
+	if httpResp.StatusCode != http.StatusOK {
+		cm.log.Error().Msg("Failed to get argocd application: http status code is " + strconv.Itoa(httpResp.StatusCode))
+		return cluster, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
+	}
+	fybrikHelmParams := argocdApplication.GetSpec().Source.Helm.GetParameters()
+	var params map[string]string
+
+	for _, helmParam := range fybrikHelmParams {
+		switch helmParam.GetName() {
+		case "cluster.region":
+			params["Region"] = helmParam.GetValue()
+			cm.log.Info().Msg("region: " + helmParam.GetValue())
+		case "cluster.zone":
+			params["Zone"] = helmParam.GetValue()
+			cm.log.Info().Msg("zone: " + helmParam.GetValue())
+		case "cluster.name":
+			params["ClusterName"] = helmParam.GetValue()
+			cm.log.Info().Msg("ClusterName: " + helmParam.GetValue())
+		case "cluster.vaultAuthPath":
+			params["VaultAuthPath"] = helmParam.GetValue()
+			cm.log.Info().Msg("VaultAuthPath: " + helmParam.GetValue())
+		}
+	}
+
+	return multicluster.CreateCluster(*cm.packClusterConfigMap(params)), nil
 }
 
 // GetClusters returns a list of registered clusters
 func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 	cm.log.Info().Msg("list clusters")
-	//var clusters []multicluster.Cluster
+	var clusters []multicluster.Cluster
 	req := cm.client.ClusterServiceApi.ClusterServiceList(context.Background())
 
-	clusters, httpResp, err := cm.client.ClusterServiceApi.ClusterServiceListExecute(req)
+	clustersList, httpResp, err := cm.client.ClusterServiceApi.ClusterServiceListExecute(req)
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to list clusters")
 		return nil, err
@@ -142,20 +202,22 @@ func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 		cm.log.Error().Msg("Failed to list clusters: http status code is " + strconv.Itoa(httpResp.StatusCode))
 		return nil, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
 	}
-	if !clusters.HasItems() {
+	if !clustersList.HasItems() {
 		cm.log.Error().Msg("Failed to list clusters: no cluster exists")
 		return nil, errors.New("no cluster exists")
 	}
-	clustersList := clusters.GetItems()
-	for _, cluster := range clustersList {
-		cm.log.Info().Msg("cluster name: " + *cluster.Name)
-		_, err := cm.getYamlFile(*cluster.Name)
+	for _, clusterItem := range clustersList.GetItems() {
+		name := clusterItem.GetName()
+		cm.log.Info().Msg("cluster name: " + name)
+		cluster, err := cm.getClusterInfo(name)
 		if err != nil {
+			cm.log.Error().Err(err).Msg("Failed to list clusters")
 			return nil, err
 		}
+		clusters = append(clusters, cluster)
 
 	}
-	return nil, nil
+	return clusters, nil
 }
 
 func (cm *argocdClusterManager) IsMultiClusterSetup() bool {

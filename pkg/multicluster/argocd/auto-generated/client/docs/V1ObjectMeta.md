@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **DeletionTimestamp** | Pointer to **string** |  | [optional] 
 **Finalizers** | Pointer to **[]string** |  | [optional] 
 **GenerateName** | Pointer to **string** | GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.  If this field is specified and the generated name exists, the server will return a 409.  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency +optional | [optional] 
-**Generation** | Pointer to **string** |  | [optional] 
+**Generation** | Pointer to **int32** |  | [optional] 
 **Labels** | Pointer to **map[string]string** |  | [optional] 
 **ManagedFields** | Pointer to [**[]V1ManagedFieldsEntry**](V1ManagedFieldsEntry.md) | ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn&#39;t need to set or understand this field. A workflow can be the user&#39;s name, a controller&#39;s name, or the name of a specific apply path like \&quot;ci-cd\&quot;. The set of fields is always in the version that the workflow used when modifying the object.  +optional | [optional] 
 **Name** | Pointer to **string** |  | [optional] 
@@ -217,20 +217,20 @@ HasGenerateName returns a boolean if a field has been set.
 
 ### GetGeneration
 
-`func (o *V1ObjectMeta) GetGeneration() string`
+`func (o *V1ObjectMeta) GetGeneration() int32`
 
 GetGeneration returns the Generation field if non-nil, zero value otherwise.
 
 ### GetGenerationOk
 
-`func (o *V1ObjectMeta) GetGenerationOk() (*string, bool)`
+`func (o *V1ObjectMeta) GetGenerationOk() (*int32, bool)`
 
 GetGenerationOk returns a tuple with the Generation field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetGeneration
 
-`func (o *V1ObjectMeta) SetGeneration(v string)`
+`func (o *V1ObjectMeta) SetGeneration(v int32)`
 
 SetGeneration sets Generation field to given value.
 

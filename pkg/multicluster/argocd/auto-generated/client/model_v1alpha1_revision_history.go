@@ -16,13 +16,13 @@ import (
 
 // V1alpha1RevisionHistory struct for V1alpha1RevisionHistory
 type V1alpha1RevisionHistory struct {
-	DeployStartedAt *string                      `json:"deployStartedAt,omitempty"`
-	DeployedAt      *string                      `json:"deployedAt,omitempty"`
-	Id              *string                      `json:"id,omitempty"`
-	Revision        *string                      `json:"revision,omitempty"`
-	Revisions       *[]string                    `json:"revisions,omitempty"`
-	Source          *V1alpha1ApplicationSource   `json:"source,omitempty"`
-	Sources         *[]V1alpha1ApplicationSource `json:"sources,omitempty"`
+	DeployStartedAt *string `json:"deployStartedAt,omitempty"`
+	DeployedAt *string `json:"deployedAt,omitempty"`
+	Id *int32 `json:"id,omitempty"`
+	Revision *string `json:"revision,omitempty"`
+	Revisions *[]string `json:"revisions,omitempty"`
+	Source *V1alpha1ApplicationSource `json:"source,omitempty"`
+	Sources *[]V1alpha1ApplicationSource `json:"sources,omitempty"`
 }
 
 // NewV1alpha1RevisionHistory instantiates a new V1alpha1RevisionHistory object
@@ -107,9 +107,9 @@ func (o *V1alpha1RevisionHistory) SetDeployedAt(v string) {
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *V1alpha1RevisionHistory) GetId() string {
+func (o *V1alpha1RevisionHistory) GetId() int32 {
 	if o == nil || o.Id == nil {
-		var ret string
+		var ret int32
 		return ret
 	}
 	return *o.Id
@@ -117,7 +117,7 @@ func (o *V1alpha1RevisionHistory) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *V1alpha1RevisionHistory) GetIdOk() (*string, bool) {
+func (o *V1alpha1RevisionHistory) GetIdOk() (*int32, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -133,8 +133,8 @@ func (o *V1alpha1RevisionHistory) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *V1alpha1RevisionHistory) SetId(v string) {
+// SetId gets a reference to the given int32 and assigns it to the Id field.
+func (o *V1alpha1RevisionHistory) SetId(v int32) {
 	o.Id = &v
 }
 
@@ -327,3 +327,5 @@ func (v *NullableV1alpha1RevisionHistory) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

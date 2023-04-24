@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **DeployStartedAt** | Pointer to **string** |  | [optional] 
 **DeployedAt** | Pointer to **string** |  | [optional] 
-**Id** | Pointer to **string** |  | [optional] 
+**Id** | Pointer to **int32** |  | [optional] 
 **Revision** | Pointer to **string** |  | [optional] 
 **Revisions** | Pointer to **[]string** |  | [optional] 
 **Source** | Pointer to [**V1alpha1ApplicationSource**](V1alpha1ApplicationSource.md) |  | [optional] 
@@ -83,20 +83,20 @@ HasDeployedAt returns a boolean if a field has been set.
 
 ### GetId
 
-`func (o *V1alpha1RevisionHistory) GetId() string`
+`func (o *V1alpha1RevisionHistory) GetId() int32`
 
 GetId returns the Id field if non-nil, zero value otherwise.
 
 ### GetIdOk
 
-`func (o *V1alpha1RevisionHistory) GetIdOk() (*string, bool)`
+`func (o *V1alpha1RevisionHistory) GetIdOk() (*int32, bool)`
 
 GetIdOk returns a tuple with the Id field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetId
 
-`func (o *V1alpha1RevisionHistory) SetId(v string)`
+`func (o *V1alpha1RevisionHistory) SetId(v int32)`
 
 SetId sets Id field to given value.
 

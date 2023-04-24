@@ -155,6 +155,7 @@ func (cm *argocdClusterManager) getClusterInfo(clusterName string) (multicluster
 	var cluster multicluster.Cluster
 	req := cm.client.ApplicationServiceApi.ApplicationServiceGet(context.Background(),
 		cm.argocdFybrikAppsNamePrefix+"-"+clusterName)
+	cm.log.Info().Msg("application name: " + cm.argocdFybrikAppsNamePrefix + "-" + clusterName)
 	argocdApplication, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceGetExecute(req)
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to get argocd application")
@@ -165,7 +166,7 @@ func (cm *argocdClusterManager) getClusterInfo(clusterName string) (multicluster
 		return cluster, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
 	}
 	fybrikHelmParams := argocdApplication.GetSpec().Source.Helm.GetParameters()
-	var params map[string]string
+	var params = make(map[string]string)
 
 	for _, helmParam := range fybrikHelmParams {
 		switch helmParam.GetName() {

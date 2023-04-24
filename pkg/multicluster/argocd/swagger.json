@@ -5331,9 +5331,7 @@
           "type": "string"
         },
         "generation": {
-          "type": "string",
-          "format": "int64",
-          "title": "A sequence number representing a specific generation of the desired state.\nPopulated by the system. Read-only.\n+optional"
+          "type": "integer"
         },
         "labels": {
           "type": "object",
@@ -7939,9 +7937,7 @@
           "$ref": "#/definitions/v1Time"
         },
         "id": {
-          "type": "string",
-          "format": "int64",
-          "title": "ID is an auto incrementing identifier of the RevisionHistory"
+          "type": "integer"
         },
         "revision": {
           "type": "string",

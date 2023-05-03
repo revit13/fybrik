@@ -10,14 +10,14 @@ metadata:
     app: my-notebook
 spec:
   selector:
-    clusterName: thegreendragon
+    clusterName: kind-control
     workloadSelector:
       matchLabels:
         app: my-notebook
   appInfo:
     intent: Fraud Detection
   data:
-    - dataSetID: 'fybrik-notebook-sample/data-csv'
+    - dataSetID: 'fybrik-notebook-sample/paysim-csv'
       flow: read
       requirements:
         interface:

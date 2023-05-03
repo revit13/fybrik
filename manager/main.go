@@ -348,7 +348,7 @@ func newClusterManager(mgr manager.Manager) (multicluster.ClusterManager, error)
 		argocdPassword := strings.TrimSpace(os.Getenv("ARGOCD_PASSWORD"))
 		argocdGitRepoUrl := strings.TrimSpace(os.Getenv("ARGOCD_GIT_URL"))
 		argocdGitRepoUser := strings.TrimSpace(os.Getenv("ARGOCD_GIT_USER"))
-		argocdGitRepoPassword := strings.TrimSpace(os.Getenv("ARGOCD_GIT_PASSWODRD"))
+		argocdGitRepoPassword := strings.TrimSpace(os.Getenv("ARGOCD_GIT_PASSWORD"))
 		argocdFybrikAppsNamePrefix := strings.TrimSpace(os.Getenv("ARGOCD_FYBRIK_APPS_NAME_PREFIX"))
 		argocdGitRepoBlueprintsAppsPath := strings.TrimSpace(os.Getenv("ARGOCD_GIT_BLUEPRINTS_APPS_PATH"))
 		return argocd.NewArgoCDClusterManager(argocdUrl, argocdUser, argocdPassword, argocdGitRepoUrl, argocdGitRepoUser,

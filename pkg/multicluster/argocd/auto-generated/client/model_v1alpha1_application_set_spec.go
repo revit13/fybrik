@@ -17,10 +17,10 @@ import (
 // V1alpha1ApplicationSetSpec ApplicationSetSpec represents a class of application set state.
 type V1alpha1ApplicationSetSpec struct {
 	Generators *[]V1alpha1ApplicationSetGenerator `json:"generators,omitempty"`
-	GoTemplate *bool `json:"goTemplate,omitempty"`
-	Strategy *V1alpha1ApplicationSetStrategy `json:"strategy,omitempty"`
-	SyncPolicy *V1alpha1ApplicationSetSyncPolicy `json:"syncPolicy,omitempty"`
-	Template *V1alpha1ApplicationSetTemplate `json:"template,omitempty"`
+	GoTemplate *bool                              `json:"goTemplate,omitempty"`
+	Strategy   *V1alpha1ApplicationSetStrategy    `json:"strategy,omitempty"`
+	SyncPolicy *V1alpha1ApplicationSetSyncPolicy  `json:"syncPolicy,omitempty"`
+	Template   *V1alpha1ApplicationSetTemplate    `json:"template,omitempty"`
 }
 
 // NewV1alpha1ApplicationSetSpec instantiates a new V1alpha1ApplicationSetSpec object
@@ -255,5 +255,3 @@ func (v *NullableV1alpha1ApplicationSetSpec) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

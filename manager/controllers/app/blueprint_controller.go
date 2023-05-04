@@ -280,6 +280,7 @@ func (r *BlueprintReconciler) updateModuleState(blueprint *fapp.Blueprint, insta
 		Ready: isReady,
 		Error: err,
 	}
+	// TODO: update git with blueprint changes
 	blueprint.Status.ModulesState[instanceName] = state
 }
 
@@ -368,6 +369,7 @@ func (r *BlueprintReconciler) reconcile(ctx context.Context, cfg *action.Configu
 	// check if all releases reached the ready state
 	if numReady == numReleases {
 		// all modules have been orchestrated successfully - the data is ready for use
+		// TODO: update git with blueprint changes
 		blueprint.Status.ObservedState.Ready = true
 		return ctrl.Result{}, nil
 	}

@@ -24,7 +24,7 @@ make cluster-prepare-wait
 export VALUES_FILE=charts/fybrik/kind-kind.values.yaml
 kubectl config use-context kind-kind
 make -C third_party/cert-manager deploy
-
+kubectl create ns fybrik-system
 # configure Vault
 make vault-setup-kind-multi
 

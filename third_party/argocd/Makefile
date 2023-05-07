@@ -11,6 +11,7 @@ deploy: $(TOOLBIN)/kubectl $(TOOLBIN)/helm
 		--create-namespace \
 		--set configs.params."server.insecure"=true \
 		--set server.ingress.enabled=true
+		--version v${ARGOCD_HELM_VERSION}
 
 .PHONY: undeploy
 undeploy: $(TOOLBIN)/kubectl $(TOOLBIN)/helm

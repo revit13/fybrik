@@ -38,7 +38,7 @@ import (
 
 const (
 	gitRepoBranch      = "main"
-	appBlueprintPrefix = "app-fybrik-blueprint-"
+	appBlueprintPrefix = "blueprints-"
 )
 
 var (
@@ -226,14 +226,14 @@ func (cm *argocdClusterManager) IsMultiClusterSetup() bool {
 func (cm *argocdClusterManager) getBlueprintFileName(blueprintName, blueprintNamespace string) string {
 	return blueprintName + "-" + blueprintNamespace + ".yaml"
 }
-func (cm *argocdClusterManager) getBlueprintPath(cluster string) string {
+func (cm *argocdClusterManager) getBlueprintFilePath(cluster string) string {
 	return "blueprints" + "/" + cluster + "/"
 }
 
 // GetBlueprint returns a blueprint matching the given name, namespace and cluster details
 func (cm *argocdClusterManager) GetBlueprint(cluster, namespace, name string) (*app.Blueprint, error) {
 	cm.log.Info().Msg("Get Blueprint " + " cluster " + cluster + "namespace: " + namespace + " name: " + name)
-	req := cm.client.ApplicationServiceApi.ApplicationServiceGetManifests(context.Background(), "fybrik-blueprint-remote")
+	req := cm.client.ApplicationServiceApi.ApplicationServiceGetManifests(context.Background(), appBlueprintPrefix+cluster)
 	req.AppNamespace("argocd")
 	resp, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceGetManifestsExecute(req)
 	if err != nil {
@@ -246,6 +246,7 @@ func (cm *argocdClusterManager) GetBlueprint(cluster, namespace, name string) (*
 	}
 	cm.log.Info().Msg("print manifest")
 	blueprint := app.Blueprint{}
+	found := false
 	for _, manifest := range resp.GetManifests() {
 		err = multicluster.Decode(manifest, scheme, &blueprint)
 		if err != nil {
@@ -256,39 +257,21 @@ func (cm *argocdClusterManager) GetBlueprint(cluster, namespace, name string) (*
 			log.Warn().Msg("Retrieved an empty blueprint")
 			return nil, nil
 		}
-		cm.log.Info().Msg(manifest)
+		cm.log.Info().Msg("found manifest for " + blueprint.GetName())
+
+		if blueprint.GetName() == name {
+			cm.log.Info().Msg(manifest)
+			found = true
+			break
+		}
 	}
-	repoDir, _, err := cm.cloneGitRepo()
-	defer os.RemoveAll(repoDir)
-	if err != nil {
+	if !found {
+		err = errors.New("blueprint not found for " + name)
 		cm.log.Error().Err(err).Msg("Failed to get blueprint")
 		return nil, err
 	}
-	fileName := cm.getBlueprintFileName(name, namespace)
-	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintPath(cluster), fileName)
-	cm.log.Info().Msg("read blueprint file: " + fullFilename)
-	fileBytes, err := ioutil.ReadFile(fullFilename)
-	if err != nil {
-		cm.log.Error().Err(err).Msg("Failed to get blueprint " + name)
-		return nil, err
-	}
-	if fileBytes == nil {
-		cm.log.Warn().Msg("Could not get any resource data")
-		return nil, nil
-	}
-
-	blueprint = app.Blueprint{}
-
-	err = yaml.Unmarshal(fileBytes, &blueprint)
-	if err != nil {
-		cm.log.Error().Err(err).Msg("Failed to get blueprint")
-		return nil, err
-	}
-	/*if blueprint.Namespace == "" {
-		cm.log.Warn().Msg("Retrieved an empty blueprint")
-		return nil, nil
-	}*/
 	cm.log.Info().Msg("blueprint successfully read " + blueprint.Namespace)
+
 	return &blueprint, nil
 }
 
@@ -307,14 +290,14 @@ func (cm *argocdClusterManager) CreateBlueprint(cluster string, blueprint *app.B
 		cm.log.Error().Err(err).Msg("Failed to create blueprint")
 	}
 
-	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintPath(cluster), fileName)
+	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath(cluster), fileName)
 
 	content, err := yaml.Marshal(blueprint)
 	if err != nil {
 		return err
 	}
 	cm.log.Info().Msg("fullPath: " + fullFilename)
-	err = os.MkdirAll(repoDir+"/"+cm.getBlueprintPath(cluster), os.ModePerm)
+	err = os.MkdirAll(repoDir+"/"+cm.getBlueprintFilePath(cluster), os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -322,8 +305,8 @@ func (cm *argocdClusterManager) CreateBlueprint(cluster string, blueprint *app.B
 	if err != nil {
 		return err
 	}
-	cm.log.Info().Msg("do git add of blueprint " + cm.getBlueprintPath(cluster) + fileName)
-	_, err = w.Add(cm.getBlueprintPath(cluster) + fileName)
+	cm.log.Info().Msg("do git add of blueprint " + cm.getBlueprintFilePath(cluster) + fileName)
+	_, err = w.Add(cm.getBlueprintFilePath(cluster) + fileName)
 	if err != nil {
 		return err
 	}
@@ -375,7 +358,6 @@ func (cm *argocdClusterManager) UpdateBlueprint(cluster string, blueprint *app.B
 
 // DeleteBlueprint deletes the blueprint resource
 func (cm *argocdClusterManager) DeleteBlueprint(cluster, namespace, name string) error {
-	cm.log.Info().Msg("Delete Blueprint " + " cluster " + cluster + "namespace: " + namespace + " name: " + name)
 	repoDir, repo, err := cm.cloneGitRepo()
 	defer os.RemoveAll(repoDir)
 	if err != nil {
@@ -383,17 +365,17 @@ func (cm *argocdClusterManager) DeleteBlueprint(cluster, namespace, name string)
 		return err
 	}
 	fileName := cm.getBlueprintFileName(name, namespace)
-	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintPath(cluster), fileName)
+	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath(cluster), fileName)
 
 	cm.log.Info().Msg("fullPath: " + fullFilename)
 
-	cm.log.Info().Msg("do git remove of blueprint " + cm.getBlueprintPath(cluster) + fileName)
+	cm.log.Info().Msg("do git remove of blueprint " + cm.getBlueprintFilePath(cluster) + fileName)
 	w, err := repo.Worktree()
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to delete blueprint")
 	}
 
-	_, err = w.Remove(cm.getBlueprintPath(cluster) + fileName)
+	_, err = w.Remove(cm.getBlueprintFilePath(cluster) + fileName)
 	if err != nil {
 		return err
 	}

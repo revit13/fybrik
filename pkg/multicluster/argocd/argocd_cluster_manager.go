@@ -39,6 +39,8 @@ import (
 const (
 	gitRepoBranch      = "main"
 	appBlueprintPrefix = "blueprints-"
+	blueprintsDirPath  = "blueprints"
+	tmpFileName        = ".tmp"
 )
 
 var (
@@ -65,10 +67,117 @@ type argocdClusterManager struct {
 	argocdFybrikAppsNamePrefix string
 }
 
+// Do Git commit and push commands
+func (cm *argocdClusterManager) doGitCommitAndPush(repo *git.Repository, w *git.Worktree, commitMsg string) error {
+	// Commits the current staging area to the repository, with the new file
+	// just created. We should provide the object.Signature of Author of the
+	// commit Since version 5.0.1, we can omit the Author signature, being read
+	// from the git config files.
+	cm.log.Info().Msg(commitMsg)
+	commit, err := w.Commit(commitMsg, &git.CommitOptions{
+		Author: &object.Signature{
+			Name:  "fybrik",
+			Email: "fybrik@fybrik",
+			When:  time.Now(),
+		},
+	})
+
+	remote, err := repo.Remote("origin")
+
+	cm.log.Info().Msg("commit hash " + commit.String())
+	po := &git.PushOptions{
+		Auth: &githttp.BasicAuth{
+			Username: cm.argoCDAppsGitRepo.username,
+			Password: cm.argoCDAppsGitRepo.password,
+		},
+		RemoteName:      "origin",
+		RefSpecs:        []config.RefSpec{config.RefSpec("refs/heads/*:refs/heads/*")},
+		Progress:        os.Stdout,
+		Force:           false,
+		InsecureSkipTLS: true,
+	}
+	cm.log.Info().Msg("do git push " + commitMsg)
+	// mutex for the writing operation
+	pushRepoMutex.Lock()
+	defer pushRepoMutex.Unlock()
+	err = remote.Push(po)
+	if err != nil {
+		return err
+	}
+	cm.log.Info().Msg("Commit and push is done for " + commitMsg)
+	return nil
+}
+
+// Create a new folder called "blueprints" in the Git repository.
+// This folder includes subfolders for each of the clusters, with each subfolder serving as a container
+// for the blueprints created specifically for that cluster
+func (cm *argocdClusterManager) createBlueprintsDirIfNotExists() error {
+	repoDir, repo, err := cm.cloneGitRepo()
+	defer os.RemoveAll(repoDir)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to create blueprints dir")
+		return err
+	}
+	if _, err := os.Stat(repoDir + "/" + blueprintsDirPath); os.IsNotExist(err) {
+		w, err := repo.Worktree()
+		if err != nil {
+			cm.log.Error().Err(err).Msg("Failed to create blueprints dir")
+		}
+
+		err = os.MkdirAll(repoDir+"/"+cm.getBlueprintFilePath(), os.ModePerm)
+		if err != nil {
+			return err
+		}
+		fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath(), tmpFileName)
+		_, err = os.Create(fullFilename)
+		if err != nil {
+			return err
+		}
+
+		if err != nil {
+			return err
+		}
+		cm.log.Info().Msg("do git add to create " + cm.getBlueprintFilePath() + " directory")
+		_, err = w.Add(cm.getBlueprintFilePath() + tmpFileName)
+		if err != nil {
+			return err
+		}
+
+		clusters, err := cm.GetClusters()
+		if err != nil {
+			return err
+		}
+		for _, clusterItem := range clusters {
+			cluster := clusterItem.Name
+			cm.log.Info().Msg("creating new empty dir for cluster " + cluster)
+			err = os.MkdirAll(repoDir+"/"+cm.getBlueprintFilePath()+cluster, os.ModePerm)
+			if err != nil {
+				return err
+			}
+			fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath()+cluster+"/", tmpFileName)
+			_, err = os.Create(fullFilename)
+			if err != nil {
+				return err
+			}
+			cm.log.Info().Msg("do git add to create " + cm.getBlueprintFilePath() + cluster + " directory")
+			_, err = w.Add(cm.getBlueprintFilePath() + cluster + "/" + tmpFileName)
+			if err != nil {
+				return err
+			}
+		}
+		err = cm.doGitCommitAndPush(repo, w, "Creating Blueprints folder")
+		if err != nil {
+			return err
+		}
+		cm.log.Info().Msg("Successfully created Blueprints folder!")
+
+	}
+	return nil
+}
+
 func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoUser, gitRepoPassword, argocdFybrikAppsNamePrefix,
 	gitRepoBlueprintsAppsPath string) (multicluster.ClusterManager, error) {
 	logger := logging.LogInit(logging.SETUP, "ArgoCDManager")
-	//log := logging.LogInit(logging.SETUP, "datacatalog client")
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -112,7 +221,7 @@ func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoU
 
 	logger.Info().Msg("Initializing ArgoCD cluster manager")
 
-	return &argocdClusterManager{
+	cm := argocdClusterManager{
 		client: argoclient.NewAPIClient(&configuration),
 		log:    logger,
 		argoCDAppsGitRepo: gitRepo{
@@ -122,7 +231,10 @@ func NewArgoCDClusterManager(connectionURL, user, password, gitRepoUrl, gitRepoU
 			blueprintsAppsPath: gitRepoBlueprintsAppsPath,
 		},
 		argocdFybrikAppsNamePrefix: argocdFybrikAppsNamePrefix,
-	}, nil
+	}
+	cm.createBlueprintsDirIfNotExists()
+
+	return &cm, nil
 }
 
 func (cm *argocdClusterManager) packClusterConfigMap(params map[string]string) *v1.ConfigMap {
@@ -131,6 +243,19 @@ func (cm *argocdClusterManager) packClusterConfigMap(params map[string]string) *
 	return &configMap
 }
 
+// Get the cluster info.
+// The cluster information is retrieved from the Argo CD Application for Fybrik deployment on the cluster.
+// To do so, an API call to ApplicationService is done in order to fetch the helm parameters
+// of the deployment in the cluster.
+// For example, to get the cluster zone the helm parameter cluster.zone
+// is retrieved from the Argo CD Application:
+//
+//	helm:
+//	  parameters:
+//	    - name: cluster.name
+//	      value: kind-control
+//	    - name: cluster.zone
+//	      value: baggin
 func (cm *argocdClusterManager) getClusterInfo(clusterName string) (multicluster.Cluster, error) {
 	var cluster multicluster.Cluster
 	req := cm.client.ApplicationServiceApi.ApplicationServiceGet(context.Background(),
@@ -168,6 +293,7 @@ func (cm *argocdClusterManager) getClusterInfo(clusterName string) (multicluster
 	return multicluster.CreateCluster(*cm.packClusterConfigMap(params)), nil
 }
 
+// Clone a git reposetory into local filesystem
 func (cm *argocdClusterManager) cloneGitRepo() (string, *git.Repository, error) {
 	cm.log.Info().Msg(cm.argoCDAppsGitRepo.username + cm.argoCDAppsGitRepo.url)
 	tmpDir, err := os.MkdirTemp(environment.GetDataDir(), "blueprints-repo")
@@ -177,7 +303,6 @@ func (cm *argocdClusterManager) cloneGitRepo() (string, *git.Repository, error) 
 			Password: cm.argoCDAppsGitRepo.password,
 		},
 		URL: cm.argoCDAppsGitRepo.url,
-		//Progress: os.Stdout,
 	})
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to clone repo")
@@ -187,6 +312,7 @@ func (cm *argocdClusterManager) cloneGitRepo() (string, *git.Repository, error) 
 }
 
 // GetClusters returns a list of registered clusters
+// To do so an API call to ClusterServiceList is used.
 func (cm *argocdClusterManager) GetClusters() ([]multicluster.Cluster, error) {
 	cm.log.Info().Msg("list clusters")
 	var clusters []multicluster.Cluster
@@ -223,18 +349,22 @@ func (cm *argocdClusterManager) IsMultiClusterSetup() bool {
 	return true
 }
 
-func (cm *argocdClusterManager) getBlueprintFileName(blueprintName, blueprintNamespace string) string {
-	return blueprintName + "-" + blueprintNamespace + ".yaml"
+func (cm *argocdClusterManager) getBlueprintFileName(cluster, blueprintName, blueprintNamespace string) string {
+	return cluster + "-" + blueprintName + "-" + blueprintNamespace + ".yaml"
 }
-func (cm *argocdClusterManager) getBlueprintFilePath(cluster string) string {
-	return "blueprints" + "/" + cluster + "/"
+func (cm *argocdClusterManager) getBlueprintFilePath() string {
+	return blueprintsDirPath + "/"
 }
 
 // GetBlueprint returns a blueprint matching the given name, namespace and cluster details
+// To do so an API call to ApplicationServiceGetManifests is done.
+// TODO: This function gets the Blueprint in the desired state (in Git) while we need the actual state of the blueprint status
+// in the cluster. Currently, the status diff is not working properly (https://github.com/argoproj/argo-cd/issues/13486)
+// thus this function needs to be revisit.
 func (cm *argocdClusterManager) GetBlueprint(cluster, namespace, name string) (*app.Blueprint, error) {
-	cm.log.Info().Msg("Get Blueprint " + " cluster " + cluster + "namespace: " + namespace + " name: " + name)
+	cm.log.Info().Msg("Get Blueprint " + " cluster " + cluster + " namespace: " + namespace + " name: " + name)
 	req := cm.client.ApplicationServiceApi.ApplicationServiceGetManifests(context.Background(), appBlueprintPrefix+cluster)
-	req.AppNamespace("argocd")
+	req = req.AppNamespace("argocd")
 	resp, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceGetManifestsExecute(req)
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to get application manifest")
@@ -272,77 +402,81 @@ func (cm *argocdClusterManager) GetBlueprint(cluster, namespace, name string) (*
 	}
 	cm.log.Info().Msg("blueprint successfully read " + blueprint.Namespace)
 
+	// TO BE REMOVED: experimental code
+	/*req1 := cm.client.ApplicationServiceApi.ApplicationServiceGetResource(context.Background(), appBlueprintPrefix+cluster)
+	req1 = req1.ResourceName(blueprint.GetName())
+	req1 = req1.AppNamespace("argocd")
+	resp1, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceGetResourceExecute(req1)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to get application manifest")
+		return nil, err
+	}
+	if httpResp.StatusCode != http.StatusOK {
+		cm.log.Error().Msg("Failed to get application manifest: http status code is " + strconv.Itoa(httpResp.StatusCode))
+		return nil, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
+	}
+	cm.log.Info().Msg("print manifest111")
+
+	manifest := resp1.GetManifest()
+	cm.log.Info().Msg(manifest)
+
+	req2 := cm.client.ApplicationServiceApi.ApplicationServiceManagedResources(context.Background(), appBlueprintPrefix+cluster)
+	req2 = req2.AppNamespace("argocd")
+	resp2, httpResp, err := cm.client.ApplicationServiceApi.ApplicationServiceManagedResourcesExecute(req2)
+	if err != nil {
+		cm.log.Error().Err(err).Msg("Failed to get application manifest")
+		return nil, err
+	}
+	if httpResp.StatusCode != http.StatusOK {
+		cm.log.Error().Msg("Failed to get application manifest: http status code is " + strconv.Itoa(httpResp.StatusCode))
+		return nil, errors.New("http status code is " + strconv.Itoa(httpResp.StatusCode))
+	}
+	cm.log.Info().Msg("print manifest222")
+	for _, item := range resp2.GetItems() {
+		if item.GetName() == blueprint.GetName() {
+			cm.log.Info().Msg("difffff")
+			cm.log.Info().Msg(item.GetDiff())
+		}
+	}*/
+
 	return &blueprint, nil
 }
 
 // CreateBlueprint creates a blueprint resource or updates an existing one
+// It does so by pushing the blueprint to the Git repository.
 func (cm *argocdClusterManager) CreateBlueprint(cluster string, blueprint *app.Blueprint) error {
-	cm.log.Info().Msg("Create Blueprint " + " cluster " + cluster + "namespace: " + blueprint.Namespace + " name: " + blueprint.Name)
+	cm.log.Info().Msg("Create Blueprint " + " cluster " + cluster + " namespace: " + blueprint.Namespace + " name: " + blueprint.Name)
 	repoDir, repo, err := cm.cloneGitRepo()
 	defer os.RemoveAll(repoDir)
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to create blueprint")
 		return err
 	}
-	fileName := cm.getBlueprintFileName(blueprint.Name, blueprint.Namespace)
+	fileName := cm.getBlueprintFileName(cluster, blueprint.Name, blueprint.Namespace)
 	w, err := repo.Worktree()
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to create blueprint")
 	}
 
-	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath(cluster), fileName)
-
 	content, err := yaml.Marshal(blueprint)
 	if err != nil {
 		return err
 	}
-	cm.log.Info().Msg("fullPath: " + fullFilename)
-	err = os.MkdirAll(repoDir+"/"+cm.getBlueprintFilePath(cluster), os.ModePerm)
-	if err != nil {
-		return err
-	}
+	cm.log.Info().Msg("fullPath: " + fileName)
+
+	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath()+cluster, fileName)
 	err = ioutil.WriteFile(fullFilename, content, 0644)
+
 	if err != nil {
 		return err
 	}
-	cm.log.Info().Msg("do git add of blueprint " + cm.getBlueprintFilePath(cluster) + fileName)
-	_, err = w.Add(cm.getBlueprintFilePath(cluster) + fileName)
+	cm.log.Info().Msg("do git add of blueprint " + cm.getBlueprintFilePath() + cluster + "/" + fileName)
+	_, err = w.Add(cm.getBlueprintFilePath() + cluster + "/" + fileName)
 	if err != nil {
 		return err
 	}
 
-	// Commits the current staging area to the repository, with the new file
-	// just created. We should provide the object.Signature of Author of the
-	// commit Since version 5.0.1, we can omit the Author signature, being read
-	// from the git config files.
-	cm.log.Info().Msg("do git commit of blueprint " + fileName)
-	commit, err := w.Commit("create "+fileName+" blueprint", &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "fybrik",
-			Email: "fybrik@fybrik",
-			When:  time.Now(),
-		},
-	})
-
-	remote, err := repo.Remote("origin")
-
-	cm.log.Info().Msg("commit hash " + commit.String())
-	po := &git.PushOptions{
-		Auth: &githttp.BasicAuth{
-			Username: cm.argoCDAppsGitRepo.username,
-			Password: cm.argoCDAppsGitRepo.password,
-		},
-		RemoteName:      "origin",
-		RefSpecs:        []config.RefSpec{config.RefSpec("refs/heads/*:refs/heads/*")},
-		Progress:        os.Stdout,
-		Force:           false,
-		InsecureSkipTLS: true,
-	}
-	cm.log.Info().Msg("do git push of blueprint " + fileName)
-	// mutex for the writing operation
-	pushRepoMutex.Lock()
-	defer pushRepoMutex.Unlock()
-	err = remote.Push(po)
+	err = cm.doGitCommitAndPush(repo, w, "Create Blueprint")
 	if err != nil {
 		return err
 	}
@@ -357,6 +491,7 @@ func (cm *argocdClusterManager) UpdateBlueprint(cluster string, blueprint *app.B
 }
 
 // DeleteBlueprint deletes the blueprint resource
+// It does so by removing the blueprint from the Git repository.
 func (cm *argocdClusterManager) DeleteBlueprint(cluster, namespace, name string) error {
 	repoDir, repo, err := cm.cloneGitRepo()
 	defer os.RemoveAll(repoDir)
@@ -364,54 +499,22 @@ func (cm *argocdClusterManager) DeleteBlueprint(cluster, namespace, name string)
 		cm.log.Error().Err(err).Msg("Failed to delete blueprint")
 		return err
 	}
-	fileName := cm.getBlueprintFileName(name, namespace)
-	fullFilename := filepath.Join(repoDir+"/"+cm.getBlueprintFilePath(cluster), fileName)
+	fileName := cm.getBlueprintFileName(cluster, name, namespace)
 
-	cm.log.Info().Msg("fullPath: " + fullFilename)
+	cm.log.Info().Msg("fullPath: " + fileName)
 
-	cm.log.Info().Msg("do git remove of blueprint " + cm.getBlueprintFilePath(cluster) + fileName)
+	cm.log.Info().Msg("do git remove of blueprint " + cm.getBlueprintFilePath() + cluster + "/" + fileName)
 	w, err := repo.Worktree()
 	if err != nil {
 		cm.log.Error().Err(err).Msg("Failed to delete blueprint")
 	}
 
-	_, err = w.Remove(cm.getBlueprintFilePath(cluster) + fileName)
+	_, err = w.Remove(cm.getBlueprintFilePath() + cluster + "/" + fileName)
 	if err != nil {
 		return err
 	}
 
-	// Commits the current staging area to the repository, with the new file
-	// just created. We should provide the object.Signature of Author of the
-	// commit Since version 5.0.1, we can omit the Author signature, being read
-	// from the git config files.
-	cm.log.Info().Msg("do git remove of blueprint " + fileName)
-	commit, err := w.Commit("remove "+fileName+" blueprint", &git.CommitOptions{
-		Author: &object.Signature{
-			Name:  "fybrik",
-			Email: "fybrik@fybrik",
-			When:  time.Now(),
-		},
-	})
-
-	remote, err := repo.Remote("origin")
-
-	cm.log.Info().Msg("commit hash " + commit.String())
-	po := &git.PushOptions{
-		Auth: &githttp.BasicAuth{
-			Username: cm.argoCDAppsGitRepo.username,
-			Password: cm.argoCDAppsGitRepo.password,
-		},
-		RemoteName:      "origin",
-		RefSpecs:        []config.RefSpec{config.RefSpec("refs/heads/*:refs/heads/*")},
-		Progress:        os.Stdout,
-		Force:           false,
-		InsecureSkipTLS: true,
-	}
-	cm.log.Info().Msg("do git push of blueprint deletion" + fileName)
-	// mutex for the writing operation
-	pushRepoMutex.Lock()
-	defer pushRepoMutex.Unlock()
-	err = remote.Push(po)
+	err = cm.doGitCommitAndPush(repo, w, "Delete Blueprint")
 	if err != nil {
 		return err
 	}

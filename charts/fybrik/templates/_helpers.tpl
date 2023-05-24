@@ -71,6 +71,11 @@ Extract the file name from a path
 {{- printf "%s" $path | base| toString }}
 {{- end }}
 
+{{- define "fybrik.adminConfigPolicyFileName" -}}
+{{- $path := toString (first .) -}}
+{{- printf "%s" $path | base| toString }}
+{{- end }}
+
 {{/*
 isEnabled evaluates an enabled flag that might be set to "auto".
 Returns true if one of the following is true:

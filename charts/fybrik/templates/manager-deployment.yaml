@@ -33,8 +33,8 @@ spec:
       serviceAccountName: {{ .Values.manager.serviceAccount.name }}
       securityContext:
         {{- include "fybrik.processPodSecurityContext" (dict "context" . "podSecurityContext" .Values.manager.podSecurityContext) | nindent 8 }}
-      {{- if .Values.manager.solver.image }}
       initContainers:
+      {{- if .Values.manager.solver.image }}
         - name: init-solver
           image: {{ .Values.manager.solver.image }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
@@ -47,6 +47,26 @@ spec:
             - name: solver-volume
               mountPath: {{ include "fybrik.getDataSubdir" ( tuple "solver" ) }}
       {{- end }}
+        - name: initAdminConfigPolicy
+          image: {{ .Values.opaServer.kubemgmt.image }}
+          command:
+          - /bin/sh
+          - -c
+          - |
+            {{- $files := .Files }}
+            {{- range $path, $_ :=  $files.Glob  "files/adminconfig/**.rego" }}
+            {{- $fileName := include "fybrik.adminConfigPolicyFileName" (tuple $path ) }}
+            {{- printf "\ncat <<EOF > %s/policy-lib-%s" (include "fybrik.getDataSubdir" ( tuple "adminconfig" )) $fileName | indent 12 }}
+            {{ $files.Get $path | indent 12 }}
+            EOF
+            {{ end }}
+            {{- if .Values.manager.adminConfigBootstrapPolicies }}
+            {{- range $policyName, $policy := .Values.manager.adminConfigBootstrapPolicies }}
+            {{- printf "\ncat > %s/%s.rego <<EOF" (include "fybrik.getDataSubdir" ( tuple "adminconfig" )) $policyName  | indent 12 }}
+            {{ $policy | indent 12 }}
+            EOF
+            {{ end }}
+            {{ end }}
       containers:
         {{- if .Values.manager.socat }}
         - name: integration-tests
@@ -218,9 +238,6 @@ spec:
         - name: fybrik-taxonomy
           configMap:
             name: fybrik-taxonomy-config
-        - name: fybrik-adminconfig
-          configMap:
-            name: fybrik-adminconfig
         {{- if .Values.manager.chartsPersistentVolumeClaim }}
         - name: charts
           persistentVolumeClaim:

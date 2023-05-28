@@ -48,7 +48,7 @@ spec:
               mountPath: {{ include "fybrik.getDataSubdir" ( tuple "solver" ) }}
       {{- end }}
         - name: initAdminConfigPolicy
-          image: {{ .Values.opaServer.kubemgmt.image }}
+          image: registry.access.redhat.com/ubi8/ubi-minimal:8.7
           command:
           - /bin/sh
           - -c
@@ -67,6 +67,11 @@ spec:
             EOF
             {{ end }}
             {{ end }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ include "fybrik.getDataDir" . }}
+            - mountPath: {{ include "fybrik.getDataSubdir" ( tuple "adminconfig" ) }}
+              name: fybrik-adminconfig
       containers:
         {{- if .Values.manager.socat }}
         - name: integration-tests
